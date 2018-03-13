@@ -17,6 +17,7 @@ Desafio de Programação: Predição de Branches
 	- Build & run: apenas rode o comando 'make' do diretório do exercício programa.
 
 Referencias:
+
 	- https://www.geeksforgeeks.org/branch-prediction-macros-in-gcc/
 	- https://stackoverflow.com/questions/1851299/is-it-possible-to-tell-the-branch-predictor-how-likely-it-is-to-follow-the-branc
 

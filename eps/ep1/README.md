@@ -15,6 +15,7 @@ Mini Exercício Programa: Utilização das Memórias Caches Descrição Os Proce
 	- Build & run: apenas rode o comando 'make' do diretório do exercício programa.
 
 Referencias:
+
 	- http://www.scribblethink.org/Computer/cachekiller.html
 	- https://stackoverflow.com/questions/12594208/c-program-to-determine-levels-size-of-cache 	
 	- https://softwareengineering.stackexchange.com/questions/302354/memory-cache-performance-in-working-with-arrays-in-c
