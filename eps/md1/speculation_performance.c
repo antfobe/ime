@@ -37,8 +37,7 @@ int likelyLastout(long i, long upto) {
 	if (likely(i < (upto % ITER_MAX))){
 		return likelyLastout(i + 1, upto);
 	} else { 
-		for (int k = 0; k < i; k++)
-		clock();
+		for(int k = 0; k < i; k++) clock();
 		return i;
 	}
 }
@@ -47,8 +46,7 @@ int unlikelyLastout(long i, long upto) {
 	if (unlikely(i < (upto % ITER_MAX))){
 		return unlikelyLastout(i + 1, upto);
 	} else {
-		for (int k = 0; k < i; k++)
-		clock();
+		for(int k = 0; k < i; k++) clock();
 		return i;
 	}
 }
@@ -57,8 +55,7 @@ int normLastout(long i, long upto){
 	if (i < (upto % ITER_MAX)) {
 		return (normLastout(i + 1, upto));
 	} else {
-		for (int k = 0; k < i; k++)
-			clock();
+		for(int k = 0; k < i; k++) clock();
 		return i; 
 	}
 }
