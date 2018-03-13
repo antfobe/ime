@@ -27,7 +27,7 @@ int main()
 
     char *M = (char *)malloc(MAX_SIZE * sizeof(char));
 
-    for(int k = 1; k <= 1024; k <<= 1){
+    for(int k = 1024; k >= 1; k >>= 1){
         /* CPU clock ticks count start */
         start = clock();
         /* Loop 2 */

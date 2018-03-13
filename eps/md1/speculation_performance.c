@@ -34,29 +34,32 @@ void getHome() {
 }
 
 int likelyLastout(long i, long upto) {
-		clock();
 	if (likely(i < (upto % ITER_MAX))){
 		return likelyLastout(i + 1, upto);
 	} else { 
+		for (int k = 0; k < i; k++)
+		clock();
 		return i;
 	}
 }
 
 int unlikelyLastout(long i, long upto) {
-	clock();
 	if (unlikely(i < (upto % ITER_MAX))){
 		return unlikelyLastout(i + 1, upto);
-	} else  {
+	} else {
+		for (int k = 0; k < i; k++)
+		clock();
 		return i;
 	}
 }
 
 int normLastout(long i, long upto){
-		clock();
-	if (i > (upto % ITER_MAX)) {
-		return i;
-	} else {
+	if (i < (upto % ITER_MAX)) {
 		return (normLastout(i + 1, upto));
+	} else {
+		for (int k = 0; k < i; k++)
+			clock();
+		return i; 
 	}
 }
 
@@ -76,35 +79,34 @@ int main(int argc, char ** argv) {
 	clock_t begin = clock();
 	getHomeopt();
 	clock_t end = clock();
-	printf("Getting HOME path from env (non-optimized) took\t[%.06f]s\n", (double)(end - begin) / CLOCKS_PER_SEC);
+	printf("Getting HOME path from env (non-optimized) took\t\t[%.06f]s\n", (double)(end - begin) / CLOCKS_PER_SEC);
 	begin = clock();
 	getHome();
 	end = clock();
-	printf("Getting HOME path from env (optimized) took\t[%.06f]s\n", (double)(end - begin) / CLOCKS_PER_SEC);
+	printf("Getting HOME path from env (optimized) took\t\t[%.06f]s\n", (double)(end - begin) / CLOCKS_PER_SEC);
 
 	double time_default, time_opt, time_worse;
 	for (int i = 0; i < 1; i++) {
 		/*Scratch this : -Do a few runs to load in cache-*/
-		long out;
 		begin = clock();
-		out = unlikelyLastout(iter, randomInt);
+		unlikelyLastout(iter, randomInt);
 		end = clock();
 		time_worse = (double)(end - begin) / CLOCKS_PER_SEC;
 
 		begin = clock();
-		out = normLastout(iter, randomInt);
+		normLastout(iter, randomInt);
 		end = clock();
 		time_default = (double)(end - begin) / CLOCKS_PER_SEC;
 
 		begin = clock();
-		out = likelyLastout(iter, randomInt);
+		likelyLastout(iter, randomInt);
 		end = clock();
 		time_opt = (double)(end - begin) / CLOCKS_PER_SEC;
 	}
 
-	printf("Worsened iteration took\t\t\t\t[%.06f]s\n", time_worse);
-	printf("Default recursive iteration took\t\t[%.06f]s\n", time_default);
-	printf("Optimized recursive iteration took\t\t[%.06f]s\n", time_opt);
+	printf("Worsened prediction iteration took\t\t\t[%.06f]s\n", time_worse);
+	printf("Default (no prediciton) recursive iteration took\t[%.06f]s\n", time_default);
+	printf("Optimized prediction recursive iteration took\t\t[%.06f]s\n", time_opt);
 	
 	return 0;
 }
