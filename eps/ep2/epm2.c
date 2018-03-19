@@ -19,15 +19,16 @@ typedef struct params params_t;
 int dead_count = 0;
 
 int checkPos(int * array, int pos) {
-	for(int i = 0; i < sizeof(array)/sizeof(array[0]); i++) {
-		if(pos == array[i])
+	for(int i = 0; i < sizeof(array)/sizeof(int); i++) {
+		if(pos == array[i]) {
+		//printf("(pos = %d, array[%d] = %d)\n", pos, i, array[i]);
 			return abs(pos);
+		}
 	}
 	return -1;
 }
 
-void * pond(void * arg){
-
+void * pond(void * arg) {
     int id, * pos;
     /* Lock.  */
     pthread_mutex_lock(&(*(params_t*)(arg)).mutex);
@@ -36,16 +37,16 @@ void * pond(void * arg){
     id = (*(params_t*)(arg)).id;
     pos = (*(params_t*)(arg)).pond_pos;
     
-    printf("Hello from %d - {%s}\n", id, (*(params_t*)(arg)).frogger);
-    
+    //printf("Hello from %d - {%s}\n", id, (*(params_t*)(arg)).frogger);
+    printf("On id(%d) - {%s}, check(5)=%d\n", id, (*(params_t*)(arg)).frogger, checkPos(pos, 5));
+
     /* Try to move. */
-    if (id <= POND_SIZE/2) {
-	if (pos[id] < (POND_SIZE - 1) && ! checkPos(pos, pos[id] + 1) && checkPos(pos, pos[id] + 2)) {
+    if (id <= (POND_SIZE + 1)/2) {
+	if (pos[id] < (POND_SIZE) && ! checkPos(pos, pos[id] + 1) && checkPos(pos, pos[id] + 2)) {
 		pos[id]++;
 	} else if (pos[id] < (POND_SIZE - 1) && ! checkPos(pos, pos[id] + 2)) {
 		pos[id] += 2;
 	}
-
     } else {
 	if (pos[id] > 0 && ! checkPos(pos, pos[id] - 1) && checkPos(pos, pos[id] - 2)) {
 		pos[id]--;
@@ -54,12 +55,14 @@ void * pond(void * arg){
 	}
     }
 
-  /* Check if moved...  */
+    /* Check if moved...  */
 
     if (pos[id] == (*(params_t*)(arg)).pond_pos[id]) {
     	dead_count++;
     } else {
+	//    printf("Ufoq wot - %d\n", (*(params_t*)(arg)).pond_pos[id]);
 	(*(params_t*)(arg)).pond_pos[id] = pos[id];
+	//    printf("Ufoq dis? - %d\n", (*(params_t*)(arg)).pond_pos[id]);
 	dead_count = 0;
     }
 
@@ -113,6 +116,10 @@ int main() {
     for(i = 0; i < (POND_SIZE - 1); i++) {
             pthread_join(threads[i], NULL);
     }
+    	
+    /* Everithing is a-ok, first iteration is 'initializing'
+     * positions, just need to loop to check if it works...
+     * ha! as if*/
 
     /* Destroy all synchronization primitives.  */    
     pthread_mutex_destroy (&params.mutex);
