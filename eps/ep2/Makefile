@@ -1,4 +1,4 @@
-LIBS = -lpthread
+LIBS = -lpthread -lm
 CC = gcc
 CFLAGS = -O0 -Wall -std=c99
 
