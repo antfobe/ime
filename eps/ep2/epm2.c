@@ -11,13 +11,13 @@ struct params {
         pthread_mutex_t mutex;
         pthread_cond_t done;
 	char frogger[128];
-	int pond_pos[POND_SIZE];
         int id;
 };
 
 typedef struct params params_t;
 
 int dead_count = 0;
+int pond_pos[POND_SIZE];
 
 int checkPos(int * array, int pos) {
 	for(int i = 0; i < sizeof(array)/sizeof(array[0]); i++) {
@@ -29,45 +29,44 @@ int checkPos(int * array, int pos) {
 
 void * pond(void * arg){
 
-    int id, i, * pos;
+    int id;
+//    int i;
     /* Lock.  */
     while(dead_count < DEADLOCK) {
 	    pthread_mutex_lock(&(*(params_t*)(arg)).mutex);
 
 	    /* Work.  */
 	    id = (*(params_t*)(arg)).id;
-	    pos = (*(params_t*)(arg)).pond_pos;
 	    
 	    //printf("Hello from %d - {%s}\n", id, (*(params_t*)(arg)).frogger);
-	    printf("State: ");
+	    /*printf("State: ");
 	    for(i = 0; i < (POND_SIZE); i++) {
 		printf("[%d]{%d} ", i, pos[i]);
 	    }
 	    printf(" DeadCount=%d\n", dead_count);
-	    
-	    /* Try to move. */
+	    */
+	    /* Try to move, reset dead_count 
+	     * if a move was made */
+
+	    dead_count++;
 	    if (id <= POND_SIZE/2) {
-		if (pos[id] < (POND_SIZE - 1) && ! checkPos(pos, pos[id] + 1) && checkPos(pos, pos[id] + 2)) {
-			pos[id]++;
-		} else if (pos[id] < (POND_SIZE - 1) && ! checkPos(pos, pos[id] + 2)) {
-			pos[id] += 2;
+	    //printf("pre-changes [%d]/after-changes [%d] - DC = %d\n", (*(params_t*)(arg)).pond_pos[id], pos[id], dead_count);
+		if (pond_pos[id] < (POND_SIZE - 1) && ! checkPos(pond_pos, pond_pos[id] + 1) && checkPos(pond_pos, pond_pos[id] + 2)) {
+			pond_pos[id]++;
+			dead_count = 0;
+		} else if (pond_pos[id] < (POND_SIZE - 1) && ! checkPos(pond_pos, pond_pos[id] + 2)) {
+			pond_pos[id] += 2;
+			dead_count = 0;
 		}
 
 	    } else {
-		if (pos[id] > 0 && ! checkPos(pos, pos[id] - 1) && checkPos(pos, pos[id] - 2)) {
-			pos[id]--;
-		} else if (pos[id] > 0 && ! checkPos(pos, pos[id] - 2)) {
-			pos[id] -= 2;
+		if (pond_pos[id] > 0 && ! checkPos(pond_pos, pond_pos[id] - 1) && checkPos(pond_pos, pond_pos[id] - 2)) {
+			pond_pos[id]--;
+			dead_count = 0;
+		} else if (pond_pos[id] > 0 && ! checkPos(pond_pos, pond_pos[id] - 2)) {
+			pond_pos[id] -= 2;
+			dead_count = 0;
 		}
-	    }
-
-	  /* Check if moved...  */
-
-	    if (pos[id] == (*(params_t*)(arg)).pond_pos[id]) {
-		dead_count++;
-	    } else {
-		(*(params_t*)(arg)).pond_pos[id] = pos[id];
-		dead_count = 0;
 	    }
 
 	    /* Unlock and signal completion.  */
@@ -98,17 +97,23 @@ int main() {
 
     /* Initialize stuff for pond problem. */
     int i;
-    params.pond_pos[POND_SIZE - 1] = 0;
+    pond_pos[POND_SIZE - 1] = 0;
+    for(i = 0; i < (POND_SIZE - 1); i++) {
+	 if ( i % 2 ) {
+	    	pond_pos[i] = (i + POND_SIZE)/2 + 1;
+	    } else {
+	    	pond_pos[i] = (i)/2 + 1;
+	    }
+    }
+
     for(i = 0; i < (POND_SIZE - 1); i++) {
 
             /* Change the parameter (I own it).  */    
             params.id = i;
             if ( i % 2 ) {
 	    	sprintf(params.frogger, "Female frogger [%d]", (i) / 2);
-	    	params.pond_pos[i] = (i + POND_SIZE)/2 + 1;
 	    } else {
 	    	sprintf(params.frogger, "Male   frogger [%d]", (i + 1) / 2);
-	    	params.pond_pos[i] = (i)/2 + 1;
 	    }
             
 	    /* Spawn a thread.  */
@@ -119,17 +124,18 @@ int main() {
             pthread_cond_wait (&params.done, &params.mutex);
     }
 
-    for(i = 0; i < (POND_SIZE - 1); i++) {
-            pthread_join(threads[i], NULL);
-    }
+    //for(i = 0; i < (POND_SIZE - 1); i++) {
+    //        pthread_join(threads[i], NULL);
+    //}
 
     /* Destroy all synchronization primitives.  */    
     pthread_mutex_destroy (&params.mutex);
     pthread_cond_destroy (&params.done);
 
-    for(i = 0; i < (POND_SIZE); i++) {
-	printf("UWOT[%d] = {%d}\n", i, params.pond_pos[i]);
+    printf("End state:\n");
+    for(i = 0; i < (POND_SIZE - 1); i++) {
+	printf("Frog[%d] = Position{%d}\n", i, pond_pos[i]);
     }
-	printf("  X.x -- Deadcount <%d> -- x.X\n", dead_count);
+    printf("Deadcount [%d]\n", dead_count);
     return (0);
 }
