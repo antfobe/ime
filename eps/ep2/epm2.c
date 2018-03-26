@@ -19,6 +19,10 @@ typedef struct params params_t;
 int dead_count = 0;
 int pond_pos[POND_SIZE];
 
+/* Function to search a specific value pos in 
+ * an array, returns -1 if pos is not found
+ * or abs(pos) if value pos is within array */
+
 int checkPos(int * array, int pos) {
 	for(int i = 0; i < sizeof(array)/sizeof(array[0]); i++) {
 		if(pos == array[i])
@@ -30,6 +34,7 @@ int checkPos(int * array, int pos) {
 void * pond(void * arg){
 
     int id;
+    char * frogger;
 //    int i;
     /* Lock.  */
     while(dead_count < DEADLOCK) {
@@ -37,6 +42,7 @@ void * pond(void * arg){
 
 	    /* Work.  */
 	    id = (*(params_t*)(arg)).id;
+	    frogger = (*(params_t*)(arg)).frogger;
 	    
 	    //printf("Hello from %d - {%s}\n", id, (*(params_t*)(arg)).frogger);
 	    /*printf("State: ");
@@ -49,32 +55,40 @@ void * pond(void * arg){
 	     * if a move was made */
 
 	    dead_count++;
-	    if (id <= POND_SIZE/2) {
-	    //printf("pre-changes [%d]/after-changes [%d] - DC = %d\n", (*(params_t*)(arg)).pond_pos[id], pos[id], dead_count);
-		if (pond_pos[id] < (POND_SIZE - 1) && ! checkPos(pond_pos, pond_pos[id] + 1) && checkPos(pond_pos, pond_pos[id] + 2)) {
+	    //printf("pre-changes [%d] / ", pond_pos[id]);
+	    printf("Position[%d]: Check[+1]={%d},Check[+2]{%d}; Check[-1]={%d},Check[-2]{%d}\n", pond_pos[id], checkPos(pond_pos, pond_pos[id] + 1), checkPos(pond_pos, pond_pos[id] + 2), checkPos(pond_pos, pond_pos[id] - 1), checkPos(pond_pos, pond_pos[id] - 2));
+
+	    /* Logic is as follows: if male frogger, move forwards, else backwards;
+	     * - priority will be giver to simple movement[+1|-1] rather than jump[+2|-2]
+	     * - if a move was made, reset dead_count;  */
+
+	    if (!strstr(frogger, "Female")) {
+		if (! checkPos(pond_pos, pond_pos[id] + 1) && checkPos(pond_pos, pond_pos[id] + 2)) {
 			pond_pos[id]++;
 			dead_count = 0;
-		} else if (pond_pos[id] < (POND_SIZE - 1) && ! checkPos(pond_pos, pond_pos[id] + 2)) {
+		} else if (! checkPos(pond_pos, pond_pos[id] + 2)) {
 			pond_pos[id] += 2;
 			dead_count = 0;
 		}
 
 	    } else {
-		if (pond_pos[id] > 0 && ! checkPos(pond_pos, pond_pos[id] - 1) && checkPos(pond_pos, pond_pos[id] - 2)) {
+		if (! checkPos(pond_pos, pond_pos[id] - 1) && checkPos(pond_pos, pond_pos[id] - 2)) {
 			pond_pos[id]--;
 			dead_count = 0;
-		} else if (pond_pos[id] > 0 && ! checkPos(pond_pos, pond_pos[id] - 2)) {
+		} else if (! checkPos(pond_pos, pond_pos[id] - 2)) {
 			pond_pos[id] -= 2;
 			dead_count = 0;
 		}
 	    }
+	    //printf("pos-changes [%d] - DC {%d}\n", pond_pos[id], dead_count);
 
 	    /* Unlock and signal completion.  */
 	    pthread_mutex_unlock(&(*(params_t*)(arg)).mutex);
 	    pthread_cond_signal (&(*(params_t*)(arg)).done);
     }
     /* After signalling `main`, the thread could actually
-    go on to do more work in parallel.  */
+     * go on to do more work in parallel. Thought lets not -
+     * returning NULL to finish thread  */
 
     return NULL;
 }
