@@ -10,6 +10,7 @@
 #define DEADLOCK 9001
 
 struct params {
+	pthread_cond_t done;
 	char frogger[128];
         int id;
 };
@@ -17,7 +18,6 @@ struct params {
 typedef struct params params_t;
 
 pthread_mutex_t mutex;
-pthread_cond_t done;
 
 int dead_count = 0;
 int pond_pos[POND_SIZE];
@@ -50,33 +50,35 @@ void * pond(void * arg){
 	    
 	    dead_count++;
 
-	    //printf("Position[%d]: Check[+1]={%d},Check[+2]{%d}; Check[-1]={%d},Check[-2]{%d}\n", pond_pos[id], checkPos(pond_pos, pond_pos[id] + 1), checkPos(pond_pos, pond_pos[id] + 2), checkPos(pond_pos, pond_pos[id] - 1), checkPos(pond_pos, pond_pos[id] - 2));
-
 	    /* Logic is as follows: if male frogger, move forwards, else backwards;
 	     * - priority will be given to simple movement[+1|-1] rather than jump[+2|-2]
 	     * - if a move was made, reset dead_count;  */
 
 	    if (!strstr(frogger, "Female")) {
 		if (pond_pos[id] < POND_SIZE && !checkPos(pond_pos, pond_pos[id] + 1) ) {
-			pond_pos[id]++;
+			printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] + 1);
+			pond_pos[id] = pond_pos[id] + 1;
 			dead_count = 0;
 		} else if (pond_pos[id] < (POND_SIZE - 1) && !checkPos(pond_pos, pond_pos[id] + 2)) {
-			pond_pos[id] += 2;
+			printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] + 2);
+			pond_pos[id] = pond_pos[id] + 2;
 			dead_count = 0;
 		}
 	    } else {
 		if (pond_pos[id] > 1 && !checkPos(pond_pos, pond_pos[id] - 1) ) {
-			pond_pos[id]--;
+			printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] - 1);
+			pond_pos[id] = pond_pos[id] - 1;
 			dead_count = 0;
 		} else if (pond_pos[id] > 2 && !checkPos(pond_pos, pond_pos[id] - 2)) {
-			pond_pos[id] -= 2;
+			printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] - 2);
+			pond_pos[id] = pond_pos[id] - 2;
 			dead_count = 0;
 		}
 	    }
 
 	    /* Unlock and signal completion.  */
 	    pthread_mutex_unlock(&mutex);
-	    pthread_cond_signal (&done);
+	    pthread_cond_signal (&(*(params_t*)(arg)).done);
     }
 
     /* After signalling `main`, the thread could actually
@@ -97,7 +99,7 @@ int main(int argc, char ** argv) {
     pthread_t threads[POND_SIZE - 1];
     params_t params;
     pthread_mutex_init (&mutex , NULL);
-    pthread_cond_init (&done, NULL);
+    pthread_cond_init (&params.done, NULL);
 
     /* Obtain a lock on the parameter.  */
     pthread_mutex_lock (&mutex);
@@ -128,14 +130,16 @@ int main(int argc, char ** argv) {
 
             /* Give up the lock, wait till thread is 'done',
             then reacquire the lock.  */
-            pthread_cond_wait (&done, &mutex);
+            pthread_cond_wait (&params.done, &mutex);
     }
+            //pthread_cond_wait (&params.done, &mutex);
 
-    //for(i = 0; i < (POND_SIZE - 1); i++) { pthread_join(threads[i], NULL); }
+    //while (dead_count < DEADLOCK) pthread_cond_wait (&params.done, &mutex);
+    //for(i = 0; i < (POND_SIZE - 1); i++) pthread_join(threads[i], NULL); 
 
     /* Destroy all synchronization primitives.  */    
     pthread_mutex_destroy (&mutex);
-    pthread_cond_destroy (&done);
+    pthread_cond_destroy (&params.done);
 
     printf("End state:\n");
     for(i = 0; i < (POND_SIZE - 1); i++) {
