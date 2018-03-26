@@ -5,6 +5,7 @@
 #include <math.h>
 
 #define POND_SIZE 7
+#define DEADLOCK 9001
 
 struct params {
         pthread_mutex_t mutex;
@@ -28,47 +29,55 @@ int checkPos(int * array, int pos) {
 
 void * pond(void * arg){
 
-    int id, * pos;
+    int id, i, * pos;
     /* Lock.  */
-    pthread_mutex_lock(&(*(params_t*)(arg)).mutex);
+    while(dead_count < DEADLOCK) {
+	    pthread_mutex_lock(&(*(params_t*)(arg)).mutex);
 
-    /* Work.  */
-    id = (*(params_t*)(arg)).id;
-    pos = (*(params_t*)(arg)).pond_pos;
-    
-    printf("Hello from %d - {%s}\n", id, (*(params_t*)(arg)).frogger);
-    
-    /* Try to move. */
-    if (id <= POND_SIZE/2) {
-	if (pos[id] < (POND_SIZE - 1) && ! checkPos(pos, pos[id] + 1) && checkPos(pos, pos[id] + 2)) {
-		pos[id]++;
-	} else if (pos[id] < (POND_SIZE - 1) && ! checkPos(pos, pos[id] + 2)) {
-		pos[id] += 2;
-	}
+	    /* Work.  */
+	    id = (*(params_t*)(arg)).id;
+	    pos = (*(params_t*)(arg)).pond_pos;
+	    
+	    //printf("Hello from %d - {%s}\n", id, (*(params_t*)(arg)).frogger);
+	    printf("State: ");
+	    for(i = 0; i < (POND_SIZE); i++) {
+		printf("[%d]{%d} ", i, pos[i]);
+	    }
+	    printf(" DeadCount=%d\n", dead_count);
+	    
+	    /* Try to move. */
+	    if (id <= POND_SIZE/2) {
+		if (pos[id] < (POND_SIZE - 1) && ! checkPos(pos, pos[id] + 1) && checkPos(pos, pos[id] + 2)) {
+			pos[id]++;
+		} else if (pos[id] < (POND_SIZE - 1) && ! checkPos(pos, pos[id] + 2)) {
+			pos[id] += 2;
+		}
 
-    } else {
-	if (pos[id] > 0 && ! checkPos(pos, pos[id] - 1) && checkPos(pos, pos[id] - 2)) {
-		pos[id]--;
-	} else if (pos[id] > 0 && ! checkPos(pos, pos[id] - 2)) {
-		pos[id] -= 2;
-	}
+	    } else {
+		if (pos[id] > 0 && ! checkPos(pos, pos[id] - 1) && checkPos(pos, pos[id] - 2)) {
+			pos[id]--;
+		} else if (pos[id] > 0 && ! checkPos(pos, pos[id] - 2)) {
+			pos[id] -= 2;
+		}
+	    }
+
+	  /* Check if moved...  */
+
+	    if (pos[id] == (*(params_t*)(arg)).pond_pos[id]) {
+		dead_count++;
+	    } else {
+		(*(params_t*)(arg)).pond_pos[id] = pos[id];
+		dead_count = 0;
+	    }
+
+	    /* Unlock and signal completion.  */
+	    pthread_mutex_unlock(&(*(params_t*)(arg)).mutex);
+	    pthread_cond_signal (&(*(params_t*)(arg)).done);
     }
-
-  /* Check if moved...  */
-
-    if (pos[id] == (*(params_t*)(arg)).pond_pos[id]) {
-    	dead_count++;
-    } else {
-	(*(params_t*)(arg)).pond_pos[id] = pos[id];
-	dead_count = 0;
-    }
-
-    /* Unlock and signal completion.  */
-    pthread_mutex_unlock(&(*(params_t*)(arg)).mutex);
-    pthread_cond_signal (&(*(params_t*)(arg)).done);
-
     /* After signalling `main`, the thread could actually
     go on to do more work in parallel.  */
+
+    return NULL;
 }
 
 
