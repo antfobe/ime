@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
-#define POND_SIZE 7
+#ifndef POND_SIZE
+	#define POND_SIZE 7
+#endif
+
 #define DEADLOCK 9001
 
 struct params {
@@ -19,16 +21,16 @@ typedef struct params params_t;
 int dead_count = 0;
 int pond_pos[POND_SIZE];
 
-/* Function to search a specific value pos in 
- * an array, returns -1 if pos is not found
- * or abs(pos) if value pos is within array */
+/* Function to check a specific value pos in 
+ * an array, returns 0 if pos is not found
+ * or 1 if value pos is within array */
 
 int checkPos(int * array, int pos) {
 	for(int i = 0; i < sizeof(array)/sizeof(array[0]); i++) {
 		if(pos == array[i])
-			return abs(pos);
+			return 1;
 	}
-	return -1;
+	return 0;
 }
 
 void * pond(void * arg){
@@ -44,34 +46,33 @@ void * pond(void * arg){
 	    id = (*(params_t*)(arg)).id;
 	    frogger = (*(params_t*)(arg)).frogger;
 	    
-	    printf("State: ");
+/*	    printf("State: ");
 	    for(i = 0; i < (POND_SIZE); i++) {
 		printf("[%d]{%d} ", i, pond_pos[i]);
 	    }
 	    printf(" DeadCount=%d\n", dead_count);
-	    
+*/	    
 	    dead_count++;
 
 	    //printf("Position[%d]: Check[+1]={%d},Check[+2]{%d}; Check[-1]={%d},Check[-2]{%d}\n", pond_pos[id], checkPos(pond_pos, pond_pos[id] + 1), checkPos(pond_pos, pond_pos[id] + 2), checkPos(pond_pos, pond_pos[id] - 1), checkPos(pond_pos, pond_pos[id] - 2));
 
 	    /* Logic is as follows: if male frogger, move forwards, else backwards;
-	     * - priority will be giver to simple movement[+1|-1] rather than jump[+2|-2]
+	     * - priority will be given to simple movement[+1|-1] rather than jump[+2|-2]
 	     * - if a move was made, reset dead_count;  */
 
 	    if (!strstr(frogger, "Female")) {
-		if (pond_pos[id] < POND_SIZE && checkPos(pond_pos, pond_pos[id] + 1) ) {
+		if (pond_pos[id] < POND_SIZE && !checkPos(pond_pos, pond_pos[id] + 1) ) {
 			pond_pos[id]++;
 			dead_count = 0;
-		} else if (pond_pos[id] < (POND_SIZE - 1) && checkPos(pond_pos, pond_pos[id] + 2)) {
+		} else if (pond_pos[id] < (POND_SIZE - 1) && !checkPos(pond_pos, pond_pos[id] + 2)) {
 			pond_pos[id] += 2;
 			dead_count = 0;
 		}
-
 	    } else {
-		if (pond_pos[id] > 1 && checkPos(pond_pos, pond_pos[id] - 1) ) {
+		if (pond_pos[id] > 1 && !checkPos(pond_pos, pond_pos[id] - 1) ) {
 			pond_pos[id]--;
 			dead_count = 0;
-		} else if (pond_pos[id] > 2 && checkPos(pond_pos, pond_pos[id] - 2)) {
+		} else if (pond_pos[id] > 2 && !checkPos(pond_pos, pond_pos[id] - 2)) {
 			pond_pos[id] -= 2;
 			dead_count = 0;
 		}
@@ -89,8 +90,8 @@ void * pond(void * arg){
 }
 
 
-int main() {
-
+int main(int argc, char ** argv) {
+    
     if(POND_SIZE % 2 == 0) {
 	printf("ERROR - POND_SIZE must be an odd number, exiting\n");
 	exit(EXIT_FAILURE);
