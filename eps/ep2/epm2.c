@@ -8,19 +8,19 @@
 #endif
 
 #define DEADLOCK 9001
-#define INPUTED  argv[1]
 
 struct params {
-        pthread_cond_t done;
 	char frogger[128];
         int id;
 };
 
 typedef struct params params_t;
 
+pthread_mutex_t mutex;
+pthread_cond_t done;
+
 int dead_count = 0;
 int pond_pos[POND_SIZE];
-pthread_mutex_t mutex;
 
 /* Function to check a specific value pos in 
  * an array, returns 0 if pos is not found
@@ -48,12 +48,6 @@ void * pond(void * arg){
 	    id = (*(params_t*)(arg)).id;
 	    frogger = (*(params_t*)(arg)).frogger;
 	    
-/*	    printf("State: ");
-	    for(i = 0; i < (POND_SIZE); i++) {
-		printf("[%d]{%d} ", i, pond_pos[i]);
-	    }
-	    printf(" DeadCount=%d\n", dead_count);
-*/	    
 	    dead_count++;
 
 	    //printf("Position[%d]: Check[+1]={%d},Check[+2]{%d}; Check[-1]={%d},Check[-2]{%d}\n", pond_pos[id], checkPos(pond_pos, pond_pos[id] + 1), checkPos(pond_pos, pond_pos[id] + 2), checkPos(pond_pos, pond_pos[id] - 1), checkPos(pond_pos, pond_pos[id] - 2));
@@ -82,7 +76,7 @@ void * pond(void * arg){
 
 	    /* Unlock and signal completion.  */
 	    pthread_mutex_unlock(&mutex);
-	    pthread_cond_signal (&(*(params_t*)(arg)).done);
+	    pthread_cond_signal (&done);
     }
 
     /* After signalling `main`, the thread could actually
@@ -94,7 +88,7 @@ void * pond(void * arg){
 
 
 int main(int argc, char ** argv) {
-
+    
     if(POND_SIZE % 2 == 0) {
 	printf("ERROR - POND_SIZE must be an odd number, exiting\n");
 	exit(EXIT_FAILURE);
@@ -103,7 +97,7 @@ int main(int argc, char ** argv) {
     pthread_t threads[POND_SIZE - 1];
     params_t params;
     pthread_mutex_init (&mutex , NULL);
-    pthread_cond_init (&params.done, NULL);
+    pthread_cond_init (&done, NULL);
 
     /* Obtain a lock on the parameter.  */
     pthread_mutex_lock (&mutex);
@@ -134,14 +128,14 @@ int main(int argc, char ** argv) {
 
             /* Give up the lock, wait till thread is 'done',
             then reacquire the lock.  */
-            pthread_cond_wait (&params.done, &mutex);
+            pthread_cond_wait (&done, &mutex);
     }
 
     //for(i = 0; i < (POND_SIZE - 1); i++) { pthread_join(threads[i], NULL); }
 
     /* Destroy all synchronization primitives.  */    
     pthread_mutex_destroy (&mutex);
-    pthread_cond_destroy (&params.done);
+    pthread_cond_destroy (&done);
 
     printf("End state:\n");
     for(i = 0; i < (POND_SIZE - 1); i++) {
