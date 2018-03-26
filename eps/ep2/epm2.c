@@ -37,9 +37,10 @@ void * pond(void * arg){
 
     int id;
     char * frogger;
-    int i;
-    /* Lock.  */
+//    int i;
+    
     while(dead_count < DEADLOCK) {
+    	    /* Lock.  */
 	    pthread_mutex_lock(&(*(params_t*)(arg)).mutex);
 
 	    /* Work.  */
@@ -82,6 +83,7 @@ void * pond(void * arg){
 	    pthread_mutex_unlock(&(*(params_t*)(arg)).mutex);
 	    pthread_cond_signal (&(*(params_t*)(arg)).done);
     }
+
     /* After signalling `main`, the thread could actually
      * go on to do more work in parallel. Thought lets not -
      * returning NULL to finish thread  */
