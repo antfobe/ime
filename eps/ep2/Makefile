@@ -15,4 +15,3 @@ ep2: epm2.c
 
 clean:
 	-rm -f epm2
-
