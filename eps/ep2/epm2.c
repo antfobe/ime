@@ -56,21 +56,21 @@ void * pond(void * arg){
 
 	    if (!strstr(frogger, "Female")) {
 		if (pond_pos[id] < POND_SIZE && !checkPos(pond_pos, pond_pos[id] + 1) ) {
-			printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] + 1);
+			//printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] + 1);
 			pond_pos[id] = pond_pos[id] + 1;
 			dead_count = 0;
 		} else if (pond_pos[id] < (POND_SIZE - 1) && !checkPos(pond_pos, pond_pos[id] + 2)) {
-			printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] + 2);
+			//printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] + 2);
 			pond_pos[id] = pond_pos[id] + 2;
 			dead_count = 0;
 		}
 	    } else {
 		if (pond_pos[id] > 1 && !checkPos(pond_pos, pond_pos[id] - 1) ) {
-			printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] - 1);
+			//printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] - 1);
 			pond_pos[id] = pond_pos[id] - 1;
 			dead_count = 0;
 		} else if (pond_pos[id] > 2 && !checkPos(pond_pos, pond_pos[id] - 2)) {
-			printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] - 2);
+			//printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] - 2);
 			pond_pos[id] = pond_pos[id] - 2;
 			dead_count = 0;
 		}
