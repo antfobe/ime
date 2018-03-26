@@ -38,7 +38,6 @@ void * pond(void * arg){
 
     int id;
     char * frogger;
-//    int i;
     
     while(dead_count < DEADLOCK) {
     	    /* Lock.  */
