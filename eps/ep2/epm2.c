@@ -102,7 +102,7 @@ int main(int argc, char ** argv) {
     pthread_cond_init (&params.done, NULL);
 
     /* Obtain a lock on the parameter.  */
-    //pthread_mutex_lock (&mutex);
+    pthread_mutex_lock (&mutex);
 
     /* Initialize stuff for pond problem. */
     int i;
@@ -116,7 +116,6 @@ int main(int argc, char ** argv) {
     }
 
     for(i = 0; i < (POND_SIZE - 1); i++) {
-    pthread_mutex_lock (&mutex);
 
             /* Change the parameter (I own it).  */    
             params.id = i;
@@ -131,13 +130,12 @@ int main(int argc, char ** argv) {
 
             /* Give up the lock, wait till thread is 'done',
             then reacquire the lock.  */
-            //pthread_cond_wait (&params.done, &mutex);
-    pthread_mutex_unlock(&mutex);
+            pthread_cond_wait (&params.done, &mutex);
     }
             //pthread_cond_wait (&params.done, &mutex);
 
     //while (dead_count < DEADLOCK) pthread_cond_wait (&params.done, &mutex);
-    for(i = 0; i < (POND_SIZE - 1); i++) pthread_join(threads[i], NULL); 
+    //for(i = 0; i < (POND_SIZE - 1); i++) pthread_join(threads[i], NULL); 
 
     /* Destroy all synchronization primitives.  */    
     pthread_mutex_destroy (&mutex);
