@@ -21,7 +21,4 @@ Referencias:
 
 	- https://stackoverflow.com/questions/10879420/using-of-shared-variable-by-10-pthreads
 
-Alunos 	JEAN FOBE
-	NUSP 7630573
-	
-	EUGENIO GIMENES
+Alunos 	JEAN FOBE, EUGENIO GIMENES
