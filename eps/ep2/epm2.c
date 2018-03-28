@@ -48,6 +48,9 @@ void * pond(void * arg){
     	    /* Lock.  */
 	    pthread_mutex_lock(&mutex);
 
+	    /* Signal done to main. */
+	    pthread_cond_signal (&(*(params_t*)(arg)).done);
+
 	    dead_count++;
 
 	    /* Logic is as follows: if male frogger, move forwards, else backwards;
@@ -76,9 +79,8 @@ void * pond(void * arg){
 		}
 	    }
 
-	    /* Unlock and signal completion.  */
+	    /* Unlock.  */
 	    pthread_mutex_unlock(&mutex);
-	    pthread_cond_signal (&(*(params_t*)(arg)).done);
     }
 
     /* After signalling `main`, the thread could actually

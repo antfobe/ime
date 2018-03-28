@@ -16,6 +16,9 @@ Mini Exercício Programa: Verificação usando Pthreads. N rãs são colocadas e
 	gcc -o epm2 epm2.c -O0 -Wall -std=c99 -lpthread -lm -DPOND_SIZE=5
 	- Build & run: apenas rode o comando 'make' do diretório do exercício programa
 	 e o programa será compilado e executado para 7 pedras.
+	- Observação: há uma condição de corrida que de vez em quando aparece na
+	execução que não fui capaz de compreender, fazendo com que dois ou mais sapos
+	 ocupem a mesma posição.
 
 Referencias:
 
