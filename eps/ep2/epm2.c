@@ -40,13 +40,14 @@ void * pond(void * arg){
     char * frogger;
     
     while(dead_count < DEADLOCK) {
-    	    /* Lock.  */
-	    pthread_mutex_lock(&mutex);
-
+	    
 	    /* Work.  */
 	    id = (*(params_t*)(arg)).id;
 	    frogger = (*(params_t*)(arg)).frogger;
 	    
+    	    /* Lock.  */
+	    pthread_mutex_lock(&mutex);
+
 	    dead_count++;
 
 	    /* Logic is as follows: if male frogger, move forwards, else backwards;
