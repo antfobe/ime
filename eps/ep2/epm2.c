@@ -184,7 +184,7 @@ int main(int argc, char ** argv) {
 				working += (pond_pos[i] > (POND_SIZE + 1) / 2);
 			}
 		}
-		if((double)(rand() % MAX_TRIES) > (double)(0.75 * MAX_TRIES)) {
+		if((double)(rand() % MAX_TRIES) > (double)(0.95 * MAX_TRIES)) {
 
 			/* If at first not deterministic random 
 			 * behavior, force determinism. */
