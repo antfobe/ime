@@ -6,16 +6,21 @@ Mini Exercício Programa: Verificação usando Pthreads. N rãs são colocadas e
 	- Os programa feito, epm2.c funciona inicializando um número M + N de threads
 	 e um array de tamanho M + N + 1, de forma a satisfazer a condição inicial do
 	 problema 'frogpuzzle'. Foi usado um número de iterações máxima para a 
-	validação da situação do array pelas threads de 9001, na variável global
+	validação da situação do array pelas threads de 128, na variável global
 	dead_count. Se houver alguma mudança no array, dead_count é resetado a 0.
-	- Atingido o número maximo de iterações as threads são paradas e programa 
-	conclui, informando o estado final das posições dos sapos no array e o número
-	 de iterações executadas.
+	Passado esse número, dead_count e o array são resetados na main com a variavel
+	 tries sendo incrementada.
+	- Atingido o número maximo de tentativas, tries, as threads são paradas e 
+	programa conclui, informando o estado final das posições dos sapos no array e 
+	o número de tentativas executadas.
 	- O número de pedras para o programa pode ser especificado na compilação na
 	variável POND_SIZE. Exemplo, para 5 pedras:
 	gcc -o epm2 epm2.c -O0 -Wall -std=c99 -lpthread -lm -DPOND_SIZE=5
 	- Build & run: apenas rode o comando 'make' do diretório do exercício programa
 	 e o programa será compilado e executado para 7 pedras.
+	- ATENCAO: para habilitar print das posições e estado do problema na main para
+	 cada iteração do loop, compile adicionando a flag -DDEBUG, ou rode make
+	debug.
 	- Observação: há uma condição de corrida que de vez em quando aparece na
 	execução que não fui capaz de compreender, fazendo com que dois ou mais sapos
 	 ocupem a mesma posição.

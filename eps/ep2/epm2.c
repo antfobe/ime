@@ -2,13 +2,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+#include <time.h>
 
 #ifndef POND_SIZE
 	#define POND_SIZE 7
 #endif
 
-#define DEADLOCK 9001
+#define DEADLOCK 128
+#define MAX_TRIES 256
+#define ms10 10000000L
 
 struct params {
 	pthread_cond_t done;
@@ -49,7 +51,8 @@ void * pond(void * arg){
     frogger = (*(params_t*)(arg)).frogger;
 	    
     /* Signal done to main. */
-    pthread_cond_signal (&(*(params_t*)(arg)).done);
+    //pthread_cond_signal (&(*(params_t*)(arg)).done);
+    nanosleep((const struct timespec[]){{0, (dead_count % POND_SIZE + id) * ms10}}, NULL);
 	    
     while(1) {
 	    
@@ -64,21 +67,18 @@ void * pond(void * arg){
 
 	    if (!strstr(frogger, "Female")) {
 		if (pond_pos[id] < POND_SIZE && !checkPos(pond_pos, pond_pos[id] + 1) ) {
-			//printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] + 1);
+			/*printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] + 1);*/
 			pond_pos[id] = pond_pos[id] + 1;
 			dead_count = 0;
 		} else if (pond_pos[id] < (POND_SIZE - 1) && !checkPos(pond_pos, pond_pos[id] + 2)) {
-			//printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] + 2);
 			pond_pos[id] = pond_pos[id] + 2;
 			dead_count = 0;
 		}
 	    } else {
 		if (pond_pos[id] > 1 && !checkPos(pond_pos, pond_pos[id] - 1) ) {
-			//printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] - 1);
 			pond_pos[id] = pond_pos[id] - 1;
 			dead_count = 0;
 		} else if (pond_pos[id] > 2 && !checkPos(pond_pos, pond_pos[id] - 2)) {
-			//printf("%s Moved: [%d]->[%d]\n", frogger, pond_pos[id], pond_pos[id] - 2);
 			pond_pos[id] = pond_pos[id] - 2;
 			dead_count = 0;
 		}
@@ -88,7 +88,7 @@ void * pond(void * arg){
 	    pthread_mutex_unlock(&mutex);
 
 	    /* Sleep a bit. */
-	    sleep(dead_count % POND_SIZE);
+	    nanosleep((const struct timespec[]){{0, (dead_count % POND_SIZE) * ms10}}, NULL);
     }
 
     /* After signalling `main`, the thread could actually
@@ -116,7 +116,7 @@ int main(int argc, char ** argv) {
 
     /* Initialize stuff for pond problem. */
     int i, tries = 0;
-    int * solution;
+    int solution[POND_SIZE];
     pond_pos[POND_SIZE - 1] = 0;
     for(i = 0; i < (POND_SIZE - 1); i++) {
 	 if ( i % 2 ) {
@@ -141,29 +141,27 @@ int main(int argc, char ** argv) {
 
             /* Give up the lock, wait till thread is 'done',
             then reacquire the lock.  */
-            pthread_cond_wait (&params.done, &mutex);
-    }
             //pthread_cond_wait (&params.done, &mutex);
-
-    //while (dead_count < DEADLOCK) pthread_cond_wait (&params.done, &mutex);
-    //for(i = 0; i < (POND_SIZE - 1); i++) pthread_join(threads[i], NULL); 
+    }
+    	/* Unlock... */
+	pthread_mutex_unlock(&mutex);
 
     /* Loop until acceptable solution. */
     int working = 1;
-    while(working) {
+    while(working && tries <= MAX_TRIES) {
 	
-    	    printf("\n\t!!DONE!!\n");
-
 	/*Sleep a bit... */
-	sleep(1);
+	nanosleep((const struct timespec[]){ {0, 500 * ms10} }, NULL);
 
 	/* Lock. */
 	pthread_mutex_lock(&mutex);
 
-
+	/** DEBUGGING **/
+#ifdef DEBUG
     	for(i = 0; i < (POND_SIZE - 1); i++) {
 		printf("[%d]{%d} ", i, pond_pos[i]);
-	}	printf("\n");
+	}	printf(" -- DEADCOUNT [%d]/TRY [%d]\n", dead_count, tries);
+#endif 
 
 	/* Check if solution, else reset problem (frog postions) */
 	if(dead_count >= DEADLOCK) {
@@ -195,28 +193,34 @@ int main(int argc, char ** argv) {
 			working = 0;
 
 			/* Get solution, just in case... */
-			solution = malloc(sizeof(pond_pos));
 			memcpy(solution, pond_pos, sizeof(pond_pos));
 		}
+
+	/* Reset dead_count. */
+	dead_count = 0;
+
 	}
 	
-	/* Reset dead_count & Unlock. */
-	dead_count = 0;
+	/* & Unlock. */
 	pthread_mutex_unlock(&mutex);
     }
 
     /* Destroy all synchronization primitives.  */    
     pthread_mutex_destroy (&mutex);
-    pthread_cond_destroy (&params.done);
+    //pthread_cond_destroy (&params.done);
 
     printf("End state:\n");
-    for(i = 0; i < (POND_SIZE - 1); i++) {
-	if (i%2) {
-		printf("Female frog id[%d],\tPosition{%d}\n", i, solution[i]);
-	} else {
-		printf("Male frog   id[%d],\tPosition{%d}\n", i, solution[i]);
-	}
+    if (tries >= MAX_TRIES) {
+	    printf("NO SOLUTION REACHED - STOPPING AFTER [%d] TRIES", tries);
+    } else {
+	    for(i = 0; i < (POND_SIZE - 1); i++) {
+		if (i%2) {
+			printf("Female frog id[%d],\tPosition{%d}\n", i, solution[i]);
+		} else {
+			printf("Male frog   id[%d],\tPosition{%d}\n", i, solution[i]);
+		}
+	    }
+	    printf("\nTotal amount of tries: [%d]\n", tries);
     }
-    printf("\nTotal amount of tries: [%d]\n", tries);
     return (0);
 }
