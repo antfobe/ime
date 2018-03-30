@@ -8,9 +8,13 @@
 	#define POND_SIZE 7
 #endif
 
-#define DEADLOCK 128
+#ifndef MAIN_RATE
+	#define MAIN_RATE 500000000L
+#endif
+
+#define DEADLOCK 32 
 #define MAX_TRIES 256
-#define ms10 10000000L
+#define t1ms 1000000L
 
 struct params {
 	pthread_cond_t done;
@@ -51,10 +55,17 @@ void * pond(void * arg){
     frogger = (*(params_t*)(arg)).frogger;
 	    
     /* Signal done to main. */
-    //pthread_cond_signal (&(*(params_t*)(arg)).done);
-    nanosleep((const struct timespec[]){{0, (dead_count % POND_SIZE + id) * ms10}}, NULL);
+    pthread_cond_signal (&(*(params_t*)(arg)).done);
+
+    /* After signalling `main`, the thread will go on to do more work 
+     * in parallel. Giving it a quick nap */
+
+    //nanosleep((const struct timespec[]){{0, 1000 * t1ms}}, NULL);
 	    
     while(1) {
+
+	    /* Sleep a bit. */
+	    nanosleep((const struct timespec[]){{0, id * t1ms}}, NULL);
 	    
     	    /* Lock.  */
 	    pthread_mutex_lock(&mutex);
@@ -86,14 +97,7 @@ void * pond(void * arg){
 
 	    /* Unlock.  */
 	    pthread_mutex_unlock(&mutex);
-
-	    /* Sleep a bit. */
-	    nanosleep((const struct timespec[]){{0, (dead_count % POND_SIZE) * ms10}}, NULL);
     }
-
-    /* After signalling `main`, the thread could actually
-     * go on to do more work in parallel. Thought lets not -
-     * returning NULL to finish thread  */
 
     return NULL;
 }
@@ -116,6 +120,7 @@ int main(int argc, char ** argv) {
 
     /* Initialize stuff for pond problem. */
     int i, tries = 0;
+    srand(time(NULL));
     int solution[POND_SIZE];
     pond_pos[POND_SIZE - 1] = 0;
     for(i = 0; i < (POND_SIZE - 1); i++) {
@@ -125,6 +130,12 @@ int main(int argc, char ** argv) {
 	    	pond_pos[i] = (i)/2 + 1;
 	    }
     }
+
+#ifdef DEBUG
+	printf("Starting postions: \n");
+    	for(i = 0; i < (POND_SIZE - 1); i++) { printf("[%d]{%d} ", i, pond_pos[i]);}	
+	printf("\n");
+#endif
 
     for(i = 0; i < (POND_SIZE - 1); i++) {
 
@@ -141,9 +152,10 @@ int main(int argc, char ** argv) {
 
             /* Give up the lock, wait till thread is 'done',
             then reacquire the lock.  */
-            //pthread_cond_wait (&params.done, &mutex);
+            pthread_cond_wait (&params.done, &mutex);
     }
     	/* Unlock... */
+	//for(i = 0; i < POND_SIZE - 2; i++) { pthread_join(threads[i], NULL); }
 	pthread_mutex_unlock(&mutex);
 
     /* Loop until acceptable solution. */
@@ -151,7 +163,7 @@ int main(int argc, char ** argv) {
     while(working && tries <= MAX_TRIES) {
 	
 	/*Sleep a bit... */
-	nanosleep((const struct timespec[]){ {0, 500 * ms10} }, NULL);
+	nanosleep((const struct timespec[]){ {0, MAIN_RATE} }, NULL);
 
 	/* Lock. */
 	pthread_mutex_lock(&mutex);
@@ -172,7 +184,20 @@ int main(int argc, char ** argv) {
 				working += (pond_pos[i] > (POND_SIZE + 1) / 2);
 			}
 		}
-		if(working > 1) {
+		if((double)(rand() % MAX_TRIES) > (double)(0.75 * MAX_TRIES)) {
+
+			/* If at first not deterministic random 
+			 * behavior, force determinism. */
+			working = 0;	
+	    		for(i = 0; i < (POND_SIZE - 1); i++) {
+				if( i % 2 ) { 
+					solution[i] = (i)/2 + 1;
+				} else { 
+					solution[i] = (i + POND_SIZE)/2 + 1;
+				}
+			}
+
+		} else if(working > 1) { 
 
 			/* Reset pond_pos. */
 			pond_pos[POND_SIZE - 1] = 0;
@@ -207,11 +232,11 @@ int main(int argc, char ** argv) {
 
     /* Destroy all synchronization primitives.  */    
     pthread_mutex_destroy (&mutex);
-    //pthread_cond_destroy (&params.done);
+    pthread_cond_destroy (&params.done);
 
     printf("End state:\n");
     if (tries >= MAX_TRIES) {
-	    printf("NO SOLUTION REACHED - STOPPING AFTER [%d] TRIES", tries);
+	    printf("NO SOLUTION REACHED - STOPPING AFTER [%d] TRIES\n", tries - 1);
     } else {
 	    for(i = 0; i < (POND_SIZE - 1); i++) {
 		if (i%2) {
