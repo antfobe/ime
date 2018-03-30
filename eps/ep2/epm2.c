@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #ifndef POND_SIZE
 	#define POND_SIZE 7
@@ -39,17 +40,21 @@ void * pond(void * arg){
     int id;
     char * frogger;
     
-    while(dead_count < DEADLOCK) {
+    /* Thread infinite loop, threads will try to update pond_pos array, 
+     * if a deadlock is reached dead_count will be incremented 
+     * non-stop */
+
+    /* Work.  */
+    id = (*(params_t*)(arg)).id;
+    frogger = (*(params_t*)(arg)).frogger;
 	    
-	    /* Work.  */
-	    id = (*(params_t*)(arg)).id;
-	    frogger = (*(params_t*)(arg)).frogger;
+    /* Signal done to main. */
+    pthread_cond_signal (&(*(params_t*)(arg)).done);
+	    
+    while(1) {
 	    
     	    /* Lock.  */
 	    pthread_mutex_lock(&mutex);
-
-	    /* Signal done to main. */
-	    pthread_cond_signal (&(*(params_t*)(arg)).done);
 
 	    dead_count++;
 
@@ -81,6 +86,9 @@ void * pond(void * arg){
 
 	    /* Unlock.  */
 	    pthread_mutex_unlock(&mutex);
+
+	    /* Sleep a bit. */
+	    sleep(dead_count % POND_SIZE);
     }
 
     /* After signalling `main`, the thread could actually
@@ -107,7 +115,8 @@ int main(int argc, char ** argv) {
     pthread_mutex_lock (&mutex);
 
     /* Initialize stuff for pond problem. */
-    int i;
+    int i, tries = 0;
+    int * solution;
     pond_pos[POND_SIZE - 1] = 0;
     for(i = 0; i < (POND_SIZE - 1); i++) {
 	 if ( i % 2 ) {
@@ -139,6 +148,63 @@ int main(int argc, char ** argv) {
     //while (dead_count < DEADLOCK) pthread_cond_wait (&params.done, &mutex);
     //for(i = 0; i < (POND_SIZE - 1); i++) pthread_join(threads[i], NULL); 
 
+    /* Loop until acceptable solution. */
+    int working = 1;
+    while(working) {
+	
+    	    printf("\n\t!!DONE!!\n");
+
+	/*Sleep a bit... */
+	sleep(1);
+
+	/* Lock. */
+	pthread_mutex_lock(&mutex);
+
+
+    	for(i = 0; i < (POND_SIZE - 1); i++) {
+		printf("[%d]{%d} ", i, pond_pos[i]);
+	}	printf("\n");
+
+	/* Check if solution, else reset problem (frog postions) */
+	if(dead_count >= DEADLOCK) {
+    		for(i = 0; i < (POND_SIZE - 1); i++) {
+			if (i%2) {
+				working += (pond_pos[i] < (POND_SIZE + 1) / 2);
+			} else {
+				working += (pond_pos[i] > (POND_SIZE + 1) / 2);
+			}
+		}
+		if(working > 1) {
+
+			/* Reset pond_pos. */
+			pond_pos[POND_SIZE - 1] = 0;
+			for(i = 0; i < (POND_SIZE - 1); i++) {
+			     if ( i % 2 ) {
+				pond_pos[i] = (i + POND_SIZE)/2 + 1;
+				} else {
+				pond_pos[i] = (i)/2 + 1;
+				}
+			}
+
+			/* Increment incorrect solution count */
+			tries++;
+
+		} else {
+			
+			/* Arrived at solution, exit loop. */
+			working = 0;
+
+			/* Get solution, just in case... */
+			solution = malloc(sizeof(pond_pos));
+			memcpy(solution, pond_pos, sizeof(pond_pos));
+		}
+	}
+	
+	/* Reset dead_count & Unlock. */
+	dead_count = 0;
+	pthread_mutex_unlock(&mutex);
+    }
+
     /* Destroy all synchronization primitives.  */    
     pthread_mutex_destroy (&mutex);
     pthread_cond_destroy (&params.done);
@@ -146,11 +212,11 @@ int main(int argc, char ** argv) {
     printf("End state:\n");
     for(i = 0; i < (POND_SIZE - 1); i++) {
 	if (i%2) {
-		printf("Female frog id[%d],\tPosition{%d}\n", i, pond_pos[i]);
+		printf("Female frog id[%d],\tPosition{%d}\n", i, solution[i]);
 	} else {
-		printf("Male frog   id[%d],\tPosition{%d}\n", i, pond_pos[i]);
+		printf("Male frog   id[%d],\tPosition{%d}\n", i, solution[i]);
 	}
     }
-    printf("Deadcount [%d]\n", dead_count);
+    printf("\nTotal amount of tries: [%d]\n", tries);
     return (0);
 }
