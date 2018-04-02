@@ -52,3 +52,5 @@ Output da execução no meu pc:
 	2097152  thread context switches in 419974994ns (200.3ns/ctxsw)
 
 Alunos 	JEAN FOBE, EUGENIO GIMENES
+
+Agradecimentos à BENOIT SIGOURE (TSUNA), pelo código de benchmark.
