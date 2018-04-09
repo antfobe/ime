@@ -25,23 +25,29 @@ Desafio de Programação: Contenção
 	(Intel i3), não foi observado o efeito de otimização esperado dos 'if's
 	em encadeados, ou seja só houve melhoria de performance entre o caso 
 	sem 'if'. Curiosamente, também não houve perda de performance para o 
-	acréscimo de dois ou mais 'if's. 
+	acréscimo de dois ou mais 'if's.
+	- Pela demora da execução para vetores grandes (>45 min), não foram
+	feitos testes com vetores de tamanho maior que 2^28. 
 	
  
 Alguns resultados:
 	
-	#ifs	|	array size (bits)	|	#threads	|	avg5(time) (s)	
+	#ifs	|	array size (sizeof int)	|	#threads	|	avg5(time) (s)	
 	--------|-------------------------------|-----------------------|-------------------------
-	0	|			2	|		2	|		
-	0	|			
-	0	|
-	5	|
-	5	|
-	5	|
-	5	|
-	9	|
-	9	|
-	9	|
+	0	|		2		|	2		|	0.000003	
+	0	|		16777216	|	128		|	2.301797
+	0	|		268435456	|	1024		|	33.707113
+	5	|		2		|	2		|	0.000003
+	5	|		16777216	|	128		|	0.034981
+	5	|		16777216	|	1024		|	0.041553
+	5	|		268435456	|	1024		|	0.566707
+	9	|		2		|	2		|	0.000002
+	9	|		16777216	|	128		|	0.035693
+	9	|		268435456	|	1024		|	0.555212
+
+	- Importante notar que mesmo o enunciado do desafio pedindo relevância 
+	estatística, dada a natureza do problema a massa de dados obtida é
+	pequena e os dados carregam um 'bias' de terem sido obtidos no mesmo
+	computador. Os resultados são coerentes mas não podem ser generalizados.
 
 Alunos 	JEAN FOBE
-
