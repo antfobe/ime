@@ -7,7 +7,7 @@ C1="
 
 #define IF if (v[i] > max)
 
-#define NUM_EXEC 5
+#define NUM_EXEC 8
 
 static void populate_vector(size_t N, int v[])
 {
@@ -92,7 +92,8 @@ int main(int argc, char* argv[])
     for (i = 0; i < NUM_EXEC; ++i)
         times[i] = contention_test(N, T, vector);
     
-    fprintf(stdout, \" Average of %d executions: %lf s\\n\", NUM_EXEC, avg(NUM_EXEC, times));
+    //fprintf(stdout, \" Average of %d executions: %lf s\\n\", NUM_EXEC, avg(NUM_EXEC, times));
+    fprintf(stdout, \"%lf \\n\", avg(NUM_EXEC, times));
     
     free(vector);
     return 0;    
@@ -120,8 +121,9 @@ generate_c() {
 run_for_if() {
     #for ((num_ifs=0; num_ifs<9; num_ifs++)); do
     for num_ifs in $(seq 0 9); do
-        echo "Number of ifs: $num_ifs"
-        generate_c $num_ifs "temp.c"
+	    echo -n "$1, $2, $((2 **$num_ifs)), "
+        #generate_c $num_ifs "temp.c"
+	generate_c $((2 ** $num_ifs)) "temp.c"
         gcc -Wall -O0 -std=c99 -fopenmp -o temp temp.c
         ./temp $1 $2
     done
@@ -131,5 +133,3 @@ if [ -z "$SIZE_VECTOR" ] || [ -z "$NUM_THREADS" ]; then
     echo "Usage: ${0##*/} <vector_size> <num_threads>"
     exit
 fi
-
-run_for_if $SIZE_VECTOR $NUM_THREADS
