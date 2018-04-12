@@ -6,8 +6,8 @@ YEL='\033[1;33m';
 BLU='\033[1;34m';
 NC='\033[0m';
 
-## Initialize .csv header
-echo "SIZE_VECTOR, NUM_THREADS, NUM_IFS, AVG5_TIME(s)" >> contention_out.csv;
+## Initialize .csv header & destroy/create file
+echo "SIZE_VECTOR, NUM_THREADS, NUM_IFS, AVG5_TIME(s)" > contention_out.csv;
 
 ## Outer loop, iterate over array sizes up to 2^28;
 for j in $(seq 0 28) ; do

@@ -5,7 +5,7 @@
 
 #define IF if (v[i] > max)
 
-#define NUM_EXEC 5
+#define NUM_EXEC 8
 
 static void populate_vector(size_t N, int v[])
 {
@@ -31,7 +31,7 @@ static double contention_test(size_t N, int T, const int v[])
     for (i = 0; i < N; ++i)
     {
         /*--*/
-IF IF IF IF IF IF IF IF IF 
+IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF IF 
         /*--*/
         {
             omp_set_lock(&mutex);
@@ -88,7 +88,8 @@ int main(int argc, char* argv[])
     for (i = 0; i < NUM_EXEC; ++i)
         times[i] = contention_test(N, T, vector);
     
-    fprintf(stdout, " Average of %d executions: %lf s\n", NUM_EXEC, avg(NUM_EXEC, times));
+    //fprintf(stdout, " Average of %d executions: %lf s\n", NUM_EXEC, avg(NUM_EXEC, times));
+    fprintf(stdout, "%lf \n", avg(NUM_EXEC, times));
     
     free(vector);
     return 0;    

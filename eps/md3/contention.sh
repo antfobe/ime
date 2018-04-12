@@ -133,3 +133,5 @@ if [ -z "$SIZE_VECTOR" ] || [ -z "$NUM_THREADS" ]; then
     echo "Usage: ${0##*/} <vector_size> <num_threads>"
     exit
 fi
+
+run_for_if $SIZE_VECTOR $NUM_THREADS
