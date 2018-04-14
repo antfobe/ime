@@ -104,6 +104,7 @@ int main(int argc, char* argv[])
 
 SIZE_VECTOR=$1
 NUM_THREADS=$2
+MAX_POW2IF=$3
 
 generate_ifs() {
     c_ifs=""
@@ -120,8 +121,9 @@ generate_c() {
 
 run_for_if() {
     #for ((num_ifs=0; num_ifs<9; num_ifs++)); do
-    for num_ifs in $(seq 0 9); do
-	    echo -n "$1, $2, $((2 **$num_ifs)), "
+    for num_ifs in $(seq 0 $MAX_POW2IF); do
+	    #echo -n "$1, $2, $((2 **$num_ifs)), "
+	    echo -n "$1, $2, $num_ifs, "
         #generate_c $num_ifs "temp.c"
 	generate_c $((2 ** $num_ifs)) "temp.c"
         gcc -Wall -O0 -std=c99 -fopenmp -o temp temp.c
