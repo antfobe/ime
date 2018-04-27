@@ -23,10 +23,36 @@
 \problem*{1}
 \question{Seja $L \subseteq \Sigma^*$  uma linguagem regular.  Mostre que $L ^R$ também é regular, descrevendo como construir um autômato finito não determinístico para reconhecer $L^R$
 , a partir de um autômato finito (determinístico ou não determinístico)
-que reconhece $L$.
-}\\
+que reconhece $L$.}\\
 
 \problem*{2}
-\question{Seja}
+\question{Seja $\Sigma_3 = \left \{
+				\begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix},
+				\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix},
+				\begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix},\ ...\ ,
+				\begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix}
+				\right \}$.\\
+		 $\Sigma_3$ contém todas as colunas de tamanho 3 formadas de 0s e 1s. Uma palavra de símbolos de $\Sigma_3$ é composta de 3 linhas de '0's e '1's. Considere cada linha como um número binário e seja $L = \{\omega \in \Sigma^3 :$ a terceira linha de $\omega$ é a soma das suas duas primeiras linhas $\}$.\\
+		 Por exemplo,\\
+		 \begin{changemargin}{1cm}{1cm} 
+		 	$\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
+		  	\begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}
+		  	\begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix} \in L, \quad mas \quad 
+		  	\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
+		  	\begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix} \not\in L$
+		 \end{changemargin}
+		 Mostre que L é uma linguagem regular.\\
+		 (Sugestão: Mostre que $L^R$ é uma linguagem regular. Depois, utilize o resultado do exercício anterior.)}
+		 
+\problem*{3}
+\question{Seja L uma linguagem qualquer sobre $\Sigma$. Definimos $Remove(L)$ como
+sendo a linguagem contendo todas as palavras que podem ser obtidas pela remoção
+de um símbolo de uma palavra em L. Assim, $Remove(L) = \{xy : x \sigma y \in L,$ onde $x, y \in \Sigma^*$ e $\sigma \in \Sigma \}$.}
+
+\problem*{4}
+\question{Complete a prova do Teorema 5, mostrando que $L(C) = A \cup B$ (formalizando a ideia que vimos em aula).}
+
+\problem*{5}
+\question{Complete a prova do Teorema 6, mostrando que $L(C) = A B$ (formalizando a ideia que vimos em aula).}
 
 \end{document}
