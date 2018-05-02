@@ -65,8 +65,25 @@ que reconhece $L$.}\\
 		 Mostre que L é uma linguagem regular.\\
 		 (Sugestão: Mostre que $L^R$ é uma linguagem regular. Depois, utilize o resultado do exercício anterior.)}
 	
-	$Resp:$	
-		 
+	$Resp:$	Vamos construir um atômato não determinístico $N, L(N)=L^R$. Para simplificar, vamos representar os símbolos do alfabeto $\Sigma_3$ como triplas ($\Sigma_3 = (0,0,0),(0,0,1),...,(1,1,1)$). Teremos $N = (Q,\Sigma_3,\delta,q_0,F)$:
+	
+	\begin{tikzpicture}[shorten >=1pt,node distance=2cm,on grid,auto,initial text=N:] 
+    	\node[state,initial,accepting] (q_0)   {$q_0$}; 
+    	\node[state] (q_1) [right=of q_0] {$q_1$}; 
+  		\node[state,accepting] (q_2) [below right=of q_0] {$q_2$};
+    	\node[state,accepting] (q_3) [right=of q_1] {$q_3$};
+        \path[->] 
+        (q_0) edge [bend right] node [swap] {(0,1,1),(1,0,1)} (q_2)
+              edge [bend left] node {(1,1,0)} (q_1)
+        (q_2) edge [bend right] node {(1,1,0)} (q_1)
+        	  edge [loop below] node {(0,1,1),(1,0,1)} ()
+        (q_1) edge [bend left] node {(0,0,1)} (q_3)
+          	  edge [loop above] node {(1,1,0)} ()
+        (q_3) edge [bend left] node {(1,1,0)} (q_1)
+        	  edge [loop above] node {(0,1,1),(1,0,1)} ()
+              ;
+	\end{tikzpicture}\\
+	Como N descreve $L^R$ e o conjunto de linguagens regulares é fechado para operação de reverso, então $L = (L^R)^R$ é regular.
 \problem*{3}
 \question{Seja L uma linguagem qualquer sobre $\Sigma$. Definimos $Remove(L)$ como
 sendo a linguagem contendo todas as palavras que podem ser obtidas pela remoção
