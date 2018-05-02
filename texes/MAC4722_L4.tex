@@ -25,6 +25,16 @@
 , a partir de um autômato finito (determinístico ou não determinístico)
 que reconhece $L$.}\\
 
+	$Resp:$ Queremos mostrar que se $L$ é regular então $L^R$ também é regular.\\
+	Seja $A = (Q_A,\Sigma_A,\delta_A,q_A,F_A)$ um autômato finito não determinístico satisfazendo $L = L(A)$. O autômato finito não determinístico $A^R$ definido abaixo aceita a linguagem $L^R$.
+	\begin{enumerate}
+		\item $A^R = (Q_A \cup \{q_s\},\Sigma_A,\delta_{A^R},q_s,\{q_A\})$, com $q_s \notin Q_A$;
+		\item $p \in \delta_A(q,a) \iff q \in \delta_{A^R}(p,a)$, onde $a \in \Sigma_A$ e $p,q \in Q_A$.
+	\end{enumerate}
+	Com isso precisamos provar que existe uma sequencia de transições de q para p que é uma computação da palavra $\omega$ em $A$, se e somente se, existe uma computação de $\omega^R$ em $A^R$ de p para q, com $q,p \in Q_A$. A prova será feita por indução no comprimento de $\omega$.
+(https://cs.stackexchange.com/questions/3251/how-to-show-that-a-reversed-regular-language-is-regular)
+
+
 \problem*{2}
 \question{Seja $\Sigma_3 = \left \{
 				\begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix},
@@ -47,7 +57,8 @@ que reconhece $L$.}\\
 \problem*{3}
 \question{Seja L uma linguagem qualquer sobre $\Sigma$. Definimos $Remove(L)$ como
 sendo a linguagem contendo todas as palavras que podem ser obtidas pela remoção
-de um símbolo de uma palavra em L. Assim, $Remove(L) = \{xy : x \sigma y \in L,$ onde $x, y \in \Sigma^*$ e $\sigma \in \Sigma \}$.}
+de um símbolo de uma palavra em L. Assim, $Remove(L) = \{xy : x \sigma y \in L,$ onde $x, y \in \Sigma^*$ e $\sigma \in \Sigma \}$. Mostre que a classe de linguagens regulares é fechada sob a operação
+$Remove$.}
 
 \problem*{4}
 \question{Complete a prova do Teorema 5, mostrando que $L(C) = A \cup B$ (formalizando a ideia que vimos em aula).}
