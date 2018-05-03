@@ -41,10 +41,11 @@ que reconhece $L$.}\\
 		\item Caso Base: Vale $|\omega|=1$ por $\delta_{A^R}$.
 		\item Hipótese: Se existe $\omega$ aceito por A e $|\omega|=n,n > 1$, então existe $\omega^R$ aceito por $A^R$.
 		\item Passo indutivo: Seja $\omega = xa, a \in \Sigma_A$ e $(r_0,...,r_n)$ a computação de $\omega$ por A. Temos que $p \in \delta(q, r_{n}) = \delta(q, a)$.\\
-		Sabendo que $|a| < |x| < n$, pela hipótese de indução temos $p' \in \delta_{A^R}(p,a)$ e $q \in \delta_{A^R}(p', r_0)$. Isso implica em $q \in \delta_{A^R}(p,r_0) \iff p \in \delta_A(q,a)$.\\
+		Sabendo que $|a| < |x| < n$, pela hipótese de indução temos $p' \in \delta_{A^R}(p,a)$ e $q \in \delta_{A^R}(p', r_0)$. Isso implica em $q \in \delta_{A^R}(p,r_0) \iff p \in \delta_A(q,a)$.\\\\
 		Com $q = q_A$ e $p = s, s \in F_A$, substituindo $\omega^R$ por $ax^R$ garante que $p \in \delta_{A^R}(s, r_0)$. Como há transições vazias de $q_s$ para todos estados de $F_A$ e uma transição de todo estado de $F_A$ para o estado $q_A$, então temos uma computação de $\lambda \omega^R = \omega^R$ começando em $q_s$ e acabando em $q_A$.				
 	\end{itemize}
 
+\pagebreak
 
 \problem*{2}
 \question{Seja $\Sigma_3 = \left \{
@@ -83,7 +84,16 @@ que reconhece $L$.}\\
         	  edge [loop above] node {(0,1,1),(1,0,1)} ()
               ;
 	\end{tikzpicture}\\
+	Agora vamos justificar o que está acontecendo por estados:\\
+	$q_0 \iff$ palavra computada vazia;\\
+    $q_1 \iff$ palavra computada com elemento de 'overflow' (1,1,0);\\
+    $q_2 \iff$ palavra computada com elementos para que a propriedade da linguagem é valida (soma das duas primeiras linhas é a terceira);\\
+    $q_3 \iff$ palavra computada com 'carry' (0,0,1) seguido de 'overflow';
+
 	Como N descreve $L^R$ e o conjunto de linguagens regulares é fechado para operação de reverso, então $L = (L^R)^R$ é regular.
+	
+\pagebreak	
+	
 \problem*{3}
 \question{Seja L uma linguagem qualquer sobre $\Sigma$. Definimos $Remove(L)$ como
 sendo a linguagem contendo todas as palavras que podem ser obtidas pela remoção
@@ -100,7 +110,8 @@ $Remove$.}
 		$\delta(q,a) = \begin{cases}
 							\delta_A(q,a),\qquad q \in Q_A \ e \ a \neq \lambda;\\
 							\{q_{A'}\},\qquad q = q_0 \ e \ a = \lambda;\\
-							\delta_{A'}(q,a), \qquad  a = \lambda;
+							F_A',\qquad q \in F_A \ e \ a = \lambda;\\
+							\{q_{n+1}'\}, \qquad  q \in Q_A,\ a = \lambda \ e \ 0<n<|Q_A|;
 					   \end{cases}					  
 		$
 	\end{enumerate}
@@ -136,6 +147,8 @@ $Remove$.}
         
         ;
 	\end{tikzpicture}
+
+\pagebreak
 
 \problem*{4}
 \question{Complete a prova do Teorema 5, mostrando que $L(C) = A \cup B$ (formalizando a ideia que vimos em aula).}
@@ -179,7 +192,12 @@ $Remove$.}
 					   \end{cases}					  
 		$
 	\end{enumerate}
-	Como conseguimos construir um autômato finito $C$ que reconhece concatenção de autômatos finitos, temos que $L(C) = L(AB)$ é regular.
-	Figura do livro:\\
-	\includegraphics[scale=.5]{Q5-SipserAutom}
+	Como conseguimos construir um autômato finito $C$ que reconhece concatenção de autômatos finitos, temos que $L(C) = AB$ é regular:
+	\begin{itemize}
+		\item $L(C) \subseteq AB$\\
+			Para $\omega \in AB, \exists x \in A\ e\ y \in B,$ tal que $\omega=xy$. Sendo a computação de $x$ em $A$ $(r_0,...,r_n)$, com $r_0=s_A,r_n \in F_A$ e a computação de $y$ em $B$ $t_0,...,t_m$, com $t_0=s_B,r_m \in F_B$, teremos qu a computação de $\omega$ em $C$ será $(r_0,...,r_n,t_0,...,t_m)$, com $r_0=s_A=s,r_n \in F_A, t_0=s_B,t_m \in F_B$ e $t_0 \in \delta(r_n,\lambda)$.
+		\item $AB \subseteq L(C)$\\
+			Com $\omega \in L(C), \omega=\omega_1...\omega_n, \omega_1 \in \Sigma_\lambda$ existe a computação $(r_0,...,r_n)$ de $\omega$ em $C$, com $s=s_A$ e $r_n \in F=F_B$. $\exists k, 0 \leq k < n$ tal que $r_k \in F_A,r_{k+1}=s_B$ e $r_{k+1} \in delta(r_k, \lambda)$. Como a computação de $x=\omega_1...\omega_k$ é $(r_0,...,r_k), r_0=s_A\ e\ r_k \in F_A$, temos que $x \in A$. Para a computação $(r_{k+1},...,r_n),r_{k+1}=s_B,r_n \in F_B$, temos a palavra $y=\omega_{k+1}...\omega_n$ e $y \in B$.
+	\end{itemize}
+
 \end{document}
