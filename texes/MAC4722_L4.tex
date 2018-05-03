@@ -141,8 +141,8 @@ $Remove$.}
         (q_2) edge [loop above] node {b} ()
               edge [bend left] node {$\lambda$} (q_2')
         (q_A')edge [loop below] node {a} ()
-              edge [bend left] node [swap] {b} (q_1')
-        (q_1')edge [bend left] node [swap] {b} (q_2')
+              edge [bend right] node [swap] {b} (q_1')
+        (q_1')edge [bend right] node [swap] {b} (q_2')
         (q_2')edge [loop below] node {b} ()
         
         ;
@@ -169,13 +169,15 @@ $Remove$.}
 					   \end{cases}					  
 		$
 	\end{enumerate}
-	Como conseguimos construir um autômato finito $C$ que reconhece união de autômatos finitos, temos que $L(C) = L(A \cup B)$ é regular.
+	Como conseguimos construir um autômato finito $C$ que reconhece união de autômatos finitos, temos que $L(C) = L(A \cup B)$ é regular. Provamos abaixo concisamente que $L(C) = L(A \cup B)$.
 	\begin{itemize}
 		\item $L(C) \subseteq A \cup B$:\\
 			Para $\omega \in A \cup B \ e\ \omega \in A,$ existe a computação $(r_0,...,r_n),r_0=s_A\ e\ r_n \in F_A$ de $\omega$ por $A$, mas também existe a computação de $\omega$ por $C,\ (s,r_0,...,r_m)$ onde $r_0=s_A,r_m \in F_A \subseteq F\ e\ s_A \in \delta(s,\lambda)$.
 		\item $A \cup B \subseteq L(C)$:\\
 			Agora com $\omega \in L(C)$, $(r_0,r_1,...,r_n)$ é a computação de $\omega$ por $C$, onde $r_0=s, r_1=s_A, r_n \in F = F_A \cup F_B\ e\ r_1 \in \delta(s,\lambda)$.
 	\end{itemize}
+
+\pagebreak
 
 \problem*{5}
 \question{Complete a prova do Teorema 6, mostrando que $L(C) = A B$ (formalizando a ideia que vimos em aula).}
@@ -196,12 +198,14 @@ $Remove$.}
 					   \end{cases}					  
 		$
 	\end{enumerate}
-	Como conseguimos construir um autômato finito $C$ que reconhece concatenção de autômatos finitos, temos que $L(C) = AB$ é regular:
+	Como conseguimos construir um autômato finito $C$ que reconhece concatenção de autômatos finitos, temos que $L(C) = AB$ é regular. Provamos abaixo concisamente que $L(C) = AB$. 
 	\begin{itemize}
 		\item $L(C) \subseteq AB$:\\
-			Para $\omega \in AB, \exists x \in A\ e\ y \in B,$ tal que $\omega=xy$. Sendo a computação de $x$ em $A$ $(r_0,...,r_n)$, com $r_0=s_A,r_n \in F_A$ e a computação de $y$ em $B$ $t_0,...,t_m$, com $t_0=s_B,r_m \in F_B$, teremos qu a computação de $\omega$ em $C$ será $(r_0,...,r_n,t_0,...,t_m)$, com $r_0=s_A=s,r_n \in F_A, t_0=s_B,t_m \in F_B$ e $t_0 \in \delta(r_n,\lambda)$.
+			Para $\omega \in AB, \exists x \in A\ e\ y \in B,$ tal que $\omega=xy$.\\
+			Sendo a computação de $x$ em $A$ $(r_0,...,r_n)$, com $r_0=s_A,r_n \in F_A$ e a computação de $y$ em $B$ $t_0,...,t_m$, com $t_0=s_B,r_m \in F_B$, teremos qu a computação de $\omega$ em $C$ será $(r_0,...,r_n,t_0,...,t_m)$, com $r_0=s_A=s,r_n \in F_A, t_0=s_B,t_m \in F_B$ e $t_0 \in \delta(r_n,\lambda)$.
 		\item $AB \subseteq L(C)$:\\
-			Com $\omega \in L(C), \omega=\omega_1...\omega_n, \omega_1 \in \Sigma_\lambda$ existe a computação $(r_0,...,r_n)$ de $\omega$ em $C$, com $s=s_A$ e $r_n \in F=F_B$. $\exists k, 0 \leq k < n$ tal que $r_k \in F_A,r_{k+1}=s_B$ e $r_{k+1} \in delta(r_k, \lambda)$. Como a computação de $x=\omega_1...\omega_k$ é $(r_0,...,r_k), r_0=s_A\ e\ r_k \in F_A$, temos que $x \in A$. Para a computação $(r_{k+1},...,r_n),r_{k+1}=s_B,r_n \in F_B$, temos a palavra $y=\omega_{k+1}...\omega_n$ e $y \in B$.
+			Com $\omega \in L(C), \omega=\omega_1...\omega_n, \omega_1 \in \Sigma_\lambda$ existe a computação $(r_0,...,r_n)$ de $\omega$ em $C$, com $s=s_A$ e $r_n \in F=F_B$. $\exists k, 0 \leq k < n$ tal que $r_k \in F_A,r_{k+1}=s_B$ e $r_{k+1} \in delta(r_k, \lambda)$.\\
+			Como a computação de $x=\omega_1...\omega_k$ é $(r_0,...,r_k), r_0=s_A\ e\ r_k \in F_A$, temos que $x \in A$. Para a computação $(r_{k+1},...,r_n),r_{k+1}=s_B,r_n \in F_B$, temos a palavra $y=\omega_{k+1}...\omega_n$ e $y \in B$.
 	\end{itemize}
 
 \end{document}
