@@ -1,146 +1,107 @@
-/**
- * Matrix (N*N) multiplication with multiple threads.
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <pthread.h>
+#include <unistd.h>
 
-int size, num_threads;
-double **matrix1, **matrix2, **matrix3;
+#define COUNT_OF(x) ((sizeof(x)/sizeof(0[x])))
+#define MALLOC_CHECK(x) do { printf("\nMemmory allocation error at {%s}, line [%d]\n", x, __LINE__); exit(-1); } while(0)
+#define DIFF_CHECK(x) do { printf("\nTime difference is less than 0 at {%s}, line [%d]\n", x, __LINE__); exit(-1); } while(0)
+#define USAGE() do { printf("Usage: omp_ep5 < m > < n > < p >,\n\twith m, p, n integers!\n"); exit(0); } while(0)
 
-double ** allocate_matrix( int size )
-{
-  /* Allocate 'size' * 'size' doubles contiguously. */
-  double * vals = (double *) malloc( size * size * sizeof(double) );
+#define DBG(x) printf("\nDBG - %s at LINE [%d]\t", x, __LINE__);
 
-  /* Allocate array of double* with size 'size' */
-  double ** ptrs = (double **) malloc( size * sizeof(double*) );
-
-  int i;
-  for (i = 0; i < size; ++i) {
-    ptrs[ i ] = &vals[ i * size ];
-  }
-
-  return ptrs;
-}
-
-void init_matrix( double **matrix, int size )
-{
-  int i, j;
-
-  for (i = 0; i < size; ++i) {
-    for (j = 0; j < size; ++j) {
-      matrix[ i ][ j ] = 1.0;
-    }
-  }
-}
-
-void print_matrix( double **matrix, int size )
-{
-  int i, j;
-
-  for (i = 0; i < size; ++i) {
-    for (j = 0; j < size-1; ++j) {
-      printf( "%lf, ", matrix[ i ][ j ] );
-    }
-    printf( "%lf", matrix[ i ][ j ] );
-    putchar( '\n' );
-  }
-}
+int m, n, p, nthreads = 2;
+double ** A, ** B, ** C;
 
 /**
  * Thread routine.
- * Each thread works on a portion of the 'matrix1'.
+ * Each thread works on a portion of the 'matrix'.
  * The start and end of the portion depend on the 'arg' which
  * is the ID assigned to threads sequentially. 
  */
-void * worker( void *arg )
-{
-  int i, j, k, tid, portion_size, row_start, row_end;
-  double sum;
-  
-  tid = *(int *)(arg); // get the thread ID assigned sequentially.
-  portion_size = size / num_threads;
-  row_start = tid * portion_size;
-  row_end = (tid+1) * portion_size;
 
-  for (i = row_start; i < row_end; ++i) { // hold row index of 'matrix1'
-    for (j = 0; j < size; ++j) { // hold column index of 'matrix2'
-      sum = 0; // hold value of a cell
-      /* one pass to sum the multiplications of corresponding cells
-	 in the row vector and column vector. */
-      for (k = 0; k < size; ++k) { 
-	sum += matrix1[ i ][ k ] * matrix2[ k ][ j ];
-      }
-      matrix3[ i ][ j ] = sum;
-    }
-  }
+void * worker(void *arg){
+	int i, j, k, tid;
+//DBG("Enter worker");	
+	tid = *(int *)(arg); // get the thread ID assigned sequentially.
+	for (i = tid; i < m; i += nthreads){
+		for (j = 0; j < n; j++){
+			for (k = 0; k < p; k++){
+				//printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n",tid, i, j, k);
+				C[i][j] += A[i][k] * B[k][j];
+			}
+		}
+	}
+	return NULL;
 }
 
-int main( int argc, char *argv[] )
-{
-  int i;
-  double sum = 0;
-  struct timeval tstart, tend;
-  double exectime;
-  pthread_t * threads;
+int timeval_subtract(struct timeval *result, struct timeval *t2, struct timeval *t1){
+	long int diff = (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
+	result->tv_sec = diff / 1000000;
+	result->tv_usec = diff % 1000000;
 
-  if (argc != 3) {
-    fprintf( stderr, "%s <matrix size> <number of threads>\n", argv[0], argv[1] );
-    return -1;
-  }
+	return (diff<0);
+}
 
-  size = atoi( argv[1] );
-  num_threads = atoi( argv[2] );
+int main(int argc, char *argv[]){
+	struct timeval begin, end;
+	pthread_t * threads;
+//DBG("Enter main");	
 
-  if ( size % num_threads != 0 ) {
-    fprintf( stderr, "size %d must be a multiple of num of threads %d\n",
-	     size, num_threads );
-    return -1;
-  }
+	if(argc == 4) {
+		nthreads = sysconf(_SC_NPROCESSORS_ONLN) - 1;
+	} else if (argc == 5) {
+		nthreads = (int) strtol(argv[4], (char **)NULL, 10); if(!nthreads) USAGE();
+	} else {
+		USAGE();
+	}
 
-  threads = (pthread_t *) malloc( num_threads * sizeof(pthread_t) );
+	m = (int) strtol(argv[1], (char **)NULL, 10); if(!m) USAGE();
+	n = (int) strtol(argv[2], (char **)NULL, 10); if(!n) USAGE(); //printf("n:[%d]\n",n);
+	p = (int) strtol(argv[3], (char **)NULL, 10); if(!p) USAGE(); //printf("p:[%d]\n",p);
+	A = (double **)malloc(m * sizeof(double *)); if(!A) MALLOC_CHECK("A");
+	B = (double **)malloc(p * sizeof(double *)); if(!B) MALLOC_CHECK("B");
+	C = (double **)malloc(m * sizeof(double *)); if(!C) MALLOC_CHECK("C");
+	for (int i = 0; i < m; i++){
+		A[i] = (double *)malloc(p * sizeof(double)); if(!A[i]) MALLOC_CHECK("A[i]");
+		C[i] = (double *)malloc(n * sizeof(double)); if(!C[i]) MALLOC_CHECK("C[i]");
+	}
+	for (int j = 0; j < p; j++){
+		B[j] = (double *)malloc(n * sizeof(double)); if(!B[j]) MALLOC_CHECK("B[j]");
+	}
 
-  matrix1 = allocate_matrix( size );
-  matrix2 = allocate_matrix( size );
-  matrix3 = allocate_matrix( size );
-  
-  init_matrix( matrix1, size );
-  init_matrix( matrix2, size );
+	threads = (pthread_t *) malloc(nthreads * sizeof(pthread_t));
 
-  if ( size <= 10 ) {
-    printf( "Matrix 1:\n" );
-    print_matrix( matrix1, size );
-    printf( "Matrix 2:\n" );
-    print_matrix( matrix2, size );
-  }
+//DBG("Finish Mem Alloc");	
+	gettimeofday(&begin, NULL);
+	for (int i = 0; i < nthreads; i++) {
+		int *tid;
+		tid = (int *) malloc(sizeof(int));
+		*tid = i;
+	 	pthread_create(&threads[i], NULL, worker, (void *)tid);
+	}
+//DBG("Start thread spawning");	
+	//printf("nth{%d} - m [%d], n [%d], p [%d]",nthreads,m,n,p); exit(0);
+	for (int j = 0; j < nthreads; j++) {
+		pthread_join(threads[j], NULL);
+	}
+	gettimeofday(&end, NULL);
+	
+	for (int i = 0; i < m; i++){
+		free(A[i]);
+		free(C[i]);
+	}
+	free(A);
+	free(C);
 
-  //gettimeofday( &tstart, NULL );
-  clock_t begin = clock();
-  for ( i = 0; i < num_threads; ++i ) {
-    int *tid;
-    tid = (int *) malloc( sizeof(int) );
-    *tid = i;
-    pthread_create( &threads[i], NULL, worker, (void *)tid );
-  }
+	for (int j = 0; j < p; j++){
+		free(B[j]);
+	}
+	free(B);
+	
+	if(timeval_subtract(&end, &end, &begin)) DIFF_CHECK("timeval");
+	printf("(%s): Matrix multiplication took [%ld.%06ld] seconds\n", __FILE__, end.tv_sec, end.tv_usec);
 
-  for ( i = 0; i < num_threads; ++i ) {
-    pthread_join( threads[i], NULL );
-  }
-  //gettimeofday( &tend, NULL );
-  clock_t end = clock();
-  
-  if ( size <= 10 ) {
-    printf( "Matrix 3:\n" );
-    print_matrix( matrix3, size );
-  }
-
-  exectime = (tend.tv_sec - tstart.tv_sec) * 1000.0; // sec to ms
-  exectime += (tend.tv_usec - tstart.tv_usec) / 1000.0; // us to ms   
-
-  //printf( "Number of threads: %d\tExecution time:%.3lf sec\n", num_threads, exectime/1000.0);
-  printf( "Number of threads: %d\tExecution time: [%lf] seconds\n", num_threads, (double) (end - begin) / CLOCKS_PER_SEC);
-
-  return 0;
+	return 0;
 }

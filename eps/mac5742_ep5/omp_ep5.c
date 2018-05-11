@@ -1,5 +1,5 @@
 #include <omp.h>
-#include <time.h>
+#include <sys/time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -7,6 +7,7 @@
 //#define COUNT_OF(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
 #define COUNT_OF(x) ((sizeof(x)/sizeof(0[x])))
 #define MALLOC_CHECK(x) do { printf("\nMemmory allocation error at {%s}, line [%d]\n", x, __LINE__); exit(-1); } while(0)
+#define DIFF_CHECK(x) do { printf("\nTime difference is less than 0 at {%s}, line [%d]\n", x, __LINE__); exit(-1); } while(0)
 #define USAGE() do { printf("Usage: omp_ep5 < m > < n > < p >,\n\twith m, p, n integers!\n"); exit(0); } while(0)
 
 int omp_mmul(int m, int n, int p, double ** a, double ** b, double ** c){
@@ -41,6 +42,14 @@ int mmul(int m, int n, int p, double ** a, double ** b, double ** c){
 	return 0;
 }
 
+int timeval_subtract(struct timeval *result, struct timeval *t2, struct timeval *t1){
+	long int diff = (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
+	result->tv_sec = diff / 1000000;
+	result->tv_usec = diff % 1000000;
+
+	return (diff<0);
+}
+
 int main(int argc, char ** argv){
 	if(argc != 4) {
 		USAGE();
@@ -60,10 +69,11 @@ int main(int argc, char ** argv){
 		B[j] = (double *)malloc(n * sizeof(double)); if(!B[j]) MALLOC_CHECK("B[j]");
 	}
 	
-	clock_t begin = time(NULL); //printf("%s\n", asctime(localtime(time(NULL))));
+	struct timeval begin, end;
+	gettimeofday(&begin, NULL); //printf("%s\n", asctime(localtime(time(NULL))));
 	omp_mmul(m, n, p, A, B, C);
 	//mmul(m, n, p, A, B, C);
-	clock_t end = time(NULL); //printf("%s\n", asctime(localtime((time_t *)time(NULL)))); 
+	gettimeofday(&end, NULL); //printf("%s\n", asctime(localtime((time_t *)time(NULL)))); 
 
 	for (int i = 0; i < m; i++){
 		free(A[i]);
@@ -77,7 +87,8 @@ int main(int argc, char ** argv){
 	}
 	free(B);
 
-	printf("Matrix multiplication took [%lf] seconds\n", (double)(end - begin));
+	if(timeval_subtract(&end, &end, &begin)) DIFF_CHECK("timeval");
+	printf("(%s): Matrix multiplication took [%ld.%06ld] seconds\n", __FILE__, end.tv_sec, end.tv_usec);
 
 	return 0;
 }
