@@ -72,8 +72,6 @@
 			Portanto $B$ não é regular.
 	\end{enumerate}
 	
-\pagebreak	
-	
 \problem*{3}
 \question{Considere a linguagem $L = \{a^i b^j c^k: i,j,k \geq 0\ e\ (i = 0\ ou\ j = k)\}.$}
 	\begin{itemize}
@@ -81,15 +79,15 @@
 		$Resp:$ Vamos provar por contradição que $L$ não é regular.\\
 			Se $L$ é regular, sabendo que o conjunto das linguagens regulares é fechado para operação de união, podemos descrever $L$ como uma união de linguagens regulares: 
 			\[L = L_1 \cup L_2,\ L_1 = \{b^j c^k:j,k \geq 0\}\ e\ L_2 = \{a^i b^j c^j:i,j \geq 0\}\] 
-			Podemos também colocar $L_2$ como uma concatenação de linguagens regulares, dado que o conjunto de linguagens regulares é fechado para essa operação:
-			\[L_2 = L_a\ .\ L_{bc},\ L_a = \{a^i:i \geq 0\}\ e\ L_{bc} = \{b^j c^j:j \geq 0\}\]
-			Como sabemos que $L_{bc}$ não é regular (é uma linguagem da forma $\{a^nb^n:n \geq 0\}$), chegamos em uma contradição e concluímos que $L$, composta por operações entre linguagens não regulares, não é regular ($L = L_1 \cup (L_a\ .\ L_{bc})$).
+			Podemos também fazer uma intersecção $L \cap L_{bc}$, com $L_{bc} = \{b^x c^y:x,y \geq 0\}$ uma linguagem regular, e teremos outra linguagem regular como resultado, dado que o conjunto de linguagens regulares é fechado para essa operação:
+			\[L_{nr} = L\ \cap\ L_{bc} = \{b^j c^j:j \geq 0\}\]
+			Como sabemos que $L_{nr}$ não é regular (é uma linguagem da forma $\{a^nb^n:n \geq 0\}$), chegamos em uma contradição, porque partindo de operações entre linguagens regulares obtivemos $L_{nr}$ como resultado. Então, concluímos que $L$ não é regular.
 	\end{itemize}
 	\begin{itemize}
 		\item[(b)] Forneça um inteiro positivo p e mostre que a linguagem L satisfaz
 as condições do Lema do Bombeamento para esse p.\\
-		$Resp:$ Seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $L$ e a palavra $w = a^nb^pc^p, p > n > 0$. Com $x = a^r, y = a^s\ e\ z = b^pc^p$, considere todas as palavras que satisfazem ($i \geq 0$):
-			\[xy^iz = a^s(a^{s})^i b^pc^p = a^{r+si}b^pc^p\]
-		Observamos que para todo inteiro $i \geq 0$ o \textbf{LB} é satisfeito. Podemos, então, escolher um inteiro $p = 2$ e teremos $w = ab^2b^2$, que com bombeamento continua pertencendo à $L$.
+		$Resp:$ Seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $L$ e a palavra $w = a^pb^jc^j$. Tomando $p = 1,$ para $j \geq 0$. Com $x = a^0, y = a^p\ e\ z = b^j c^j$, considere todas as palavras que satisfazem ($i \geq 0$):
+			\[xy^iz = a^0(a^{p})^i b^j c^j = a^{pi} b^j c^j\]
+		Observamos que para todo inteiro $i,j \geq 0$ o \textbf{LB} é satisfeito. Então, para um inteiro $p = 1$, teremos um conjunto de palavras $W = a^{i} b^j c^j$, todas elas pertencendo à $L$.
 	\end{itemize}
 \end{document}
