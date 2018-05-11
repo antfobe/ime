@@ -1,0 +1,95 @@
+% to change the appearance of the header, questions, problems or subproblems, see the homework.cls file or
+% override the \Problem, \Subproblem, \question or \printtitle commands.
+
+% The hidequestions option hides the questions. Remove it to print the questions in the text.
+
+\title{MAC4722 - Lista 5}
+
+\documentclass{homework}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\newtheorem*{theorem}{Lema do Bombeamento}
+
+% Set up your name, the course name and the homework set number.
+\homeworksetup{
+    username={Jean Fobe, N$^o$USP 7630573},
+    course={Linguagens, Autômatos e Computabilidade - MAC4722},
+    setnumber=5}
+\begin{document}% this also prints the header.
+\pagestyle{fancy}
+\fancyfoot[L]{Jean Fobe, 7630573}
+
+% use starred problems or subproblems to apply manual numbering.
+\problem*{1}
+\question{Prove que as seguintes linguagens não são regulares. Pode utilizar o Lema do Bombeamento e as propriedades de fechamento da classe de linguagens regulares (vistas em aula ou nas listas de exercícios).}
+	\begin{theorem}
+		Seja L uma linguagem regular. Então existe um inteiro $p \geq 1$ (chamado 		comprimento de bombeamento) tal que cada cadeia w de L com comprimento maior ou igual a p pode ser escrita como w = xyz (i.e. w pode ser dividida em três subcadeias) satisfazendo as seguintes condições:
+		\begin{enumerate}
+			\item $|y| \geq 1;$
+			\item $|xy| \leq p;$
+			\item $xy^iz \in L, \forall i \geq 0.$
+		\end{enumerate}
+	\end{theorem}
+	\begin{enumerate}
+		\item[(b)] $L = \{w \in \{a,b\}^*: w$ não é um palíndromo$\}$\\
+			$Resp:$ Vamos provar por contradição que $L$ não é regular.\\
+			Se $L$ é regular, sabendo que o conjunto das linguagens regulares é fechado para operação de complemento, temos que $\overline{L}$ é regular também. Sendo $\overline{L}$ linguagem de todos os palíndromos em $\{a,b\}^*$, \[\overline{L} = \{k \in \{a,b\}^*:k=k^R\}\]
+			Seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $\overline{L}$ e a palavra $w \in \overline{L}, w = a^pbba^p$. Com $x = a^r, y = a^s\ e\ z = a^{p-r-s}bba^p$, considere a palavra ($i = 3$):
+			\[t = xy^3z = a^r(a^s)^3a^{p-r-s}bba^p = a^{p+2s}bba^p\]
+			Como $t^R = a^pbba^{p+2s}$ e $t^R \neq t,\ t \notin \overline{L}$. Isso contradiz a condição \textit{3} do \textbf{LB}.\\
+			Então, sabendo que o complemento de $L\ (\overline{L})$ não é regular, colocamos que $L$ não é regular também.
+			
+		\item[(c)] $L = \{wtw: w,t \in \{a,b\}^+\}$\\
+			$Resp:$ Vamos provar por contradição que $L$ não é regular.\\
+			Vamos supor que $L$ é regular, seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $L$ e a palavra $v = ab^paab^p$ (note que $t = a$ e $|t| = 1$, nesse caso). Com $x = ab^r, y = b^{s}\ e\ z = b^{p-r-s}aab^p$, considere a palavra ($i = 3$):
+			\[j = xy^3z = ab^r(b^{s})^3b^{p-r-s}aab^p = ab^{p+2s}aab^p\]
+			Como $|j| = 2p+2s+3$, o prefixo e o sufixo de $j$ de comprimento $\tfrac{|j|-1}{2}$ são $j_1=ab^{p+s}$ e $j_2=b^{s-1}aab^p$, respectivamente. Tendo $j_1 \neq j_2,\ j = j_1tj_2 \notin L$. Isso contradiz a condição \textit{3} do \textbf{LB}.\\
+			Então, $L$ não é uma linguagem regular.
+	\end{enumerate}
+	
+\pagebreak
+
+\problem*{2}
+\question{Considere as linguagens:
+	\begin{align*}
+		A &= \{b^kx: x \in \{a,b\}^*\ e\ |x|_b \geq k \geq 1\}\ e\\
+		B &= \{b^kx: x \in \{a,b\}^*\ e\ |x|_b \leq k,\ k \geq 1\}.	
+	\end{align*}	 
+}
+	\begin{enumerate}
+		\item[(b)] Prove que $B$ não é linguagem regular.\\
+		$Resp:$ Vamos provar por contradição que $B$ não é regular.\\
+			Supondo que $B$ é regular, seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $B$ e a palavra $w = b^pab^pa$. Com $x = b^r, y = b^{s}\ e\ z = b^{p-r-s}ab^pa$, considere a palavra ($i = 0$):
+			\[t = xy^0z = b^r(b^s)^0b^{p-r-s}ab^pa = b^{p-s}ab^pa\]
+			Como $|t|=2p-s+2$ e o prefixo com somente `b's da palavra $w,\ w_p$ é tal que $|w_p|_b = p - s$ e o resto da palavra, o sufixo $w_s$, fica com $|w_s|_b = p$. Sendo $|w_s|_b > |w_p|_b$, $w \notin B$, contradizendo a condição \textit{3} do \textbf{LB}.\\
+			Portanto $B$ não é regular.
+	\end{enumerate}
+	
+\pagebreak	
+	
+\problem*{3}
+\question{Considere a linguagem $L = \{a^i b^j c^k: i,j,k \geq 0\ e\ (i = 0\ ou\ j = k)\}.$}
+	\begin{itemize}
+		\item[(a)] Prove que L não é regular.\\
+		$Resp:$ Vamos provar por contradição que $L$ não é regular.\\
+			Se $L$ é regular, sabendo que o conjunto das linguagens regulares é fechado para operação de união, podemos descrever $L$ como uma união de linguagens regulares: 
+			\[L = L_1 \cup L_2,\ L_1 = \{b^j c^k:j,k \geq 0\}\ e\ L_2 = \{a^i b^j c^j:i,j \geq 0\}\] 
+			Podemos também colocar $L_2$ como uma concatenação de linguagens regulares, dado que o conjunto de linguagens regulares é fechado para essa operação:
+			\[L_2 = L_a\ .\ L_{bc},\ L_a = \{a^i:i \geq 0\}\ e\ L_{bc} = \{b^j c^j:j \geq 0\}\]
+			Como sabemos que $L_{bc}$ não é regular (é uma linguagem da forma $\{a^nb^n:n \geq 0\}$), chegamos em uma contradição e concluímos que $L$, composta por operações entre linguagens não regulares, não é regular ($L = L_1 \cup (L_a\ .\ L_{bc})$).
+	\end{itemize}
+	\begin{itemize}
+		\item[(b)] Forneça um inteiro positivo p e mostre que a linguagem L satisfaz
+as condições do Lema do Bombeamento para esse p.\\
+		$Resp:$ Seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $L$ e a palavra $w = a^nb^pc^p, p > n > 0$. Com $x = a^r, y = a^s\ e\ z = b^pc^p$, considere todas as palavras que satisfazem ($i \geq 0$):
+			\[xy^iz = a^s(a^{s})^i b^pc^p = a^{r+si}b^pc^p\]
+		Observamos que para todo inteiro $i \geq 0$ o \textbf{LB} é satisfeito. Podemos, então, escolher um inteiro $p = 2$ e teremos $w = ab^2b^2$, que com bombeamento continua pertencendo à $L$.
+	\end{itemize}
+\end{document}

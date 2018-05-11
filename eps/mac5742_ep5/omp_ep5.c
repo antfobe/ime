@@ -10,25 +10,8 @@
 #define USAGE() do { printf("Usage: omp_ep5 < m > < n > < p >,\n\twith m, p, n integers!\n"); exit(0); } while(0)
 
 int omp_mmul(int m, int n, int p, double ** a, double ** b, double ** c){
-	int i,j,k;
-	#pragma omp parallel shared(a,b,c) private(i,j,k) 
-	{
-	#pragma omp for  schedule(static)
-	for (i = 0; i < m; i++){
-		for (j = 0; j < n; j++){
-			for (k = 0; k < p; k++){
-				a[i][j] = (a[i][j]) + ((b[i][k]) * (c[k][j]));
-			}
-		}
-	}
-	}
-	return 0;
-}
-
-int omp2_mmul(int m, int n, int p, double ** a, double ** b, double ** c){
-	int i,j,k;
-
-#pragma omp parallel shared(a, b, c) private(i, j, k)
+	int i, j, k;
+	#pragma omp parallel shared(a, b, c) private(i, j, k)
 	{
 
 	/* Do matrix multiply sharing iterations on outer loop */
@@ -43,6 +26,7 @@ int omp2_mmul(int m, int n, int p, double ** a, double ** b, double ** c){
 	}
 	}   
 	/* End of parallel region */
+	return 0;
 }
 
 int mmul(int m, int n, int p, double ** a, double ** b, double ** c){
@@ -50,7 +34,7 @@ int mmul(int m, int n, int p, double ** a, double ** b, double ** c){
 	for (i = 0; i < m; i++){
 		for (j = 0; j < n; j++){
 			for (k = 0; k < p; k++){
-				a[i][j] = (a[i][j]) + ((b[i][k]) * (c[k][j]));
+				c[i][j] += a[i][k] * b[k][j];
 			}
 		}
 	}
@@ -58,7 +42,7 @@ int mmul(int m, int n, int p, double ** a, double ** b, double ** c){
 }
 
 int main(int argc, char ** argv){
-	if(argc < 4 || !argv[1] || !argv[2] || !argv[3]) {
+	if(argc != 4) {
 		USAGE();
 	}
 
@@ -76,10 +60,10 @@ int main(int argc, char ** argv){
 		B[j] = (double *)malloc(n * sizeof(double)); if(!B[j]) MALLOC_CHECK("B[j]");
 	}
 	
-	clock_t begin = clock();
-	omp2_mmul(m, n, p, A, B, C);
+	clock_t begin = time(NULL); //printf("%s\n", asctime(localtime(time(NULL))));
+	omp_mmul(m, n, p, A, B, C);
 	//mmul(m, n, p, A, B, C);
-	clock_t end = clock();
+	clock_t end = time(NULL); //printf("%s\n", asctime(localtime((time_t *)time(NULL)))); 
 
 	for (int i = 0; i < m; i++){
 		free(A[i]);
@@ -93,7 +77,7 @@ int main(int argc, char ** argv){
 	}
 	free(B);
 
-	printf("Matrix multiplication took [%lf] seconds\n", (double)(end - begin) / CLOCKS_PER_SEC);
+	printf("Matrix multiplication took [%lf] seconds\n", (double)(end - begin));
 
 	return 0;
 }
