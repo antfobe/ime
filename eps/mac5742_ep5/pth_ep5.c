@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <pthread.h>
@@ -7,8 +8,7 @@
 #define COUNT_OF(x) ((sizeof(x)/sizeof(0[x])))
 #define MALLOC_CHECK(x) do { printf("\nMemmory allocation error at {%s}, line [%d]\n", x, __LINE__); exit(-1); } while(0)
 #define DIFF_CHECK(x) do { printf("\nTime difference is less than 0 at {%s}, line [%d]\n", x, __LINE__); exit(-1); } while(0)
-#define USAGE() do { printf("Usage: omp_ep5 < m > < n > < p >,\n\twith m, p, n integers!\n"); exit(0); } while(0)
-
+#define USAGE() do { printf("Usage: omp_ep5 < m > < n > < p > { threads },\n\twith m, p, n, threads all integers!\n"); exit(0); } while(0)
 #define DBG(x) printf("\nDBG - %s at LINE [%d]\t", x, __LINE__);
 
 int m, n, p, nthreads = 2;
@@ -22,13 +22,21 @@ double ** A, ** B, ** C;
  */
 
 void * worker(void *arg){
-	int i, j, k, tid;
-//DBG("Enter worker");	
-	tid = *(int *)(arg); // get the thread ID assigned sequentially.
-	for (i = tid; i < m; i += nthreads){
+	int i, j, k, tid = *(int *)(arg); // get the thread ID assigned sequentially.;
+
+#ifdef DEBUG
+	char dbgmsg[32];
+	sprintf(dbgmsg, "Spawned thread %d", tid);
+	DBG(dbgmsg);
+#endif
+	//for (i = tid; i < m; i += nthreads){
+	for (i = 0; i < m; i ++){
 		for (j = 0; j < n; j++){
-			for (k = 0; k < p; k++){
-				//printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n",tid, i, j, k);
+			//for (k = tid; k < p; k++){
+			for (k = tid; k < p; k += nthreads){
+#ifdef DEBUG
+	printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n",tid, i, j, k);
+#endif
 				C[i][j] += A[i][k] * B[k][j];
 			}
 		}
@@ -45,10 +53,9 @@ int timeval_subtract(struct timeval *result, struct timeval *t2, struct timeval 
 }
 
 int main(int argc, char *argv[]){
-	struct timeval begin, end;
-	pthread_t * threads;
-//DBG("Enter main");	
-
+#ifdef DEBUG
+	DBG("Enter main");	
+#endif
 	if(argc == 4) {
 		nthreads = sysconf(_SC_NPROCESSORS_ONLN) - 1;
 	} else if (argc == 5) {
@@ -71,9 +78,12 @@ int main(int argc, char *argv[]){
 		B[j] = (double *)malloc(n * sizeof(double)); if(!B[j]) MALLOC_CHECK("B[j]");
 	}
 
-	threads = (pthread_t *) malloc(nthreads * sizeof(pthread_t));
+	pthread_t * threads = (pthread_t *) malloc(nthreads * sizeof(pthread_t));
 
-//DBG("Finish Mem Alloc");	
+#ifdef DEBUG
+	DBG("Finish Mem Alloc");
+#endif
+	struct timeval begin, end;
 	gettimeofday(&begin, NULL);
 	for (int i = 0; i < nthreads; i++) {
 		int *tid;
@@ -81,7 +91,9 @@ int main(int argc, char *argv[]){
 		*tid = i;
 	 	pthread_create(&threads[i], NULL, worker, (void *)tid);
 	}
-//DBG("Start thread spawning");	
+#ifdef DEBUG
+	DBG("Start thread spawning");
+#endif
 	//printf("nth{%d} - m [%d], n [%d], p [%d]",nthreads,m,n,p); exit(0);
 	for (int j = 0; j < nthreads; j++) {
 		pthread_join(threads[j], NULL);
