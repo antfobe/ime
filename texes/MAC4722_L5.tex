@@ -41,14 +41,14 @@
 		\item[(b)] $L = \{w \in \{a,b\}^*: w$ não é um palíndromo$\}$\\
 			$Resp:$ Vamos provar por contradição que $L$ não é regular.\\
 			Se $L$ é regular, sabendo que o conjunto das linguagens regulares é fechado para operação de complemento, temos que $\overline{L}$ é regular também. Sendo $\overline{L}$ linguagem de todos os palíndromos em $\{a,b\}^*$, \[\overline{L} = \{k \in \{a,b\}^*:k=k^R\}\]
-			Seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $\overline{L}$ e a palavra $w \in \overline{L}, w = a^pbba^p$. Com $x = a^r, y = a^s\ e\ z = a^{p-r-s}bba^p$, considere a palavra ($i = 3$):
+			Seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $\overline{L}$ e a palavra $w \in \overline{L}, w = a^pbba^p$. Com $x = a^r, y = a^s, p \geq |xy| \geq |y| \geq 1\ e\ z = a^{p-r-s}bba^p$, considere a palavra ($i = 3$):
 			\[t = xy^3z = a^r(a^s)^3a^{p-r-s}bba^p = a^{p+2s}bba^p\]
 			Como $t^R = a^pbba^{p+2s}$ e $t^R \neq t,\ t \notin \overline{L}$. Isso contradiz a condição \textit{3} do \textbf{LB}.\\
 			Então, sabendo que o complemento de $L\ (\overline{L})$ não é regular, colocamos que $L$ não é regular também.
 			
 		\item[(c)] $L = \{wtw: w,t \in \{a,b\}^+\}$\\
 			$Resp:$ Vamos provar por contradição que $L$ não é regular.\\
-			Vamos supor que $L$ é regular, seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $L$ e a palavra $v = ab^paab^p$ (note que $t = a$ e $|t| = 1$, nesse caso). Com $x = ab^r, y = b^{s}\ e\ z = b^{p-r-s}aab^p$, considere a palavra ($i = 3$):
+			Vamos supor que $L$ é regular, seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $L$ e a palavra $v = ab^paab^p$ (note que $t = a$ e $|t| = 1$, nesse caso). Com $x = ab^r, y = b^{s}, \\p \geq |xy| \geq |y| \geq 1\ e\ z = b^{p-r-s}aab^p$, considere a palavra ($i = 3$):
 			\[j = xy^3z = ab^r(b^{s})^3b^{p-r-s}aab^p = ab^{p+2s}aab^p\]
 			Como $|j| = 2p+2s+3$, o prefixo e o sufixo de $j$ de comprimento $\tfrac{|j|-1}{2}$ são $j_1=ab^{p+s}$ e $j_2=b^{s-1}aab^p$, respectivamente. Tendo $j_1 \neq j_2,\ j = j_1tj_2 \notin L$. Isso contradiz a condição \textit{3} do \textbf{LB}.\\
 			Então, $L$ não é uma linguagem regular.
@@ -66,7 +66,7 @@
 	\begin{enumerate}
 		\item[(b)] Prove que $B$ não é linguagem regular.\\
 		$Resp:$ Vamos provar por contradição que $B$ não é regular.\\
-			Supondo que $B$ é regular, seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $B$ e a palavra $w = b^pab^pa$. Com $x = b^r, y = b^{s}\ e\ z = b^{p-r-s}ab^pa$, considere a palavra ($i = 0$):
+			Supondo que $B$ é regular, seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $B$ e a palavra $w = b^pab^pa$. Com $x = b^r, y = b^{s}, p \geq |xy| \geq |y| \geq 1\ e\ z = b^{p-r-s}ab^pa$, considere a palavra ($i = 0$):
 			\[t = xy^0z = b^r(b^s)^0b^{p-r-s}ab^pa = b^{p-s}ab^pa\]
 			Como $|t|=2p-s+2$ e o prefixo com somente `b's da palavra $w,\ w_p$ é tal que $|w_p|_b = p - s$ e o resto da palavra, o sufixo $w_s$, fica com $|w_s|_b = p$. Sendo $|w_s|_b > |w_p|_b$, $w \notin B$, contradizendo a condição \textit{3} do \textbf{LB}.\\
 			Portanto $B$ não é regular.
@@ -86,7 +86,7 @@
 	\begin{itemize}
 		\item[(b)] Forneça um inteiro positivo p e mostre que a linguagem L satisfaz
 as condições do Lema do Bombeamento para esse p.\\
-		$Resp:$ Seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $L$ e a palavra $w = a^pb^jc^j$. Tomando $p = 1,$ para $j \geq 0$. Com $x = a^0, y = a^p\ e\ z = b^j c^j$, considere todas as palavras que satisfazem ($i \geq 0$):
+		$Resp:$ Seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $L$ e a palavra $w = a^pb^jc^j$. Tomando $p = 1,$ para $j \geq 0$. Com $x = a^0, y = a^p, p \geq |xy| \geq |y| \geq 1\ e\ z = b^j c^j$, considere todas as palavras que satisfazem ($i \geq 0$):
 			\[xy^iz = a^0(a^{p})^i b^j c^j = a^{pi} b^j c^j\]
 		Observamos que para todo inteiro $i,j \geq 0$ o \textbf{LB} é satisfeito. Então, para um inteiro $p = 1$, teremos um conjunto de palavras $W = a^{i} b^j c^j$, todas elas pertencendo à $L$.
 	\end{itemize}
