@@ -14,9 +14,9 @@ int omp_mmul(long m, long n, long p, double ** A, double ** B, double ** C){
 	for (i = 0; i < m; i++){
 		for(j = 0; j < n; j++){
 			for (k = 0; k < p; k++){
-//#ifdef DEBUG
-//	printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n", omp_get_thread_num(), i, j, k);
-//#endif
+#ifdef DEBUG
+	printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n", omp_get_thread_num(), i, j, k);
+#endif
 				C[i][j] += A[i][k] * B[k][j];
 			}
 		}
@@ -96,29 +96,29 @@ char * writeM(char * filename, double ** M){
 }
 
 /**
- * Thread routine.
- * Each thread works on a portion of the 'matrix'.
+ * The function below defines worker threads behavior:
+ * Each thread works on a portion of the matrixes.
  * The start and end of the portion depend on the 'arg' which
- * is the ID assigned to threads sequentially. 
+ * is the ID assigned to threads sequentially, for instance:
+ * given 4 threads, thread 0 will work A[*][0] * B[0][*],
+ * A[*][4] * B[4][*], ..., A[*][k] * B[k][*], k < p;
  */
 
 void * pth_mworker(void *arg){
 	long i, j, k;
-	int tid = *(int *)(arg); // get the thread ID assigned sequentially.;
+	int tid = *(int *)(arg); /* get the thread ID, was assigned sequentially */
 
 #ifdef DEBUG
 	char dbgmsg[32];
 	sprintf(dbgmsg, "Spawned thread %d", tid);
 	DBG(dbgmsg);
 #endif
-	/*for (i = tid; i < m; i += nthreads){*/
 	for (i = 0; i < m; i ++){
 		for (j = 0; j < n; j++){
-			/*for (k = tid; k < p; k++){*/
 			for (k = (long) tid; k < p; k += nthreads){
-//#ifdef DEBUG
-//	printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n",tid, i, j, k);
-//#endif
+#ifdef DEBUG
+	printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n",tid, i, j, k);
+#endif
 				C[i][j] += A[i][k] * B[k][j];
 			}
 		}

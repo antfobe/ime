@@ -7,11 +7,11 @@ AUTHOR = jean.fobe
 default: run
 
 debug: ep5.c ep5.h ep5_main.c
-	$(CC) -o ep5 ep5.c ep5_main.c $(CFLAGS) -DDEBUG $(LIBS)
+	$(CC) -o ep5d ep5.c ep5_main.c $(CFLAGS) -DDEBUG $(LIBS)
 
 bench: ep5
-	-time for m in $$(seq 1 12) ; do for p in $$(seq 1 16) ; do for n in $$(seq 1 12) ; do echo -n "OMP: m=$$((2**$$m)) p=$$((2**$$p)) n=$$((2**$$n)) - " && ./ep5 O $$((2**$$m)) $$((2**$$p)) $$((2**$$n)); done done done
-	-time for m in $$(seq 1 12) ; do for p in $$(seq 1 16) ; do for n in $$(seq 1 12) ; do echo -n "PTH: m=$$((2**$$m)) p=$$((2**$$p)) n=$$((2**$$n)) - " && ./ep5 P $$((2**$$m)) $$((2**$$p)) $$((2**$$n)); done done done
+	-time for m in $$(seq 12 -1 1) ; do for p in $$(seq 12 -1 1) ; do for n in $$(seq 12 -1 1) ; do echo -n "OMP: m=$$((2**$$m)) p=$$((2**$$p)) n=$$((2**$$n)) - " && ./ep5 O $$((2**$$m)) $$((2**$$p)) $$((2**$$n)); done done done
+	-time for m in $$(seq 12 -1 1) ; do for p in $$(seq 12 -1 1) ; do for n in $$(seq 12 -1 1) ; do echo -n "PTH: m=$$((2**$$m)) p=$$((2**$$p)) n=$$((2**$$n)) - " && ./ep5 P $$((2**$$m)) $$((2**$$p)) $$((2**$$n)); done done done
 
 run: ep5
 	./ep5 O $(DEFAULTS)
