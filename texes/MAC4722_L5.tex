@@ -79,8 +79,11 @@
 		$Resp:$ Vamos provar por contradição que $L$ não é regular.\\
 			Se $L$ é regular, sabendo que o conjunto das linguagens regulares é fechado para operação de união, podemos descrever $L$ como uma união de linguagens regulares: 
 			\[L = L_1 \cup L_2,\ L_1 = \{b^j c^k:j,k \geq 0\}\ e\ L_2 = \{a^i b^j c^j:i,j \geq 0\}\] 
-			Podemos também fazer uma intersecção $L \cap L_{bc}$, com $L_{bc} = \{b^x c^y:x,y \geq 0\}$ uma linguagem regular, e teremos outra linguagem regular como resultado, dado que o conjunto de linguagens regulares é fechado para essa operação:
-			\[L_{nr} = L\ \cap\ L_{bc} = \{b^j c^j:j \geq 0\}\]
+			Podemos também fazer uma intersecção $L \cap L_{bc}$, com $L_{abc} = \{ab^x c^y:x,y \geq 0\}$ uma linguagem regular, e teremos outra linguagem regular como resultado, dado que o conjunto de linguagens regulares é fechado para essa operação:
+			\begin{align*}
+				L_{aux} &= L\ \cap\ L_{abc} = \{ab^j c^j:j \geq 0\}\ e\\
+				L_{aux} &= \{a\}\ .\ L_{nr},\ L_{nr} = \{b^j c^j:j \geq 0\}
+			\end{align*}
 			Como sabemos que $L_{nr}$ não é regular (é uma linguagem da forma $\{a^nb^n:n \geq 0\}$), chegamos em uma contradição, porque partindo de operações entre linguagens regulares obtivemos $L_{nr}$ como resultado. Então, concluímos que $L$ não é regular.
 	\end{itemize}
 	\begin{itemize}
