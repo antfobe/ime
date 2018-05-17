@@ -5,7 +5,6 @@ int omp_mmul(long m, long n, long p, double ** A, double ** B, double ** C){
 #ifdef DEBUG
 	DBG("Entering parallel region")
 #endif
-	gettimeofday(&begin, NULL);
 	#pragma omp parallel shared(A, B, C) private(i, j, k)
 	{
 
@@ -15,17 +14,15 @@ int omp_mmul(long m, long n, long p, double ** A, double ** B, double ** C){
 	for (i = 0; i < m; i++){
 		for(j = 0; j < n; j++){
 			for (k = 0; k < p; k++){
-#ifdef DEBUG
-	printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n", omp_get_thread_num(), i, j, k);
-#endif
+//#ifdef DEBUG
+//	printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n", omp_get_thread_num(), i, j, k);
+//#endif
 				C[i][j] += A[i][k] * B[k][j];
 			}
 		}
 	}
 	}   
-	gettimeofday(&begin, NULL);
 	/* End of parallel region */
-	printf("(%s): Matrix multiplication took [%ld.%06ld] seconds\n", __FILE__, end.tv_sec, end.tv_usec);
 	return 0;
 }
 
@@ -50,13 +47,7 @@ double ** readM(char * filename) {
 	} else {
 		m = rows; p = cols;
 	}
-	double ** M = (double **)malloc(rows * sizeof(double *)); if(!M) MALLOC_CHECK(filename);
-	for (long i = 0; i < rows; i++){
-		M[i] = (double *)malloc(cols * sizeof(double)); if(!M[i]) MALLOC_CHECK(filename);
-		for (long j = 0; j < cols; j++){
-			M[i][j] = 0;
-		}
-	}
+	double ** M = alloc_initM(rows, cols);
 	double value;
 	for(long i, j; fscanf(fp, "%ld %ld %lf", &i, &j, &value) == 3; ){
 		M[i - 1][j - 1] = value;
@@ -65,7 +56,33 @@ double ** readM(char * filename) {
 	return M;
 }
 
-char * writeC(char * filename, double ** C){
+double ** alloc_initM(long rows, long cols){
+	double ** M = (double **)malloc(rows * sizeof(double *)); if(!M) MALLOC_CHECK("M, alloc_initM");
+	for (long i = 0; i < rows; i++){
+		M[i] = (double *)malloc(cols * sizeof(double)); if(!M[i]) MALLOC_CHECK("M[i], alloc_initM");
+		for (long j = 0; j < cols; j++){
+			M[i][j] = 0;
+		}
+	}
+	return M;
+}
+
+double ** alloc_onlyM(long rows, long cols){
+	double ** M = (double **)malloc(rows * sizeof(double *)); if(!M) MALLOC_CHECK("M, alloc_onlyM");
+	for (long i = 0; i < rows; i++){
+		M[i] = (double *)malloc(cols * sizeof(double)); if(!M[i]) MALLOC_CHECK("M[i], alloc_onlyM");
+	}
+	return M;
+}
+
+void freeM(long rows, double ** M){
+	for (long i = 0; i < rows; i++){
+		free(M[i]);
+	}
+	free(M);
+}
+
+char * writeM(char * filename, double ** M){
 #ifdef DEBUG
 	DBG("Enter writeC"); 
 #endif
@@ -73,7 +90,7 @@ char * writeC(char * filename, double ** C){
 	fprintf(fp, "%ld %ld\n", m, n);
 	for(long i = 0; i < m; i++)
 		for(long j = 0; j < n; j++)
-			fprintf(fp, "%ld %ld %lf\n", i + 1, j + 1, C[i][j]);
+			fprintf(fp, "%ld %ld %lf\n", i + 1, j + 1, M[i][j]);
 	fclose(fp);
 	return filename;	
 }
@@ -99,9 +116,9 @@ void * pth_mworker(void *arg){
 		for (j = 0; j < n; j++){
 			/*for (k = tid; k < p; k++){*/
 			for (k = (long) tid; k < p; k += nthreads){
-#ifdef DEBUG
-	printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n",tid, i, j, k);
-#endif
+//#ifdef DEBUG
+//	printf("tid{%d} - i:[%d] j:[%d] k:[%d]\n",tid, i, j, k);
+//#endif
 				C[i][j] += A[i][k] * B[k][j];
 			}
 		}

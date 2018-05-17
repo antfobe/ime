@@ -1,5 +1,4 @@
-OMP = -fopenmp 
-PTH = -lpthread
+LIBS = -fopenmp -lpthread
 CC = gcc
 CFLAGS = -O0 -Wall
 DEFAULTS = 1024 512 2048
@@ -7,31 +6,25 @@ AUTHOR = jean.fobe
 
 default: run
 
-debug:
-	$(CC) -o domp_ep5 omp_ep5.c -DDEBUG $(CFLAGS) $(OMP)
-	$(CC) -o dpth_ep5 pth_ep5.c -DDEBUG $(CFLAGS) $(PTH)
+debug: ep5.c ep5.h ep5_main.c
+	$(CC) -o ep5 ep5.c ep5_main.c $(CFLAGS) -DDEBUG $(LIBS)
 
-bench: omp pth
-	-time for m in $$(seq 1 12) ; do for p in $$(seq 1 16) ; do for n in $$(seq 1 12) ; do echo -n "OMP: m=$$((2**$$m)) p=$$((2**$$p)) n=$$((2**$$n)) - " && ./omp_ep5 $$((2**$$m)) $$((2**$$p)) $$((2**$$n)); done done done
-	-time for m in $$(seq 1 12) ; do for p in $$(seq 1 16) ; do for n in $$(seq 1 12) ; do echo -n "PTH: m=$$((2**$$m)) p=$$((2**$$p)) n=$$((2**$$n)) - " && ./pth_ep5 $$((2**$$m)) $$((2**$$p)) $$((2**$$n)); done done done
+bench: ep5
+	-time for m in $$(seq 1 12) ; do for p in $$(seq 1 16) ; do for n in $$(seq 1 12) ; do echo -n "OMP: m=$$((2**$$m)) p=$$((2**$$p)) n=$$((2**$$n)) - " && ./ep5 O $$((2**$$m)) $$((2**$$p)) $$((2**$$n)); done done done
+	-time for m in $$(seq 1 12) ; do for p in $$(seq 1 16) ; do for n in $$(seq 1 12) ; do echo -n "PTH: m=$$((2**$$m)) p=$$((2**$$p)) n=$$((2**$$n)) - " && ./ep5 P $$((2**$$m)) $$((2**$$p)) $$((2**$$n)); done done done
 
-run: omp pth
-	./omp_ep5 $(DEFAULTS)
-	./pth_ep5 $(DEFAULTS)
+run: ep5
+	./ep5 O $(DEFAULTS)
+	./ep5 P $(DEFAULTS)
 
-all: omp pth
+all: ep5
 
-omp: omp_ep5.c
-	$(CC) -o omp_ep5 omp_ep5.c $(CFLAGS) $(OMP)
-
-pth: pth_ep5.c
-	$(CC) -o pth_ep5 pth_ep5.c $(CFLAGS) $(PTH)
+ep5: ep5.c ep5.h ep5_main.c
+	$(CC) -o ep5 ep5.c ep5_main.c $(CFLAGS) $(LIBS)
 
 zip:
-	-zip -uT9v $(AUTHOR).zip Makefile *.c *.md *.txt
+	-zip -uT9v $(AUTHOR).zip Makefile *.c *.h *.md *.txt
 
 clean:
-	-rm -f omp_ep5
-	-rm -f pth_ep5
-	-rm -f domp_ep5
-	-rm -f dpth_ep5
+	-rm -f ep5
+	-rm -f ep5d
