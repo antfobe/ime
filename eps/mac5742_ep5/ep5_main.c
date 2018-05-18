@@ -1,5 +1,7 @@
 #include "ep5.h"
 
+/* Initialize global variables */
+
 int nthreads = 2; 
 long m = 0, n = 0, p = 0;
 double ** A, ** B, ** C;
@@ -12,9 +14,13 @@ pthread_t * threads;
 		USAGE();
 	}
 
-	nthreads = sysconf(_SC_NPROCESSORS_ONLN); /* Playtime is ogre */
+	/* Playtime is ogre, will spawn a thread 
+	 * for every core in case pthreads is used */
+
+	nthreads = sysconf(_SC_NPROCESSORS_ONLN); 
 
 	switch(argv[1][0]){
+		/* Vanilla ep5 OpenMP case */
 		case 'o':
 			strcpy(mode, "OpenMP");
 			if(argv[2]) A = readM(argv[2]);
@@ -30,6 +36,7 @@ pthread_t * threads;
 			}
 		break;	
 		case 'p':
+		/* Vanilla ep5 Pthread case */
 			strcpy(mode, "Pthread");
 			if(argv[2]) A = readM(argv[2]);
 			if(argv[3]) B = readM(argv[3]);
@@ -57,6 +64,7 @@ pthread_t * threads;
 			}
 		break;	
 		case 'O':
+		/* Dry run OpenMP case */
 			strcpy(mode, "OpenMP");
 			m = (int) strtol(argv[2], (char **)NULL, 10); if(!m){ USAGE();}
 			n = (int) strtol(argv[3], (char **)NULL, 10); if(!n){ USAGE();}
@@ -73,6 +81,7 @@ pthread_t * threads;
 
 		break;	
 		case 'P':
+		/* Dry run Pthread case */
 			strcpy(mode, "Pthread");
 			m = (int) strtol(argv[2], (char **)NULL, 10); if(!m){ USAGE();}
 			n = (int) strtol(argv[3], (char **)NULL, 10); if(!n){ USAGE();}
@@ -99,9 +108,6 @@ pthread_t * threads;
 			gettimeofday(&end, NULL);
 
 			free(threads);
-			if(!writeM(argv[4], C)) {
-				DBG("failed to write C matrix to file"); exit(-1);
-			}
 		break;
 		default:
 			USAGE();	

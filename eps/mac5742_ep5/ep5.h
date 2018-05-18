@@ -6,16 +6,23 @@
 #include <omp.h>
 #include <pthread.h>
 
+/* Some macros to help with overall programming tasks */
+
 #define MALLOC_CHECK(x) do { printf("\nMemmory allocation error at {%s}, line [%d]\n", x, __LINE__); exit(-1); } while(0)
 #define DIFF_CHECK(x) do { printf("\nTime difference is less than 0 at {%s}, line [%d]\n", x, __LINE__); exit(-1); } while(0)
 #define VARNAME(x)  #x
 #define USAGE() do { printf("Usage: ep5 < implementação: p | o > < path A: 'A.txt' > < path B: 'B.txt'> < path C: 'C.txt' > | \n  < Dry run (on dirty mem): P | O > < m > < n > < p >\n\twith m, n, p integers!\n"); exit(0); } while(0)
 #define DBG(x) printf("\nDBG - %s at LINE [%d]: FILE [%s]\n", x, __LINE__, __FILE__);
 
+/* Global variables */
+
 extern int nthreads;
 extern long m, n, p;
 extern double ** A, ** B, ** C; 
-extern struct timeval begin, end;
+
+/* Functions. mmul is not actually used in this
+ * programm, it just helped me test parallel 
+ * performance gain */
 
 int omp_mmul(long m, long n, long p, double ** A, double ** B, double ** C);
 int tvsub(struct timeval *result, struct timeval *t2, struct timeval *t1);
