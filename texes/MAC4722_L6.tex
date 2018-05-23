@@ -1,0 +1,86 @@
+% to change the appearance of the header, questions, problems or subproblems, see the homework.cls file or
+% override the \Problem, \Subproblem, \question or \printtitle commands.
+
+% The hidequestions option hides the questions. Remove it to print the questions in the text.
+
+\title{MAC4722 - Lista 6}
+
+\documentclass{homework}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\newtheorem*{theorem}{Lema do Bombeamento}
+
+% Set up your name, the course name and the homework set number.
+\homeworksetup{
+    username={Jean Fobe, N$^o$USP 7630573},
+    course={Linguagens, Autômatos e Computabilidade - MAC4722},
+    setnumber=6}
+\begin{document}% this also prints the header.
+\pagestyle{fancy}
+\fancyfoot[L]{Jean Fobe, 7630573}
+
+% use starred problems or subproblems to apply manual numbering.
+\problem*{2}
+\question{Escreva uma gramática livre de contexto para cada uma das linguagens a seguir. Explique cada uma das regras de substituição de sua gramática para justificar porque a linguagem gerada pela sua gramática é a correspondente linguagem do enunciado.}
+	\begin{itemize}
+		\item[(b)] O complemento da linguagem $\{a^n b^n:\ n \geq 0\}$\\
+		$Resp:$ Existe uma gramática $G = (V, \Sigma, R, S)$ que gera a linguagem acima, onde: % ($https://math.stackexchange.com/questions/550756/how-to-create-a-grammar-for-complement-of-anbn$)
+		\[V = \]
+		\item[(c)] $\{a^m b^n c^p d^q:\ m,n,p,q \geq 0\ e\ m + n = p + q\}$\\
+		$Resp:$ Existe uma gramática $G = (V, \Sigma, R, S)$ que gera a linguagem acima, onde: % $(https://cs.stackexchange.com/questions/83150/is-this-language-context-free-l-ambncpdq-mn-pq)$
+		\begin{align*}
+			V &= \{S, T, U, V\};\\
+			\Sigma &= \{a,b,c,d\};\\
+			R &= \{S \rightarrow aSd\ |\ T\ |\ U\ |\ V\ |\ \lambda,\\
+				&\qquad	T \rightarrow aTc\ |\ V\ |\ \lambda, \\
+				&\qquad	U \rightarrow bUd\ |\ V\ |\ \lambda, \\
+				&\qquad	V \rightarrow bVc\ |\ \lambda\};
+		\end{align*}
+	\end{itemize}
+\pagebreak
+
+\problem*{2}
+\question{Considere as linguagens:
+	\begin{align*}
+		A &= \{b^kx: x \in \{a,b\}^*\ e\ |x|_b \geq k \geq 1\}\ e\\
+		B &= \{b^kx: x \in \{a,b\}^*\ e\ |x|_b \leq k,\ k \geq 1\}.	
+	\end{align*}	 
+}
+	\begin{enumerate}
+		\item[(b)] Prove que $B$ não é linguagem regular.\\
+		$Resp:$ Vamos provar por contradição que $B$ não é regular.\\
+			Supondo que $B$ é regular, seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $B$ e a palavra $w = b^pab^pa$. Com $x = b^r, y = b^{s}, p \geq |xy| \geq |y| \geq 1\ e\ z = b^{p-r-s}ab^pa$, considere a palavra ($i = 0$):
+			\[t = xy^0z = b^r(b^s)^0b^{p-r-s}ab^pa = b^{p-s}ab^pa\]
+			Como $|t|=2p-s+2$ e o prefixo com somente `b's da palavra $w,\ w_p$ é tal que $|w_p|_b = p - s$ e o resto da palavra, o sufixo $w_s$, fica com $|w_s|_b = p$. Sendo $|w_s|_b > |w_p|_b$, $w \notin B$, contradizendo a condição \textit{3} do \textbf{LB}.\\
+			Portanto $B$ não é regular.
+	\end{enumerate}
+	
+\problem*{3}
+\question{Considere a linguagem $L = \{a^i b^j c^k: i,j,k \geq 0\ e\ (i = 0\ ou\ j = k)\}.$}
+	\begin{itemize}
+		\item[(a)] Prove que L não é regular.\\
+		$Resp:$ Vamos provar por contradição que $L$ não é regular.\\
+			Se $L$ é regular, sabendo que o conjunto das linguagens regulares é fechado para operação de união, podemos descrever $L$ como uma união de linguagens regulares: 
+			\[L = L_1 \cup L_2,\ L_1 = \{b^j c^k:j,k \geq 0\}\ e\ L_2 = \{a^i b^j c^j:i,j \geq 0\}\] 
+			Podemos também fazer uma intersecção $L \cap L_{bc}$, com $L_{abc} = \{ab^x c^y:x,y \geq 0\}$ uma linguagem regular, e teremos outra linguagem regular como resultado, dado que o conjunto de linguagens regulares é fechado para essa operação:
+			\begin{align*}
+				L_{aux} &= L\ \cap\ L_{abc} = \{ab^j c^j:j \geq 0\}\ e\\
+				L_{aux} &= \{a\}\ .\ L_{nr},\ L_{nr} = \{b^j c^j:j \geq 0\}
+			\end{align*}
+			Como sabemos que $L_{nr}$ não é regular (é uma linguagem da forma $\{a^nb^n:n \geq 0\}$), chegamos em uma contradição, porque partindo de operações entre linguagens regulares obtivemos $L_{nr}$ como resultado. Então, concluímos que $L$ não é regular.
+	\end{itemize}
+	\begin{itemize}
+		\item[(b)] Forneça um inteiro positivo p e mostre que a linguagem L satisfaz
+as condições do Lema do Bombeamento para esse p.\\
+		$Resp:$ Seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $L$ e a palavra $w = a^pb^jc^j$. Tomando $p = 1,$ para $j \geq 0$. Com $x = a^0, y = a^p, p \geq |xy| \geq |y| \geq 1\ e\ z = b^j c^j$, considere todas as palavras que satisfazem ($i \geq 0$):
+			\[xy^iz = a^0(a^{p})^i b^j c^j = a^{pi} b^j c^j\]
+		Observamos que para todo inteiro $i,j \geq 0$ o \textbf{LB} é satisfeito. Então, para um inteiro $p = 1$, teremos um conjunto de palavras $W = a^{i} b^j c^j$, todas elas pertencendo à $L$.
+	\end{itemize}
+\end{document}
