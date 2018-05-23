@@ -23,7 +23,7 @@ ep5: ep5.c ep5.h ep5_main.c
 	$(CC) -o ep5 ep5.c ep5_main.c $(CFLAGS) $(LIBS)
 
 zip:
-	-zip -uT9v $(AUTHOR).zip Makefile *.c *.h *.md *.txt
+	-zip -uT9v $(AUTHOR).zip Makefile ep5* *.md *.txt
 
 clean:
 	-rm -f ep5
