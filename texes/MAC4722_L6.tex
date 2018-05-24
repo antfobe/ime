@@ -9,13 +9,15 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage{amsthm}
+\usepackage{mathtools}
+
 \usepackage{tikz}
 \usetikzlibrary{automata,positioning}
 
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 
-\newtheorem*{theorem}{Lema do Bombeamento}
+\newtheorem*{theorem}{Forma Normal de Chomsky}
 
 % Set up your name, the course name and the homework set number.
 \homeworksetup{
@@ -31,38 +33,54 @@
 \question{Escreva uma gramática livre de contexto para cada uma das linguagens a seguir. Explique cada uma das regras de substituição de sua gramática para justificar porque a linguagem gerada pela sua gramática é a correspondente linguagem do enunciado.}
 	\begin{itemize}
 		\item[(b)] O complemento da linguagem $\{a^n b^n:\ n \geq 0\}$\\
-		$Resp:$ Existe uma gramática $G = (V, \Sigma, R, S)$ que gera a linguagem acima, onde: % ($https://math.stackexchange.com/questions/550756/how-to-create-a-grammar-for-complement-of-anbn$)
-		\[V = \]
+		$Resp:$ Antes de escrever uma gramática vamos antes explicitar o complemento da linguagem acima nos seguintes casos:
+		\begin{enumerate}
+			\item $\{a^n b^m:\ n,m \geq 0\ e\ n \neq m\}$;
+			\item $\{b x:\ x \in \{a,b\}^*\}$;
+			\item $\{a^n b^n y:\ n \geq 0,\ y \in \{a,b\}^+\}$;
+		\end{enumerate}		 Existe uma gramática $G = (V, \Sigma, R, S)$ que gera o complemento de $\{a^n b^n:\ n \geq 0\}$, onde: % ($https://math.stackexchange.com/questions/550756/how-to-create-a-grammar-for-complement-of-anbn$)
+		\begin{align*}
+			V &= \{S\};\\
+			\Sigma &= \{a,b\};\\
+			R &= \{S \rightarrow A\ |\ B\ |\ C,\\
+			(1^o\ caso)\ A & \rightarrow Abb\ |\ aaA\ |\ F,\\
+			(2^o\ caso)\ B & \rightarrow bF,\\
+			(3^o\ caso)\ C & \rightarrow aCbC\ |\ F,\\
+			F & \rightarrow FF\ |\ a\ |\ b\};
+		\end{align*}
 		\item[(c)] $\{a^m b^n c^p d^q:\ m,n,p,q \geq 0\ e\ m + n = p + q\}$\\
 		$Resp:$ Existe uma gramática $G = (V, \Sigma, R, S)$ que gera a linguagem acima, onde: % $(https://cs.stackexchange.com/questions/83150/is-this-language-context-free-l-ambncpdq-mn-pq)$
 		\begin{align*}
-			V &= \{S, T, U, V\};\\
+			V &= \{S, T, U, W\};\\
 			\Sigma &= \{a,b,c,d\};\\
-			R &= \{S \rightarrow aSd\ |\ T\ |\ U\ |\ V\ |\ \lambda,\\
-				&\qquad	T \rightarrow aTc\ |\ V\ |\ \lambda, \\
-				&\qquad	U \rightarrow bUd\ |\ V\ |\ \lambda, \\
-				&\qquad	V \rightarrow bVc\ |\ \lambda\};
+			R &= \{S \rightarrow aSd\ |\ T\ |\ U\ |\ W\ |\ \lambda,\\
+				&\qquad	T \rightarrow aTc\ |\ W\ |\ \lambda, \\
+				&\qquad	U \rightarrow bUd\ |\ W\ |\ \lambda, \\
+				&\qquad	W \rightarrow bWc\ |\ \lambda\};
 		\end{align*}
 	\end{itemize}
 \pagebreak
 
-\problem*{2}
-\question{Considere as linguagens:
-	\begin{align*}
-		A &= \{b^kx: x \in \{a,b\}^*\ e\ |x|_b \geq k \geq 1\}\ e\\
-		B &= \{b^kx: x \in \{a,b\}^*\ e\ |x|_b \leq k,\ k \geq 1\}.	
-	\end{align*}	 
-}
-	\begin{enumerate}
-		\item[(b)] Prove que $B$ não é linguagem regular.\\
-		$Resp:$ Vamos provar por contradição que $B$ não é regular.\\
-			Supondo que $B$ é regular, seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento} para $B$ e a palavra $w = b^pab^pa$. Com $x = b^r, y = b^{s}, p \geq |xy| \geq |y| \geq 1\ e\ z = b^{p-r-s}ab^pa$, considere a palavra ($i = 0$):
-			\[t = xy^0z = b^r(b^s)^0b^{p-r-s}ab^pa = b^{p-s}ab^pa\]
-			Como $|t|=2p-s+2$ e o prefixo com somente `b's da palavra $w,\ w_p$ é tal que $|w_p|_b = p - s$ e o resto da palavra, o sufixo $w_s$, fica com $|w_s|_b = p$. Sendo $|w_s|_b > |w_p|_b$, $w \notin B$, contradizendo a condição \textit{3} do \textbf{LB}.\\
-			Portanto $B$ não é regular.
-	\end{enumerate}
-	
 \problem*{3}
+\question{Mostre que se G é uma gramática livre de contexto na Forma Normal de Chomsky então, para cada palavra não vazia $w \in L(G)$ são necessários exatamente $2|w| - 1$ passos em qualquer derivação de w.}
+	\begin{theorem}
+		(Sipser p. 107, definição 2.8) Uma gramática livre de contexto está na \textbf{forma normal de Chomsky} se todas as suas regras são dadas na forma:
+		\begin{align*}
+			A & \rightarrow BC; \\
+			A & \rightarrow a;
+		\end{align*}
+		Onde $a$ is any terminal e $A,B,C$ são variáveis quaisqueres, com $B$ ou $C$ não sendo variável de início. Adicionalmente, é permitida a regra $S \rightarrow \lambda$, em que $S$ é a variável inicial.  
+	\end{theorem}
+	$Resp:$ Seja $|w| = n$. Podemos derivar a palavra $w$ a partir de uma gramática $G$ na \textbf{forma normal de Chomsky}. A derivação inicia pela variável $S$, com $|S| = 1$.\\
+	Usando $n-1$ regras da forma $A \rightarrow BC\ (variavel \rightarrow variavel\ variavel)$, construímos uma palavra formada por apenas variáveis de tamanho $n$.\\
+	Podemos, então, aplicar a regra do tipo $A \rightarrow a\ (variavel \rightarrow simbolo)$ na palavra de tamanho $n$, realizando mais $n$ derivações e chegando na palavra $w$. No total aplicamos $(n - 1) + n = 2n -1$ passos de derivação para chegar em $w$. Em expressões:
+		\begin{align*}
+			& |w| = n; \\			
+			& S \xRightarrow[\text{G}]{} V_1V_2\ \xRightarrow[\text{G}]{n-2} V_1V_2...V_n,\  (V_1,V_2,...,V_n\ todas\ variaveis\ de\ G); \\
+			& V_1V_2...V_n \xRightarrow[\text{G}]{n} w;
+		\end{align*}
+
+\problem*{4}
 \question{Considere a linguagem $L = \{a^i b^j c^k: i,j,k \geq 0\ e\ (i = 0\ ou\ j = k)\}.$}
 	\begin{itemize}
 		\item[(a)] Prove que L não é regular.\\

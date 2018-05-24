@@ -1,17 +1,20 @@
-CC		= nvcc 
-EXEC	= out
+all: dotProd dotCpu
 
-SOURCES = \
-cuda_mmult_kernels.cu \
-cuda_mmult.cu
+include common/Makefile.common
 
-OBJS = $(SOURCES:.cu=.o)
+dotCpu: 
+	$(CC) $(CFLAGS) -o dot_cpu dot_cpu.cu
 
-%.o: %.cu
-	$(CC) -c -O3 -o $@ $<
+dotProd.o: dotProd.cu
+	$(CC) $(CFLAGS) -c dotProd.cu
 
-all: $(OBJS)
-	$(CC) -link -L/usr/local/cuda/lib64/ -O3 $(OBJS) -o $(EXEC)
+dotProd: dotProd.o
+	$(CC) $(CFLAGS) dotProd.o -o dotProd
+
+tests: dotProd dotCpu
+	./dotProd $(sizeV) $(DEVICE_ID) 
+	./dot_cpu $(sizeV)
+
 
 clean:
-	@rm -f $(OBJS) $(EXEC)
+	rm -rf *.o dotProd dot_cpu
