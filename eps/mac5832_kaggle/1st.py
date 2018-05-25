@@ -2,7 +2,6 @@
 
 import pandas as pd
 df = pd.read_csv('train.csv',encoding='latin1', dtype={'SourcePath': str}, );
-print(list(df.columns.values))
 df = df.drop(['y'], axis = 1);
 print(list(df.columns.values))
 
@@ -47,8 +46,19 @@ clf.fit(X_train, Y_train);
 
 ##predicted_svm = text_clf_svm.predict(X_test);
 predicted_svm = clf.predict(X_test);
-print(predicted_svm);
+
+with open('submission.csv', 'w') as submission:
+	print('id,y', file = submission);
+	for idx in np.nditer(predicted_svm):
+		print(str(idx) + ','+ str(int(predicted_svm[idx])), file = submission);
+
 '''
+np.savetxt("submission.csv", 
+	np.column_stack((
+		np.arange(0, len(predicted_svm)), 
+		predicted_svm.astype)),
+	fmt="%d,%d",
+	header = "id,y");
 np.mean(predicted_svm == Y_test);
 
 pd.concat([pd.Series(X_test),pd.Series(Y_test)],axis=1);
