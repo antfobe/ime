@@ -1,12 +1,17 @@
 #!/usr/bin/python3
 
+import numpy as np
 import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import SGDClassifier
+from sklearn import preprocessing
+from sklearn import svm
 df = pd.read_csv('train.csv',encoding='latin1', dtype={'SourcePath': str}, );
 df = df.drop(['y'], axis = 1);
 print(list(df.columns.values))
 
-import numpy as np
-from sklearn import preprocessing
 
 le = preprocessing.LabelEncoder()
 for col in df:
@@ -15,11 +20,9 @@ for col in df:
 datanp = df.as_matrix();
 X_train = datanp[:, 0:];
 Y_train = datanp[:, 1];
-df.head();
+print(X_train[0,:], X_train[1,:]);
 
 testdf = pd.read_csv('test.csv',encoding='latin1', dtype={'SourcePath': str}, );
-##testdf.drop(['y'], axis = 1);
-##testdf.DocumentType = testdf.DocumentType.astype(str);
 testdf.head();
 
 letest = preprocessing.LabelEncoder()
@@ -28,40 +31,45 @@ for col in testdf:
 
 testnp = testdf.as_matrix();
 X_test = testnp[:, 0:];
-##Y_test = testnp[:, 1];
+print(X_test[0,:], X_test[1,:]);
 
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.linear_model import SGDClassifier
-from sklearn import svm
-'''
-text_clf_svm = Pipeline([('vect', CountVectorizer(stop_words='english')), ('tfidf', TfidfTransformer()),
-                         ('clf-svm', SGDClassifier(loss='hinge', penalty='l2',alpha=1e-3, max_iter=5, random_state=42))]);
-text_clf_svm = text_clf_svm.fit(X_train, Y_train);
-'''
+for fig_num, kernel in enumerate(('linear', 'rbf', 'poly')):
+    clf = svm.SVC(kernel=kernel, gamma=10)
+    clf.fit(X_train, Y_train)
 
+    plt.figure(fig_num)
+    plt.clf()
+    plt.scatter(datanp[:, 0], datanp[:, 1], c=Y_train, zorder=10, cmap=plt.cm.Paired,
+                edgecolor='k', s=20)
+
+    # Circle out the test data
+    plt.scatter(X_test[:, 0], X_test[:, 1], s=80, facecolors='none',
+                zorder=10, edgecolor='k')
+
+    plt.axis('tight')
+    x_min = datanp[:, 0].min()
+    x_max = datanp[:, 0].max()
+    y_min = datanp[:, 1].min()
+    y_max = datanp[:, 1].max()
+
+    XX, YY = np.mgrid[x_min:x_max:200j, y_min:y_max:200j]
+    Z = clf.decision_function(np.c_[XX.ravel(), YY.ravel()])
+
+    # Put the result into a color plot
+    Z = Z.reshape(XX.shape)
+    plt.pcolormesh(XX, YY, Z > 0, cmap=plt.cm.Paired)
+    plt.contour(XX, YY, Z, colors=['k', 'k', 'k'],
+                linestyles=['--', '-', '--'], levels=[-.5, 0, .5])
+
+    plt.title(kernel)
+plt.show()
+'''
 clf = svm.SVC();
 clf.fit(X_train, Y_train);
 
-##predicted_svm = text_clf_svm.predict(X_test);
 predicted_svm = clf.predict(X_test);
-
 with open('submission.csv', 'w') as submission:
 	print('id,y', file = submission);
 	for idx in np.nditer(predicted_svm):
 		print(str(idx) + ','+ str(int(predicted_svm[idx])), file = submission);
-
-'''
-np.savetxt("submission.csv", 
-	np.column_stack((
-		np.arange(0, len(predicted_svm)), 
-		predicted_svm.astype)),
-	fmt="%d,%d",
-	header = "id,y");
-np.mean(predicted_svm == Y_test);
-
-pd.concat([pd.Series(X_test),pd.Series(Y_test)],axis=1);
-
-data.to_csv('outpoot2.csv');
 '''
