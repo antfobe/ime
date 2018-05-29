@@ -33,7 +33,7 @@
 \question{Escreva uma gramática livre de contexto para cada uma das linguagens a seguir. Explique cada uma das regras de substituição de sua gramática para justificar porque a linguagem gerada pela sua gramática é a correspondente linguagem do enunciado.}
 	\begin{itemize}
 		\item[(b)] O complemento da linguagem $\{a^n b^n:\ n \geq 0\}$\\
-		$Resp:$ Antes de escrever uma gramática vamos antes explicitar o complemento da linguagem acima nos seguintes casos:
+		$Resp:$ Antes de escrever uma gramática vamos antes explicitar o complemento da linguagem acima nos seguintes casos (Admitimos aqui que $\Sigma = \{a,b\}$):
 		\begin{enumerate}
 			\item $\{a^n b^m:\ n,m \geq 0\ e\ n \neq m\}$;
 			\item $\{b x:\ x \in \{a,b\}^*\}$;
@@ -43,20 +43,20 @@
 			V &= \{S\};\\
 			\Sigma &= \{a,b\};\\
 			R &= \{S \rightarrow A\ |\ B\ |\ C,\\
-			(1^o\ caso)\ A & \rightarrow Abb\ |\ aaA\ |\ F,\\
-			(2^o\ caso)\ B & \rightarrow bF,\\
-			(3^o\ caso)\ C & \rightarrow aCbC\ |\ F,\\
+			(1^o\ caso)\ A & \rightarrow Ab\ |\ aA\ |\ F,\\
+			(2^o\ caso)\ B & \rightarrow bF\ |\ b,\\
+			(3^o\ caso)\ C & \rightarrow aCF\ |\ F,\\
 			F & \rightarrow FF\ |\ a\ |\ b\};
 		\end{align*}
 		\item[(c)] $\{a^m b^n c^p d^q:\ m,n,p,q \geq 0\ e\ m + n = p + q\}$\\
-		$Resp:$ Existe uma gramática $G = (V, \Sigma, R, S)$ que gera a linguagem acima, onde: % $(https://cs.stackexchange.com/questions/83150/is-this-language-context-free-l-ambncpdq-mn-pq)$
+		$Resp:$ Extraímos da descrição acima que $|a^m b^n| = |c^p d^q|$, então uma gramática $G = (V, \Sigma, R, S)$ para gerar essa linguagem pode ser dada da seguinte forma: % $(https://cs.stackexchange.com/questions/83150/is-this-language-context-free-l-ambncpdq-mn-pq)$
 		\begin{align*}
-			V &= \{S, T, U, W\};\\
+			V &= \{A, B, C\};\\
 			\Sigma &= \{a,b,c,d\};\\
-			R &= \{S \rightarrow aSd\ |\ T\ |\ U\ |\ W\ |\ \lambda,\\
-				&\qquad	T \rightarrow aTc\ |\ W\ |\ \lambda, \\
-				&\qquad	U \rightarrow bUd\ |\ W\ |\ \lambda, \\
-				&\qquad	W \rightarrow bWc\ |\ \lambda\};
+			R &= \{S \rightarrow ABC,\\
+				&\qquad	A \rightarrow a\ |\ \lambda, \\
+				&\qquad	B \rightarrow bBc\ |\ aABCd\ |\ \lambda, \\
+				&\qquad	C \rightarrow d\ |\ \lambda\};
 		\end{align*}
 	\end{itemize}
 \pagebreak
