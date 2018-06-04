@@ -42,11 +42,11 @@
 		\begin{align*}
 			V &= \{S\};\\
 			\Sigma &= \{a,b\};\\
-			R &= \{S \rightarrow A\ |\ B\ |\ C,\\
-			(1^o\ caso)\ A & \rightarrow Ab\ |\ aA\ |\ F,\\
-			(2^o\ caso)\ B & \rightarrow bF\ |\ b,\\
-			(3^o\ caso)\ C & \rightarrow aCF\ |\ F,\\
-			F & \rightarrow FF\ |\ a\ |\ b\};
+			R &= \{S \rightarrow AI\ |\ IB\ |\ bC\ |\ AIBC,\\
+			(1^o\ caso)\ A & \rightarrow Aa\ |\ a,\\
+			(1^o\ caso)\ B & \rightarrow bB\ |\ b,\\
+			(2^o\ caso)\ C & \rightarrow a\ |\ b\ |\ CC,\\
+			(3^o\ caso)\ I & \rightarrow AIB\ |\ IC\};
 		\end{align*}
 		\item[(c)] $\{a^m b^n c^p d^q:\ m,n,p,q \geq 0\ e\ m + n = p + q\}$\\
 		$Resp:$ Extraímos da descrição acima que $|a^m b^n| = |c^p d^q|$, então uma gramática $G = (V, \Sigma, R, S)$ para gerar essa linguagem pode ser dada da seguinte forma: % $(https://cs.stackexchange.com/questions/83150/is-this-language-context-free-l-ambncpdq-mn-pq)$
@@ -54,10 +54,17 @@
 			V &= \{A, B, C\};\\
 			\Sigma &= \{a,b,c,d\};\\
 			R &= \{S \rightarrow ABC,\\
-				&\qquad	A \rightarrow a\ |\ \lambda, \\
-				&\qquad	B \rightarrow bBc\ |\ aABCd\ |\ \lambda, \\
-				&\qquad	C \rightarrow d\ |\ \lambda\};
+				&\qquad	A \rightarrow a, \\
+				&\qquad	B \rightarrow bDc\ |\ aABCd\ |\ \lambda, \\
+				&\qquad	C \rightarrow d, \\
+				&\qquad	D \rightarrow bDc\ |\ \lambda\};
 		\end{align*}
+		Agora observemos as palavras que as regras geram:
+		\begin{align*}
+			\forall w \in \Sigma^*,\  D & \xRightarrow[\text{G}]{*} w \iff w = b^i c^i, i \geq 0;\\
+			\forall w \in \Sigma^*,\  B & \xRightarrow[\text{G}]{*} w \iff w = a^i b^j c^j d^i,\ i,j \geq 0;
+		\end{align*}
+		Todas as palavras geradas por essa gramática tem prefixo de 'a's e 'b's igual aos de 'c's e 'd's, $|a^m b^n| = |c^p d^q|,\ m,n,p,q \geq 0$.
 	\end{itemize}
 \pagebreak
 
