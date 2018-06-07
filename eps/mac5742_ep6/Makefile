@@ -1,20 +1,30 @@
-all: dotProd dotCpu
+CC=nvcc
+CFLAGS=-lm -O2 -w -D Tile_Width=128 -arch sm_35
+DEVICE_ID=0
+sizeV=262144
+sizeM=2048 
 
-include common/Makefile.common
+all: matrix_sum_normal matrix_sum_coalesced matrix_sum_cpu
 
-dotCpu: 
-	$(CC) $(CFLAGS) -o dot_cpu dot_cpu.cu
+matrix_sum_cpu: 
+	$(CC) $(CFLAGS) matrix_sum_cpu.cu -o matrix_sum_cpu
 
-dotProd.o: dotProd.cu
-	$(CC) $(CFLAGS) -c dotProd.cu
+matrix_sum_normal.o: matrix_sum_normal.cu
+	$(CC) $(CFLAGS) -c matrix_sum_normal.cu
 
-dotProd: dotProd.o
-	$(CC) $(CFLAGS) dotProd.o -o dotProd
+matrix_sum_normal: matrix_sum_normal.o
+	$(CC) $(CFLAGS) matrix_sum_normal.o -o matrix_sum_normal
 
-tests: dotProd dotCpu
-	./dotProd $(sizeV) $(DEVICE_ID) 
-	./dot_cpu $(sizeV)
+matrix_sum_coalesced.o: matrix_sum_coalesced.cu
+	$(CC) $(CFLAGS) -c matrix_sum_coalesced.cu
 
+matrix_sum_coalesced: matrix_sum_coalesced.o 
+	$(CC) $(CFLAGS) matrix_sum_coalesced.o -o matrix_sum_coalesced
+
+tests: all 
+	./matrix_sum_normal $(sizeM) $(DEVICE_ID)
+	./matrix_sum_coalesced $(sizeM) $(DEVICE_ID) 
+	./matrix_sum_cpu $(sizeM)
 
 clean:
-	rm -rf *.o dotProd dot_cpu
+	rm -rf *.o matrix_sum_normal matrix_sum_coalesced matrix_sum_cpu
