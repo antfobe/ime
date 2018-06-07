@@ -1,9 +1,65 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 
-def get_housing_prices_data(N, verbose=True):
+def grad_check(X, y, w, compute_cost, compute_wgrad, h=1e-4, verbose=False):
+    """
+    Check gradients for linear regression.
+
+    :param X: design matrix
+    :type X: np.ndarray(shape=(N, d))
+    :param y: regression targets
+    :type y: np.ndarray(shape=(N, 1))
+    :param w: weights
+    :type w: np.array(shape=(d, 1))
+    :param h: small variation
+    :type h: float
+    :return: gradient test
+    :rtype: boolean
+    """
+    Jw = compute_cost(X, y, w)
+    grad = compute_wgrad(X, y, w)
+    passing = True
+    d = w.shape[0]
+    for i in range(d):
+        w_plus_h = np.array(w, copy=True)
+        w_plus_h[i] = w_plus_h[i] + h
+        Jw_plus_h = compute_cost(X, y, w_plus_h)
+        w_minus_h = np.array(w, copy=True)
+        w_minus_h[i] = w_minus_h[i] - h
+        Jw_minus_h = compute_cost(X, y, w_minus_h)
+        numgrad_i = (Jw_plus_h - Jw_minus_h) / (2 * h)
+        reldiff = abs(numgrad_i - grad[i]) / max(1, abs(numgrad_i), abs(grad[i])) # noqa
+        if reldiff > 1e-5:
+            passing = False
+            if verbose:
+                msg = """
+                Seu gradiente = {0}
+                Gradiente numérico = {1}""".format(grad[i], numgrad_i)
+                print("            " + str(i) + ": " + msg)
+                print("            Jw = {}".format(Jw))
+                print("            Jw_plus_h = {}".format(Jw_plus_h))
+                print("            Jw_minus_h = {}\n".format(Jw_minus_h))
+
+    if passing and verbose:
+        print("Gradiente passando!")
+
+    return passing
+
+
+def add_feature_ones(X):
+    """
+    Returns the ndarray 'X' with the extra
+    feature column containing only 1s.
+
+    :param X: input array
+    :type X: np.ndarray(shape=(N, d))
+    :return: output array
+    :rtype: np.ndarray(shape=(N, d+1))
+    """
+    return np.concatenate((np.ones((X.shape[0], 1)), X), axis=1)
+
+
+def get_housing_prices_data(N):
     """
     Generates artificial linear data,
     where x = square meter, y = house price
@@ -25,19 +81,6 @@ def get_housing_prices_data(N, verbose=True):
         y = y.astype("float32")
         y = y.reshape((y.shape[0], 1))
         cond = min(y) > 0
-    xmean, xsdt, xmax, xmin = np.mean(x), np.std(x), np.max(x), np.min(x)
-    ymean, ysdt, ymax, ymin = np.mean(y), np.std(y), np.max(y), np.min(y)
-    if verbose:
-        print("\nX shape = {}".format(x.shape))
-        print("\ny shape = {}\n".format(y.shape))
-        print("X:\nmean {}, sdt {:.2f}, max {}, min {}".format(xmean,
-                                                               xsdt,
-                                                               xmax,
-                                                               xmin))
-        print("\ny:\nmean {}, sdt {:.2f}, max {}, min {}".format(ymean,
-                                                                 ysdt,
-                                                                 ymax,
-                                                                 ymin))
     return x, y
 
 
@@ -58,7 +101,7 @@ def r_squared(y, y_hat):
     sstot = ssres + ssexp
     return 1 - (ssexp / sstot)
 
-    
+
 def randomize_in_place(list1, list2, init=0):
     """
     Function to randomize two lists in the same way.
