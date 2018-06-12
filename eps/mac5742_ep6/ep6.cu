@@ -7,9 +7,9 @@ long mnum = 0;
 
 __global__
 void minappl(int * arrayM, int * arrayS, int mnum){
-  int i = blockIdx.x*blockDim.x + threadIdx.x;
-  int j = i + 8;
-  if (j < N * N * mnum) arrayS[i % 9] = min(arrayM[i], arrayM[j]);
+	int i = blockIdx.x*blockDim.x + threadIdx.x;
+	int j = i + 8;
+	if (j < N * N * mnum) arrayS[i % 9] = min(arrayM[i], arrayM[j]);
 }
 
 int * file2buffer(char * filename) {
