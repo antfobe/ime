@@ -15,9 +15,12 @@ for col in df:
 
 datanp = df.values;
 Y_train = datanp[:, 1];
-df = df.drop(['y'], axis = 1);
-datanp = df.values;
+datanp = df.drop(['y'], axis = 1).values;
 X_train = datanp[:, 0:];
+
+scaler = preprocessing.StandardScaler()
+scaler.fit(X_train);
+X_train = scaler.transform(X_train);
 print(X_train[0,:]);
 
 testdf = pd.read_csv('test.csv',encoding='latin1', dtype={'SourcePath': str}, );
@@ -28,16 +31,18 @@ for col in testdf:
 
 testnp = testdf.values;
 test = testnp[:, 0:];
+test = scaler.transform(test);
 print(test[0,:]);
 
 clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(12, 8, 5, 3), random_state=1)
 clf.fit(X_train, Y_train)                         
 MLPClassifier(activation='relu', alpha=1e-05, batch_size='auto',
        beta_1=0.9, beta_2=0.999, early_stopping=False,
-       epsilon=1e-08, hidden_layer_sizes=(5, 2), learning_rate='constant',
+       epsilon=1e-08, hidden_layer_sizes=(12, 8, 5, 3), learning_rate='constant',
        learning_rate_init=0.001, max_iter=200, momentum=0.9,
        nesterovs_momentum=True, power_t=0.5, random_state=1, shuffle=True,
        solver='lbfgs', tol=0.0001, validation_fraction=0.1, verbose=False,
        warm_start=False)
 
-print(clf.predict(test))
+np.savetxt('nn-submission.csv', X=np.vstack((testdf.values[:,0], clf.predict(test))).T, fmt='%d', delimiter=',', header='id,y');
+print([coef.shape for coef in clf.coefs_]);
