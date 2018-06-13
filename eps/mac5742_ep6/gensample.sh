@@ -14,10 +14,10 @@ fi
 
 printf "$MNUM\n" > $FNAME;
 for i in $(seq 1 $MNUM) ; do
-	printf "***\n" >> $FNAME;
+	printf "∗∗∗\n" >> $FNAME;
 	for j in $(seq 1 3) ; do
-		printf "$(( (RANDOM % 50) + (RANDOM % 25) )) $(( (RANDOM % 50) + (RANDOM % 25) )) $(( (RANDOM % 50) + (RANDOM % 25) ))\n" >> $FNAME;
+		printf "$(( (RANDOM % 10) + (RANDOM % 15) )) $(( (RANDOM % 10) + (RANDOM % 15) )) $(( (RANDOM % 10) + (RANDOM % 15) ))\n" >> $FNAME;
 	done
 done
 
-printf "***\n" >> $FNAME;
+printf "∗∗∗\n" >> $FNAME;
