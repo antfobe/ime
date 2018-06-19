@@ -1,0 +1,185 @@
+% to change the appearance of the header, questions, problems or subproblems, see the homework.cls file or
+% override the \Problem, \Subproblem, \question or \printtitle commands.
+
+% The hidequestions option hides the questions. Remove it to print the questions in the text.
+
+\title{MAC4722 - Lista 7}
+
+\documentclass{homework}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\newtheorem*{theorem}{Lema do Bombeamento para Linguagens Livres de Contexto}
+
+% Set up your name, the course name and the homework set number.
+\homeworksetup{
+    username={Jean Fobe, N$^o$USP 7630573},
+    course={Linguagens, Autômatos e Computabilidade - MAC4722},
+    setnumber=7}
+\begin{document}% this also prints the header.
+\pagestyle{fancy}
+\fancyfoot[L]{Jean Fobe, 7630573}
+
+% use starred problems or subproblems to apply manual numbering.
+\problem*{1}
+\question{Use o Lema do bombeamento para mostrar que as seguintes linguagens não são livres de contexto.}
+\begin{theorem}
+	Se uma linguagem L é livre de contexto, então existe algum inteiro $p \geq 1$ tal que qualquer cadeia s em L com $| s | \geq p$ (onde p é um "comprimento de bombeamento") pode ser escrita como
+    \[s = uvxyz,\]
+com as subcadeias u, v, x, y e z, de tal modo que
+	\begin{enumerate}
+		\item $p \geq |vxy|$,
+    		\item $|vy| \geq 1$, e
+    		\item $uv^i xy^i z$ pertence a L para todo $i \geq 0$. 	
+	\end{enumerate}
+\end{theorem}
+	\begin{itemize}
+		\item[(a)] $L = \{0^n 1^n 0^n 1^n:\ n \geq 0\}$\\
+		$Resp:$ Vamos provar por contradição que $L$ não é livre de contexto.\\
+			Seja $p$ o inteiro fornecido pelo \textbf{Lema do Bombeamento para Linguagens Livres de Contexto} para $L$ e a palavra $s \in \L, s = 0^p 1^p 0^p 1^{p - r} 1^r$. Com $x = 0^p 1^p 0^p 1^{p - r}, y = 1^r, u = v = z = \lambda, p \geq |vxy| \geq |vy| \geq 1\ e\ p > r$, considere a palavra ($i = 0$):
+			\[t = uv^0xy^0z\ = 0^p 1^p 0^p 1^{p - r} (1^r)^0 = 0^p 1^p 0^p 1^{p - r}\]
+			Como o sufixo de apenas '1's de $t$ tem tamanho menor que $p$, $t \notin L$. Isso contradiz a condição \textit{3} do \textbf{LBLLC}.\\
+			Então, $L$ não é linguagem livre de contexto também.
+		\item[(b)] $L = \{t_1\# t_2\# ...\# t_k:\ k \geq 2,\ cada\ t_i \in \{a,b\}^*,\ e\ para\ algum\ i \neq j, t_i = t_j\}$\\
+		$Resp:$ Tentaremos provar por contradição que $L$ não é livre de contexto.\\
+		Seja $p$ o inteiro fornecido pelo \textbf{LBLLC} para $L$ e a palavra $s \in \L, s = b^p\#b^{p - r}b^r$. Com $u = b^p, x = \#b^{p - r}, y = b^r, v = z = \lambda, p \geq |vxy| \geq |vy| \geq 1\ e\ p > r$, considere a palavra ($i = 0$):
+			\[t = uv^0xy^0z\ = b^p\#b^{p - r}(b^r)^0 = b^p\#b^{p - r}\]
+			Como o sufixo $t_s$ e o prefixo $t_p$ separados por $\#$ na palavra $t$ são diferentes, $t_s \neq t_p\ e\ t \notin L$, o que contradiz o item \textit{3} do \textbf{LBLLC}.\\
+			Portanto, $L$ não é livre de contexto.
+		\end{itemize}
+
+\pagebreak
+
+\problem*{2}
+\question{Para quaisquer linguagens $A$ e $B$, defina $A \diamond B = \{xy: x \in A, y \in B\ e\ |x|=|y|\}$. Mostre que, se $A$ e $B$ são regulares, então $A \diamond B$ é uma linguagem livre de contexto.}
+	$Resp:$ Vamos definir uma linguagem livre de contexto $C = \{wz: w,z \in \Sigma^*\ e\ |w|=|z|\}$. Sabendo que existem as linguagens regulares $D,E \subseteq \Sigma^*$, observamos que:
+	\begin{align}
+		& D.E = F,\ uma\ linguagem\ regular;\\
+		& F \cap C = G,\ linguagem\ livre\ de\ contexto;\\
+		& G = C =\{wz: w,z \in \Sigma^*\ e\ |w|=|z|\}.
+	\end{align}
+	Podemos colocar informalmente que $C$ é livre de contexto tendo em mente uma gramática que gera palavras com prefixo e sufixo de mesmo tamanho pertencendo $\Sigma^*$ (Um conjunto de regras possíveis seria $R = \{S \rightarrow ASA\ |\ lambda,\ A \rightarrow \sigma\}, \sigma \in \Sigma$). A partir desses argumentos, para $A$ e $B$  sendo linguagens regulares, $A = \Sigma^* \cap A$ e $B = \Sigma^* \cap B$, teremos $A \diamond B = A.B \cap C$, uma linguagem livre de contexto.
+	
+\problem*{3}
+\question{Seja $L = \{x\#y: x,y \in \{0,1\}^*\ e\ x \neq y\}$. Mostre que L é uma linguagem livre de contexto}
+	$Resp:$ Para mostrarmos que $L$ é livre de contexto vamos definir uma gramática $G = \{V, \Sigma, R, S\}$, de modo que $L(G) = L$.
+	\begin{align*}
+		V & = \{S,A\};\\
+		\Sigma & = \{0,1\};\\
+		R & = \{S \rightarrow ASA\ |\ 0\#1\ |\ 1\#0\ |\ \#0\ |\ \#1\ |\ 0\#\ |\ 1\#,\\
+			& \qquad A \rightarrow 0\ |\ 1\};\\
+		S & = S;
+	\end{align*}
+	Agora observando as palavras que as regras de $R$ geram:
+		\begin{align*}
+			\forall x \in \Sigma^*,\ A & \xRightarrow[\text{G}]{*} x \iff x \in \{0,1\};\\
+			\forall w \in \Sigma^*,\ S & \xRightarrow[\text{G}]{*} w \iff w \in \{0,1\}^*.\{0\#1,1\#0,\#0,\#1,0\#,1\#\}.\{0,1\}^*;\\
+			w \in \{0,1\}^*.\{0\#1,1\#0,\#0,\#1,0\#,1\#\}.\{&0,1\}^* \iff w = x\#y,\ x,y \in \{0,1\}^*\ e\ x \neq y;
+		\end{align*}
+		Dessa forma justificamos que $G$ gera a linguagem acima.
+		
+\pagebreak		
+		
+\problem*{4}
+\question{Considere a gramática livre de contexto $G = \{V, \Sigma, R, S\}$, onde $V = \{S\},\ \Sigma = \{a,b\},\ e\\ R = \{S \rightarrow aSbS\ |\ bSaS\ |\ \lambda\}$.}
+	\begin{enumerate}
+		\item[a)] $G$ é ambígua? Justifique sua resposta.\\
+		Sabemos que $G$ será ambígua se pelo menos duas derivações diferentes resultarem numa mesma palavra. Com isso, observamos que podemos derivar a palavra $abab$ das seguintes formas:
+		\begin{align*}
+			S & \xRightarrow[\text{G}]{aSbS} aSbS \xRightarrow[\text{G}]{aSbS} aSb(aSbS) \xRightarrow[\text{G}]{\lambda} abaSbS \xRightarrow[\text{G}]{\lambda} ababS \xRightarrow[\text{G}]{\lambda} abab;\\
+			S & \xRightarrow[\text{G}]{aSbS} aSbS \xRightarrow[\text{G}]{bSaS} a(bSaS)bS \xRightarrow[\text{G}]{\lambda} abaSbS \xRightarrow[\text{G}]{\lambda} ababS \xRightarrow[\text{G}]{\lambda} abab.
+		\end{align*}
+		Temos, então, que $G$ é ambígua.
+		\item[b)] Prove que $L(G) = \{w \in \Sigma^*: |w_a| = |w_b|\}$.
+			\begin{itemize}
+				\item $L \subseteq L(G)$:\\
+				
+			\end{itemize}
+	\end{enumerate}
+	
+\problem*{5}
+\question{Escreva um descrição informal e formal de uma máquina de Turing que decida a linguagem $L = \{ww:w \in \{0,1\}^*\}$}
+	\begin{itemize}
+		\item Formalmente, temos a Tupla $M = (Q,\Sigma,\Gamma,s,b,F,\delta)$:
+		\begin{align*}
+			Q = &\ \{s, q_{aceita}, q_{rejeita}, q_{1}, q{2}, q_{3}, q_{4}, q_{5}, q_{6}, q_{7}, q_{8}, q_{9}, q_{10}, q_{11}, q_{12}, q_{13}, q_{14}, q_{15}, q_{16}, q_{17}, q_{18}\};\\
+			\Sigma = &\ \{0,1\};\\
+			\Gamma = &\ \{0,1,\_\};\\
+			s = &\ s;\\
+			b = &\ \_;\\
+			F = &\ \{q_{aceita}, q_{rejeita}\};\\
+			\delta :\ &\ (Q - F) \times \Gamma \rightarrow Q \times \Gamma \times \{D,E\};\\
+			&\qquad \delta(s,0) \rightarrow (q_1,0,D);
+			\qquad \delta(s,1) \rightarrow (q_1,1,D);\\
+			&\qquad \delta(s,\_) \rightarrow (q_{aceita},\_,E);\\
+			&\qquad \delta(q_1,1) \rightarrow (q_2,1,D);
+			\qquad \delta(q_1,0) \rightarrow (q_2,0,D);\\
+			&\qquad \delta(q_1,\_) \rightarrow (q_{rejeita},\_,E);\\		
+			&\qquad \delta(q_2,1) \rightarrow (q_1,1,D);
+			\qquad \delta(q_2,0) \rightarrow (q_1,0,D);\\
+			&\qquad \delta(q_2,\_) \rightarrow (q_3,\#,E);\\
+			&\qquad \delta(q_3,1) \rightarrow (q_3,1,E);
+			\qquad \delta(q_3,0) \rightarrow (q_3,0,E);\\
+			&\qquad \delta(q_3,\_) \rightarrow (q_4,\#,D);\\
+			&\qquad \delta(q_3,\#) \rightarrow (q_8,\#,D);\\
+			&\qquad \delta(q_4,1) \rightarrow (q_4,1,D);
+			\qquad \delta(q_4,0) \rightarrow (q_4,0,D);\\
+			&\qquad \delta(q_4,\#) \rightarrow (q_5,\#,E);\\
+			&\qquad \delta(q_5,1) \rightarrow (q_6,\#,D);
+			\qquad \delta(q_5,0) \rightarrow (q_7,0,D);\\
+			&\qquad \delta(q_5,\#) \rightarrow (q_{11},\#,E);\\
+			&\qquad \delta(q_6,\#) \rightarrow (q_3,1,E);\\
+			&\qquad \delta(q_7,\#) \rightarrow (q_3,0,E);\\
+			&\qquad \delta(q_8,1) \rightarrow (q_9,1,E);
+			\qquad \delta(q_8,0) \rightarrow (q_{10},0,E);\\
+			&\qquad \delta(q_9,\#) \rightarrow (q_4,1,D);\\
+			&\qquad \delta(q_{10},\#) \rightarrow (q_4,0,D);\\
+			&\qquad \delta(q_{11},1) \rightarrow (q_{11},1,E);
+			\qquad \delta(q_{11},0) \rightarrow (q_{11},0,E);\\
+			&\qquad \delta(q_{11},\_) \rightarrow (q_{12},\_,D);\\
+			&\qquad \delta(q_{11},X) \rightarrow (q_{12},X,D);\\
+			&\qquad \delta(q_{12},1) \rightarrow (q_{13},X,D);
+			\qquad \delta(q_{12},0) \rightarrow (q_{14},X,D);\\
+			&\qquad \delta(q_{12},\#) \rightarrow (q_{aceita},\#,E);\\
+			&\qquad \delta(q_{13},1) \rightarrow (q_{13},1,D);
+			\qquad \delta(q_{13},0) \rightarrow (q_{13},0,D);\\
+			&\qquad \delta(q_{13},\#) \rightarrow (q_{15},\#,D);\\
+			&\qquad \delta(q_{14},1) \rightarrow (q_{14},1,D);
+			\qquad \delta(q_{14},0) \rightarrow (q_{14},0,D);\\
+			&\qquad \delta(q_{14},\#) \rightarrow (q_{18},\#,D);\\
+			&\qquad \delta(q_{15},\#) \rightarrow (q_{15},\#,D);\\
+			&\qquad \delta(q_{15},X) \rightarrow (q_{15},X,D);\\
+			&\qquad \delta(q_{15},0) \rightarrow (q_{rejeita},0,E);\\
+			&\qquad \delta(q_{15},1) \rightarrow (q_{16},X,E);
+			\qquad \delta(q_{16},X) \rightarrow (q_{16},X,E);\\
+			&\qquad \delta(q_{16},\#) \rightarrow (q_{17},\#,E);\\
+			&\qquad \delta(q_{17},\#) \rightarrow (q_{17},\#,E);\\
+			&\qquad \delta(q_{17},X) \rightarrow (q_{aceita},X,E);\\
+			&\qquad \delta(q_{17},1) \rightarrow (q_{11},1,E);
+			\qquad \delta(q_{17},0) \rightarrow (q_{11},0,E);\\
+			&\qquad \delta(q_{18},\#) \rightarrow (q_{18},\#,D);\\
+			&\qquad \delta(q_{18},X) \rightarrow (q_{18},X,D);\\
+			&\qquad \delta(q_{18},1) \rightarrow (q_{rejeita},1,E);\\
+			&\qquad \delta(q_{18},0) \rightarrow (q_{16},X,E);
+		\end{align*}
+		\item Informalmente, podemos definir a máquina seguindo os passos:
+			\begin{enumerate}
+    				\item Colocar o marcador na frente da entrada (início).
+    				\item Percorrer a entrada inteira até o símbolo branco ($\_$), verificando se o tamanho lido é par. Caso contrário, rejeitar.
+    				\item Colocar marcadores na frente e atrás da entrada.
+    				\item Mover marcadores até que se encontrem no meio da entrada.
+    				\item Comparar as palavras separadas pelos marcadores, símbolo a símbolo, marcando os símbolos lidos (e comparados). Se aparecerem símbolos diferentes na mesma posição duas palavras, rejeitar.
+    				\item Aceitar.				
+			\end{enumerate}
+
+
+	\end{itemize}
+\end{document}

@@ -94,10 +94,10 @@ plot_args = [{'c': 'red', 'linestyle': '-'},
              {'c': 'black', 'linestyle': '-'},
              {'c': 'green', 'linestyle': '-'}]
 
-'''
-clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(12, 8, 5, 3), random_state=1)
+
+clf = MLPClassifier(solver='lbfgs', alpha=1.0, hidden_layer_sizes=(12, 8, 5, 3), random_state=1)
 clf.fit(X_train, Y_train)                         
-MLPClassifier(activation='relu', alpha=1e-05, batch_size='auto',
+MLPClassifier(activation='relu', alpha=1.0, batch_size='auto',
        beta_1=0.9, beta_2=0.999, early_stopping=False,
        epsilon=1e-08, hidden_layer_sizes=(12, 8, 5, 3), learning_rate='constant',
        learning_rate_init=0.001, max_iter=200, momentum=0.9,
@@ -108,8 +108,10 @@ MLPClassifier(activation='relu', alpha=1e-05, batch_size='auto',
 pred = clf.predict(test);
 print("Training set score: %f" % clf.score(X_train, Y_train));
 print("Test set score: %f" % clf.score(test, pred));
+np.savetxt('nn-submission.csv', X=np.vstack((testdf.values[:,0], pred)).T, fmt='%d', delimiter=',', header='id,y');
 '''
 fig, axes = plt.subplots(2, 2, figsize=(15, 10));
 plot_on_dataset(X=X_train, y=Y_train, ax=axes.ravel(), name='kaggle');
+'''
 ##fig.legend(ax.get_lines(), labels, ncol=3, loc="upper center");
 ##plt.show();
