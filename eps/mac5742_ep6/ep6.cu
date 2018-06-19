@@ -17,21 +17,20 @@ long mnum = 0;
 __global__
 void minappl(int * arrayM, int * arrayS, int mnum){
 	extern __shared__ int smin[N2];
-	unsigned int tid = threadIdx.x;
 	unsigned int i = (blockIdx.x*blockDim.x + threadIdx.x);
-//	for(int a = 0; a < N * N * mnum; a ++)printf("arrayM[%d]: (%d)\n", a, arrayM[a]);
-	if (i < mnum) {
+	if (!(i % 2) && i <= mnum) {
 		/* each thread loads one element from global to shared mem */
-		for (unsigned int j = 0; j < N * N; j++) {
+	/*	for (unsigned int j = 0; j < N * N; j++) {
 			smin[j] = arrayM[(i % mnum) * N * N + j];
 		}
 		__syncthreads();
-		
+	*/	
 		/* do reduction in shared mem */
-		for (unsigned int s = 1; s < blockDim.x; s++) {
-			if (tid < s) {
+		for (unsigned int s = 1; s < mnum; s <<= 1) {
+			if ((i + s) <= mnum) {
 				for (unsigned int j = 0; j < N * N; j++){
-					smin[j] = min(smin[j], arrayM[((i + s) % mnum) * N * N + j]);
+					arrayM[i * N * N + j] = min(arrayM[i * N * N + j], arrayM[(i + s) * N * N + j]);
+					smin[j] = arrayM[i * N * N + j];
 				}
 			}
 			__syncthreads();	

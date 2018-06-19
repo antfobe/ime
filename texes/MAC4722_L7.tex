@@ -101,10 +101,27 @@ com as subcadeias u, v, x, y e z, de tal modo que
 		\item[b)] Prove que $L(G) = \{w \in \Sigma^*: |w_a| = |w_b|\}$.
 			\begin{itemize}
 				\item $L \subseteq L(G)$:\\
-				
+				Vamos provar por indução  no tamanho da palavra derivada. 
+					\begin{itemize}
+						\item[Base:] $w_a = w_b = \lambda,\ S \xRightarrow[\text{G}]{} \lambda$, pois $(S \rightarrow \lambda) \in R$;
+						\item[Hipótese:]  $|w| \geq 0,\ S \xRightarrow[\text{G}]{*} w, |w|_a=|w|_b \leq n, n \geq 0$;
+						\item[Passo:] Observamos que todas as derivações de $S$ tem números iguais de 'a's e 'b's, uma vez que, ou $S$ introduz, um terminal 'a' e um terminal 'b' na cadeia, ou $S$ deriva a palavra vazia. Então $S \xRightarrow[\text{G}]{2n-1} w, |w|_a=|w|_b \leq 2n - 1$;
+						\item Como para $S \xRightarrow[\text{G}]{n} w, 0 \leq |w|_a=|w|_b \leq n$, $L \subseteq L(G)$;
+					\end{itemize}
+				\item $L(G) \subseteq L$:\\
+				Vamos provar por indução no número de passos de derivação.
+					\begin{itemize}
+						\item[Base:] $S \xRightarrow[\text{G}]{1} x, x = \lambda$, pois essa é a única derivação que resulta em palavra composta por apenas terminais e $|w|_a = |w|_ b = 0$;
+						\item[Hipótese:]  $n \geq 1,\ S \xRightarrow[\text{G}]{2n -1} w, |w|_a=|w|_b \leq n, n \geq 0$;
+						\item[Passo:] Vamos supor $S \xRightarrow[\text{G}]{2n+1} w, |w|_a=|w|_b \leq n + 1$, então, $S \xRightarrow[\text{G}]{} aSbS \xRightarrow[\text{G}]{*} w$ e $S \xRightarrow[\text{G}]{} bSaS \xRightarrow[\text{G}]{*} w$.\\
+						Logo, $\exists x,y \in \Sigma^*$ tal que $w = ayb = bxa$ e $S \xRightarrow[\text{G}]{2n - 3} y,\ S \xRightarrow[\text{G}]{2n - 3} x$. Pela hipótese de indução e o conjunto de regras da gramática, segue que $|y|_a = |y|_b = |x|_a = |x|_b \leq 2n - 1$.
+						\item Então, $L(G) \subseteq L$;
+					\end{itemize}
 			\end{itemize}
 	\end{enumerate}
-	
+
+\pagebreak
+
 \problem*{5}
 \question{Escreva um descrição informal e formal de uma máquina de Turing que decida a linguagem $L = \{ww:w \in \{0,1\}^*\}$}
 	\begin{itemize}
@@ -127,15 +144,15 @@ com as subcadeias u, v, x, y e z, de tal modo que
 			\qquad \delta(q_2,0) \rightarrow (q_1,0,D);\\
 			&\qquad \delta(q_2,\_) \rightarrow (q_3,\#,E);\\
 			&\qquad \delta(q_3,1) \rightarrow (q_3,1,E);
-			\qquad \delta(q_3,0) \rightarrow (q_3,0,E);\\
-			&\qquad \delta(q_3,\_) \rightarrow (q_4,\#,D);\\
-			&\qquad \delta(q_3,\#) \rightarrow (q_8,\#,D);\\
+			\quad \delta(q_3,0) \rightarrow (q_3,0,E);
+			\quad \delta(q_3,\_) \rightarrow (q_4,\#,D);
+			\quad \delta(q_3,\#) \rightarrow (q_8,\#,D);\\
 			&\qquad \delta(q_4,1) \rightarrow (q_4,1,D);
-			\qquad \delta(q_4,0) \rightarrow (q_4,0,D);\\
-			&\qquad \delta(q_4,\#) \rightarrow (q_5,\#,E);\\
+			\qquad \delta(q_4,0) \rightarrow (q_4,0,D);
+			\quad \delta(q_4,\#) \rightarrow (q_5,\#,E);\\
 			&\qquad \delta(q_5,1) \rightarrow (q_6,\#,D);
-			\qquad \delta(q_5,0) \rightarrow (q_7,0,D);\\
-			&\qquad \delta(q_5,\#) \rightarrow (q_{11},\#,E);\\
+			\quad \delta(q_5,0) \rightarrow (q_7,\#,D);
+			\quad \delta(q_5,\#) \rightarrow (q_{11},\#,E);\\
 			&\qquad \delta(q_6,\#) \rightarrow (q_3,1,E);\\
 			&\qquad \delta(q_7,\#) \rightarrow (q_3,0,E);\\
 			&\qquad \delta(q_8,1) \rightarrow (q_9,1,E);
@@ -143,33 +160,35 @@ com as subcadeias u, v, x, y e z, de tal modo que
 			&\qquad \delta(q_9,\#) \rightarrow (q_4,1,D);\\
 			&\qquad \delta(q_{10},\#) \rightarrow (q_4,0,D);\\
 			&\qquad \delta(q_{11},1) \rightarrow (q_{11},1,E);
-			\qquad \delta(q_{11},0) \rightarrow (q_{11},0,E);\\
-			&\qquad \delta(q_{11},\_) \rightarrow (q_{12},\_,D);\\
-			&\qquad \delta(q_{11},X) \rightarrow (q_{12},X,D);\\
+			\quad \delta(q_{11},0) \rightarrow (q_{11},0,E);
+			\quad \delta(q_{11},\_) \rightarrow (q_{12},\_,D);
+			\quad \delta(q_{11},X) \rightarrow (q_{12},X,D);\\
 			&\qquad \delta(q_{12},1) \rightarrow (q_{13},X,D);
-			\qquad \delta(q_{12},0) \rightarrow (q_{14},X,D);\\
-			&\qquad \delta(q_{12},\#) \rightarrow (q_{aceita},\#,E);\\
+			\quad \delta(q_{12},0) \rightarrow (q_{14},X,D);
+			\quad \delta(q_{12},\#) \rightarrow (q_{aceita},\#,E);\\
 			&\qquad \delta(q_{13},1) \rightarrow (q_{13},1,D);
-			\qquad \delta(q_{13},0) \rightarrow (q_{13},0,D);\\
-			&\qquad \delta(q_{13},\#) \rightarrow (q_{15},\#,D);\\
+			\quad \delta(q_{13},0) \rightarrow (q_{13},0,D);
+			\quad \delta(q_{13},\#) \rightarrow (q_{15},\#,D);\\
 			&\qquad \delta(q_{14},1) \rightarrow (q_{14},1,D);
-			\qquad \delta(q_{14},0) \rightarrow (q_{14},0,D);\\
-			&\qquad \delta(q_{14},\#) \rightarrow (q_{18},\#,D);\\
-			&\qquad \delta(q_{15},\#) \rightarrow (q_{15},\#,D);\\
-			&\qquad \delta(q_{15},X) \rightarrow (q_{15},X,D);\\
-			&\qquad \delta(q_{15},0) \rightarrow (q_{rejeita},0,E);\\
-			&\qquad \delta(q_{15},1) \rightarrow (q_{16},X,E);
-			\qquad \delta(q_{16},X) \rightarrow (q_{16},X,E);\\
-			&\qquad \delta(q_{16},\#) \rightarrow (q_{17},\#,E);\\
-			&\qquad \delta(q_{17},\#) \rightarrow (q_{17},\#,E);\\
-			&\qquad \delta(q_{17},X) \rightarrow (q_{aceita},X,E);\\
-			&\qquad \delta(q_{17},1) \rightarrow (q_{11},1,E);
-			\qquad \delta(q_{17},0) \rightarrow (q_{11},0,E);\\
-			&\qquad \delta(q_{18},\#) \rightarrow (q_{18},\#,D);\\
-			&\qquad \delta(q_{18},X) \rightarrow (q_{18},X,D);\\
-			&\qquad \delta(q_{18},1) \rightarrow (q_{rejeita},1,E);\\
-			&\qquad \delta(q_{18},0) \rightarrow (q_{16},X,E);
+			\quad \delta(q_{14},0) \rightarrow (q_{14},0,D);
+			\quad \delta(q_{14},\#) \rightarrow (q_{18},\#,D);\\
+			&\qquad \delta(q_{15},\#) \rightarrow (q_{15},\#,D);
+			\quad \delta(q_{15},X) \rightarrow (q_{15},X,D);
+			\quad \delta(q_{15},0) \rightarrow (q_{rejeita},0,E);
+			\quad \delta(q_{15},1) \rightarrow (q_{16},X,E);\\
+			&\qquad \delta(q_{16},X) \rightarrow (q_{16},X,E);
+			\quad \delta(q_{16},\#) \rightarrow (q_{17},\#,E);\\
+			&\qquad \delta(q_{17},\#) \rightarrow (q_{17},\#,E);
+			\quad \delta(q_{17},X) \rightarrow (q_{aceita},X,E);
+			\quad \delta(q_{17},1) \rightarrow (q_{11},1,E);
+			\quad \delta(q_{17},0) \rightarrow (q_{11},0,E);\\
+			&\qquad \delta(q_{18},\#) \rightarrow (q_{18},\#,D);
+			\quad \delta(q_{18},X) \rightarrow (q_{18},X,D);
+			\quad \delta(q_{18},1) \rightarrow (q_{rejeita},1,E);
+			\quad \delta(q_{18},0) \rightarrow (q_{16},X,E);
 		\end{align*}
+		E o diagrama de estados para $M$ Se encontra numa folha separada anexa.
+		
 		\item Informalmente, podemos definir a máquina seguindo os passos:
 			\begin{enumerate}
     				\item Colocar o marcador na frente da entrada (início).
@@ -179,7 +198,58 @@ com as subcadeias u, v, x, y e z, de tal modo que
     				\item Comparar as palavras separadas pelos marcadores, símbolo a símbolo, marcando os símbolos lidos (e comparados). Se aparecerem símbolos diferentes na mesma posição duas palavras, rejeitar.
     				\item Aceitar.				
 			\end{enumerate}
+	\end{itemize}
+	
+\pagebreak
 
+\problem*{7}
+\question{Seja um $k$-AP um autômato com pilha que tem $k$ pilhas. Então, um $0$-AP é um
+autômato finito não determinístico, e um $1$-AP é um autômato com pilha convencional. Já sabemos que $1$-APs são mais poderosos (reconhecem uma classe maior de linguagens) que $0$-APs.}
+	\begin{enumerate}
+		\item[a)] Mostre que 2-APs são mais poderosos que 1-APs.\\
+		$Resp:$ Podemos pensar na linguagem $L = \{ww: w \in \{0,1\}^*\}$, que não é reconhecida por $1$-APs, mas com o seguinte $2$-AP $A = (Q,\Sigma,\Gamma,s,\delta,F)$:\\
+		\begin{align*}
+			Q & = \{s,q_1,q_2,q_3,q_f\};\\
+			\Sigma & = \{1,0\};\\
+			\Gamma & = \{1,0,\#\};\\
+			F & = \{q_f\};\\
+			\delta : \\
+			&\delta(s, \lambda, \lambda, \lambda) \rightarrow \{(q_1,\#,\#)\};\\
+			&\delta(q_1, 1, \lambda, \lambda) \rightarrow \{(q_1,1,\lambda)\};\\
+			&\delta(q_1, 0, \lambda, \lambda) \rightarrow \{(q_1,0,\lambda)\};\\
+			&\delta(q_1, \lambda, \lambda, \lambda) \rightarrow \{(q_2,\lambda,\lambda)\};\\
+			&\delta(q_2, \lambda, 1, \lambda) \rightarrow \{(q_2,\lambda,1)\};\\
+			&\delta(q_2, \lambda, 0, \lambda) \rightarrow \{(q_2,\lambda,0)\};\\
+			&\delta(q_2, \lambda, \#,\lambda) \rightarrow \{(q_3,\lambda,\lambda)\};\\
+			&\delta(q_3, 1, \lambda, 1) \rightarrow \{(q_3,\lambda,\lambda)\};\\
+			&\delta(q_3, 0, \lambda, 0) \rightarrow \{(q_3,\lambda,\lambda)\};\\
+			&\delta(q_3, \lambda, \lambda, \#) \rightarrow \{(q_f,\lambda,\lambda)\};\\
+			&(demais\ \delta 's = \emptyset)
+		\end{align*}
+		Como $A$ reconhece uma linguagem que $1$-APs não reconhecem, ele pertence a uma classe de autômatos mais poderosos.				
+		\item[b)] Mostre que 3-APs não são mais poderosos que 2-APs.(Sugestão: Simule uma fita de uma máquina de Turing com duas pilhas.
+	\end{enumerate}
 
+\problem*{8}
+\question{Mostre que a classe de linguagens decidíveis é fechada sob as operações de:
+união, concatenação, estrela e intersecção.}
+	$Resp:$ Dadas as maquinas de Turing $M_1$ e $M_2$, que reconhecem as linguagens $L_1$ e $L_2$, conseguimos construir uma terceira máquina $M_3$ que funciona da seguinte forma:
+	\begin{itemize}
+		\item Decide $L_1 \cup L_2$: para uma entrada $w \in \Sigma^*$ executar as máquinas $M_1$ e $M_2$ para $w$ e aceitamos a entrada, se e somente se, qualquer uma das duas máquinas aceitar.
+		\item Decide $L_1 \cap L_2$: para uma entrada $w \in \Sigma^*$ executar as máquinas $M_1$ e $M_2$ para $w$ e aceitamos a entrada, se e somente se, as duas máquinas aceitarem.
+		\item Decide $\overline{L_1}$: para uma entrada $w \in \Sigma^*$ executar a máquina $M_1$ para $w$ e aceitar a entrada, se $M_1$ rejeitar, e rejeitar se $M_1$ aceitar.
+		\item Decide $L_1^*$: para uma entrada $w \in \Sigma^*$, se $w = \lambda$, aceitar. Caso contrário, para as $2^{|w|-1}$ formas de dividir $w$ em fatores $w_1w_2...w_i...w_k, w_i \neq \lambda$, executar a máquina $M_1$ para cada fator de $w$ e aceitar a entrada, se e somente se, $M_1$ aceitar todos os fatores. Se $M_1$ rejeitar qualquer fator como entrada, rejeitar.
+		\item Decide $L_1.L_2$: para uma entrada $w \in \Sigma^*$, para cada $|w| + 1$ formas de obter $w = xy$, executar a máquina $M_1$ para $x$ e $M_2$ para $y$, aceitando a entrada, se e somente se, ambas $M_1$ e $M_2$ aceitarem. Caso contrário, rejeitamos.
+	\end{itemize}
+
+\problem*{9}
+\question{Mostre que a classe de linguagens Turing-reconhecíveis é fechada sob as operações
+de:  união, concatenação, estrela e intersecção.}	
+	$Resp:$ Dadas as maquinas de Turing $M_1$ e $M_2$, que reconhecem as linguagens $L_1$ e $L_2$, conseguimos construir uma terceira máquina $M_3$ que funciona da seguinte forma:
+	\begin{itemize}
+		\item Reconhece $L_1 \cup L_2$: para uma entrada $w \in \Sigma^*$ executar as máquinas $M_1$ e $M_2$ para $w$ em paralelo e aceitar a entrada, se e somente se, qualquer uma das duas máquinas aceitar.
+		\item Reconhece $L_1 \cap L_2$: para uma entrada $w \in \Sigma^*$ executar as máquinas $M_1$ e $M_2$ para $w$ em paralelo e aceitar a entrada, se e somente se, as duas máquinas aceitarem.
+		\item Reconhece $L_1^*$: para uma entrada $w \in \Sigma^*$, se $w = \lambda$, aceitar. Caso contrário, para as $2^{|w|-1}$ formas de dividir $w$ em fatores $w_1w_2...w_i...w_k, w_i \neq \lambda$, executar em paralelo a máquina $M_1$ para cada fator de $w$ e aceitar a entrada, se e somente se, $M_1$ aceitar todos os fatores. Se $M_1$ rejeitar qualquer fator como entrada, rejeitar.
+		\item Reconhece $L_1.L_2$: para uma entrada $w \in \Sigma^*$, para cada $|w| + 1$ formas de obter $w = xy$, executar em paralelo a máquina $M_1$ para $x$ e $M_2$ para $y$, aceitando a entrada, se e somente se, ambas $M_1$ e $M_2$ aceitarem. Caso contrário, rejeitamos.
 	\end{itemize}
 \end{document}
