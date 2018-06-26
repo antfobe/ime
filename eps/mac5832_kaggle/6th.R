@@ -3,32 +3,36 @@ if(!require("install.load")) {install.packages("install.load"); library("install
 lapply(c('foreach', 'doParallel', 'parallel', 'e1071', 'parallelSVM', 'caret', 'pROC'), 
        FUN = function(X){
     if(!X %in% installed.packages()) {
-        install.packages(X)
-        library(X)
+        install_load(X);
     }
 });
 
-doParallel::registerDoParallel(cores = parallel::detectCores()/4);
+svmseed <- as.numeric(format(Sys.Date(), "%Y"));
+set.seed(svmseed);
+
+doParallel::registerDoParallel(cores = parallel::detectCores()-1);
 
 data <- read.csv(file = "train.csv");
 test <- read.csv(file = "test.csv");
-## encode data to apply learning methods
 
+## encode data to apply learning methods
 conv2numeric <- c("job", "marital", "education", "default", "housing", "loan", "contact", "poutcome");
 data[, conv2numeric] <- sapply(data[, conv2numeric], FUN = as.numeric);
 test[, conv2numeric] <- sapply(test[, conv2numeric], FUN = as.numeric);
 
-x <- subset(data, select = c(-y,-poutcome,-id));
+x <- subset(data, select = c(-y,-id));
 y <- subset(data, select = y);
 ## woah - cannot use just 't', apparently messes with built-in functions: 
 ## https://stats.stackexchange.com/questions/233531/object-of-type-closure-is-not-subsettable
-test_t <- subset(test, select = c(-poutcome,-id));
+test_t <- subset(test, select = c(-id));
 
-svm_model <- parallelSVM::parallelSVM(x, y$y, 
-                                      #samplingSize = 0.2, 
+svm_model <- parallelSVM::parallelSVM(x, y$y,
+                                      type = "C-classification",
+                                      kernel = "radial",
+                                      seed = svmseed,
                                       probability = TRUE, 
-                                      gamma=1, cost = 10, 
-                                      numberCores = parallel::detectCores()/4);
+                                      gamma = 0.004487103, cost = 3,
+                                      numberCores = parallel::detectCores()-1);
 summary(svm_model);
 
 ## performance
