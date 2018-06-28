@@ -203,14 +203,69 @@ com as subcadeias u, v, x, y e z, de tal modo que
 \pagebreak
 
 \problem*{6}
-\question{Escreva um descrição informal e formal de uma máquina de Turing que decida as seguintes linguagens:}
+\question{Escreva um descrição informal e formal de uma máquina de Turing que decida as seguintes linguagens:}(\textit{Obs: Usou-se o software JFLAP para construção e validação das máquinas elaboradas.})
 	\begin{itemize}
-		\item $L = \{a^ib^jc^k: i \times j = k,\ i,j,k \geq 1\}$
+		\item $L = \{a^ib^jc^k: i \times j = k,\ i,j,k \geq 1\}$\\
+		$Resp:$ Descrição informal:
+		\begin{enumerate}
+			\item Validar que a entrada tem pelo menos um de cada símbolo 'a', 'b' e 'c', necessariamente nessa ordem - para tanto, percorrer a entrada inteira da esquerda para a direita. Caso contrário, rejeitar.
+			\item Retornar para o início, a esquerda da entrada, e marcamos o primeiro 'a' com um 'X'.
+			\item Percorrer a entrada para a direita até encontrar o primeiro 'b'. Marcar esse 'b' com 'X' e prosseguir até o último 'c' da cadeia, se não houver nenhum 'c', rejeitar. Marcar esse 'c' com 'X'.
+			\item Repetir o processo de marcar o primeiro 'b' a esquerda e o último 'c' a esquerda até não sobrar símbolos 'b' na fita.
+			\item Voltar na fita para o primeiro 'a' a esquerda. Marcar o 'a' com 'X' e substituir cada 'X' a direita por 'b' até encontrar um 'c'. Voltar com a cabeça de leitura para o primeiro 'a' a direita.
+			\item Repetir os passos a partir do item \textit{3.} até todos os 'a's, 'b's e 'c's estarem marcados com 'X'. Aceitar.
+		\end{enumerate}
+		\quad Descrição formal (Máquina $M_1$):
+		\begin{align*}
+			M_1 = & (Q,\Sigma, \Gamma, \delta, q_0, \square, \{aceita,rejeita\}):\\
+			Q = & \{q_0,q_1,q_2,q_3,q_4,q_5,q_6,q_7,q_8,q_9,q_{10},
+			q_{11},q_{12},q_{13},q_{14},q_{15},
+			q_{16},q_{17},aceita,rejeita\};\\
+			\Sigma = & \{a,b,c\};\\
+			\Gamma = & \{a,b,c,X,\square\};\\
+			\delta\ :\ & (Q - \{aceita,rejeita\}) \times \Gamma \rightarrow Q \times \Gamma \times \{L,R\}.
+		\end{align*}
+		As transições de $\delta$ são explicitadas no diagrama de estados a seguir para $M_1$, onde foram omitidas transições vazias ($\emptyset$) para maior clareza.\\
+		\includegraphics[scale=.4]{"images/L7E6-1"}
 		
-		\item $L = \{w zin \{0,1\}^*: w = w^R\}$ (a máquina deve ter duas fitas)
+\pagebreak
 		
-		\item $L = \{w zin \{0,1\}^*: w = w^R\}$ (a máquina deve não determinística e ter duas fitas)		
+		\item $L = \{w \in \{0,1\}^*: w = w^R\}$ (a máquina deve ter duas fitas)\\
+		$Resp:$ Descrição informal:
+		\begin{enumerate}
+			\item Com a entrada na primeira fita, percorrer as duas fitas para a direita, escrevendo os símbolos lidos na segunda fita.
+			\item Retornar para o início da entrada com a primeira fita, mantendo a cabeça de leitura da segunda fita no final da "entrada" copiada.
+			\item Se o comprimento da entrada for ímpar, percorrer a entrada para a direita novamente na primeira fita, simultaneamente, com a segunda fita para a esquerda. Validar, símbolo a símbolo, se todos os elementos da entrada conferem. Rejeitar se forem lidos símbolos diferentes nas cabeças de leitura.\\
+			Se o comprimento da entrada for par faremos os mesmos passos do item anterior, mas com uma leitura "defasada" na primeira fita, isto é, a segunda fita estará uma leitura na frente da primeira. Dessa forma, validar na primeira lista o símbolo anteriormente lido na segunda e rejeitar se houver diferença. Aceitar com a primeira cabeça de leitura chegando no início da entrada.
+		\end{enumerate}
+		\quad Descrição formal (Máquina $M_2$):
+		\begin{align*}
+			M_1 = & (Q,\Sigma, \Gamma, \delta, q_0, \square, \{aceita,rejeita\}):\\
+			Q = & \{q_0,q_1,q_2,q_3,q_4,q_5,q_6,aceita,rejeita\};\\
+			\Sigma = & \{0,1\};\\
+			\Gamma = & \{0,1,\square\};\\
+			\delta\ :\ & (Q - \{aceita,rejeita\}) \times \Gamma \rightarrow Q \times \Gamma \times \{L,R\}.
+		\end{align*}
+		As transições de $\delta$ são explicitadas no diagrama de estados a seguir para $M_2$, onde foram omitidas transições vazias ($\emptyset$) para maior clareza.\\
+		\includegraphics[scale=.4]{"images/L7E6-2"}
+
+\pagebreak		
+		
+		\item $L = \{w  \{0,1\}^*: w = w^R\}$ (a máquina deve não determinística e ter duas fitas)\\
+		$Resp:$ A descrição informal da máquina segue o mesmo raciocínio daquela do item anterior, porém fez-se o uso de $\lambda-$transições para facilitar a elaboração do diagrama de estados abaixo.\\
+		\quad Descrição formal (Máquina $M_3$):
+		\begin{align*}
+			M_1 = & (Q,\Sigma, \Gamma, \delta, q_0, \square, \{aceita,rejeita\}):\\
+			Q = & \{q_0,q_1,q_2,q_3,q_4,q_5,q_6,aceita,rejeita\};\\
+			\Sigma = & \{0,1\};\\
+			\Gamma = & \{0,1,\square\};\\
+			\delta\ :\ & (Q - \{aceita,rejeita\}) \times \Gamma \rightarrow Q \times \Gamma \times \{L,R\}.
+		\end{align*}
+		As transições de $\delta$ são explicitadas no diagrama de estados a seguir para $M_3$, onde foram omitidas transições vazias ($\emptyset$) para maior clareza.\\
+		\includegraphics[scale=.4]{"images/L7E6-3"}		
 	\end{itemize}
+
+\pagebreak
 
 \problem*{7}
 \question{Seja um $k$-AP um autômato com pilha que tem $k$ pilhas. Então, um $0$-AP é um

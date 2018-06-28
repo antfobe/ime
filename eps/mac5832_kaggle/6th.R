@@ -16,14 +16,14 @@ conv2numeric <- c("job", "marital", "education", "default", "housing", "loan", "
 data[, conv2numeric] <- sapply(data[, conv2numeric], FUN = as.numeric);
 test[, conv2numeric] <- sapply(test[, conv2numeric], FUN = as.numeric);
 
-x <- subset(data, select = c(-y,-id));
+x <- subset(data, select = c(poutcome));
 y <- subset(data, select = y);
-xsim <- x[sample(nrow(x), nrow(y)/2),];
 ## woah - cannot use just 't', apparently messes with built-in functions: 
 ## https://stats.stackexchange.com/questions/233531/object-of-type-closure-is-not-subsettable
 test_t <- subset(test, select = c(-id));
 
-system.time(svm_model <- parallelSVM::parallelSVM(xsim, y$y,
+xsim <- x[sample(nrow(x), nrow(y)),];
+system.time(svm_model <- parallelSVM::parallelSVM(x, y$y,
                                       type = "C-classification",
                                       kernel = "radial",
                                       seed = svmseed,
@@ -32,12 +32,14 @@ system.time(svm_model <- parallelSVM::parallelSVM(xsim, y$y,
                                       numberCores = parallel::detectCores()-1));
 
 ## performance
-system.time(pred <- predict(svm_model, x));
-pred_numeric <- as.double(as.character(pred));
-pred_numeric[pred_numeric < 0] <- 0.0;
+system.time(pred <- predict(svm_model, x, decision.values = TRUE, probability = TRUE));
+pred <- attributes(pred);
+pred_numeric <- sapply(1:nrow(pred$probabilities), 
+                       FUN = function(X) {
+                           pred$probabilities[X,][names(pred$probabilities[X,]) == 1]});
 cat("Performance : [", 
-    length(pred[pred == y$y])/nrow(y), 
-    "], #y = ", length(round(pred_numeric)[round(pred_numeric) == 1]),"\n");
+    length(pred_numeric[round(pred_numeric) == y$y])/nrow(y), 
+    "], #y = ", length(round(pred_numeric)[round(pred_numeric) == 1]), " out of ", sum(y$y[round(pred_numeric) == 1]), "\n");
 
 system.time(pred <- predict(svm_model, test_t));
 pred_numeric <- as.double(as.character(pred));
