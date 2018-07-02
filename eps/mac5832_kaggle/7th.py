@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -47,11 +49,9 @@ def create_baseline():
 	model.add(Dense(1, kernel_initializer='normal', activation='sigmoid'))
 	# Compile model
 	adad = optimizers.Adadelta(lr=1.1, rho=0.95, epsilon=None, decay=0.0)
-	sgd = optimizers.SGD(lr=.0011, momentum=0.0, decay=0.0, nesterov=True)
+	#sgd = optimizers.SGD(lr=.0011, momentum=0.0, decay=0.0, nesterov=True)
 	model.compile(loss='binary_crossentropy', optimizer=adad, metrics=['accuracy'])
 	#model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
-	#model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-	#model.fit(X, Y, epochs=100, batch_size=df.shape[0])
 	return model
 
 # evaluate model with standardized dataset

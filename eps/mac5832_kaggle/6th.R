@@ -39,11 +39,17 @@ pred_numeric <- sapply(1:nrow(pred$probabilities),
                            pred$probabilities[X,][names(pred$probabilities[X,]) == 1]});
 cat("Performance : [", 
     length(pred_numeric[round(pred_numeric) == y$y])/nrow(y), 
-    "], #y = ", length(round(pred_numeric)[round(pred_numeric) == 1]), " out of ", sum(y$y[round(pred_numeric) == 1]), "\n");
+    "], #y = ", length(round(pred_numeric)[round(pred_numeric) == 1]), " out of ",
+    sum(y$y[round(pred_numeric) == 1]), "\n");
 
-system.time(pred <- predict(svm_model, test_t));
-pred_numeric <- as.double(as.character(pred));
-pred_numeric[pred_numeric < 0] <- 0.0;
+##data.frame(matrix(pred$probabilities[y$y != round(pred_numeric)], ncol = 2), 
+##y$y[y$y != round(pred_numeric)])
+
+system.time(pred <- predict(svm_model, test_t, decision.values = TRUE, probability = TRUE));
+pred <- attributes(pred);
+pred_numeric <- sapply(1:nrow(pred$probabilities), 
+                       FUN = function(X) {
+                         pred$probabilities[X,][names(pred$probabilities[X,]) == 1]});
 cat("#y = ", length(round(pred_numeric)[round(pred_numeric) == 1]),"\n");
 
 write.csv(data.frame(id = test$id, pred = pred_numeric), file = "parallel-nontuned.csv", row.names = FALSE);

@@ -252,11 +252,11 @@ com as subcadeias u, v, x, y e z, de tal modo que
 \pagebreak		
 		
 		\item $L = \{w  \{0,1\}^*: w = w^R\}$ (a máquina deve não determinística e ter duas fitas)\\
-		$Resp:$ A descrição informal da máquina segue o mesmo raciocínio daquela do item anterior, porém fez-se o uso de $\lambda-$transições para facilitar a elaboração do diagrama de estados abaixo.\\
+		$Resp:$ A descrição informal da máquina segue o mesmo raciocínio daquela do item anterior, porém fez-se o uso de transições vazias ($\lambda$) para facilitar a elaboração do diagrama de estados abaixo. O não-determinismo permite tratarmos os casos de entradas de comprimento par e ímpar da mesma forma.\\
 		\quad Descrição formal (Máquina $M_3$):
 		\begin{align*}
 			M_1 = & (Q,\Sigma, \Gamma, \delta, q_0, \square, \{aceita,rejeita\}):\\
-			Q = & \{q_0,q_1,q_2,q_3,q_4,q_5,q_6,aceita,rejeita\};\\
+			Q = & \{q_0,q_1,q_2,q_3,aceita,rejeita\};\\
 			\Sigma = & \{0,1\};\\
 			\Gamma = & \{0,1,\square\};\\
 			\delta\ :\ & (Q - \{aceita,rejeita\}) \times \Gamma \rightarrow Q \times \Gamma \times \{L,R\}.
