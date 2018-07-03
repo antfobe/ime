@@ -1,9 +1,9 @@
-#include <mpi.h>
-#include <time.h>
+#include <omp.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <curand.h>
+#include <sys/time.h>
 #include <curand_kernel.h>
 
 #define PI (3.141592653589793238462643383279502884197169399375105820974)
@@ -37,7 +37,7 @@ __global__ void mc_integration(int seed, int threadwork, unsigned int * d_hits, 
 			randX = curand_uniform(&state) / 2;
 			while (randX == 0.0) randX = curand_uniform(&state) / 2 ;
 			/* get f(randX) */
-			f = (sin((2 * M + 1) * PI * randX) * 
+			f = (sin((2 * abs(M) + 1) * PI * randX) * 
 			     cos(2 * PI * k * randX)) / 
 			     sin(PI * randX);
 			/* check if f(randX) is positive (hit) */
@@ -58,13 +58,12 @@ __global__ void sum_reduction(unsigned int * array, long N){
 	__syncthreads();
 }
 
-unsigned int mc_integrationGPU(unsigned int N, int M, int k){
+unsigned int mc_integrationGPU(unsigned int N, int M, int k, int threadwork){
 	unsigned int * h_hits = (unsigned int *)malloc(N * sizeof(unsigned int)); if(!h_hits) {printf("Var 'h_hits' mem alloc failed!\n"); exit(-1);}
 	unsigned int * d_hits; gpuErrchk(cudaMalloc((void **)&d_hits, N * sizeof(unsigned int)));
 	curandState *d_state; gpuErrchk(cudaMalloc(&d_state, sizeof(curandState)));
 
 	//setup_kernel<<<N / BLOCK_SIZE, BLOCK_SIZE>>>(time(NULL), d_state);
-	int threadwork = 4096;
 	mc_integration<<<(N / (BLOCK_SIZE * threadwork)) | 1 , BLOCK_SIZE>>>(time(NULL), threadwork, d_hits, N, M, k);
 	gpuErrchk(cudaPeekAtLastError());
 
@@ -108,6 +107,33 @@ unsigned int montecarlo_singleCPU(unsigned int N, unsigned int k, unsigned int M
 	return r_hits;
 }
 
+unsigned int montecarlo_OMP(unsigned int N, unsigned int k, unsigned int M){
+	double randX, f;
+	unsigned int r_hits = 0, i =0;
+	srand(time(NULL));
+
+	#pragma omp parallel shared(r_hits) private(i, randX, f)
+	{
+	#pragma omp for schedule (static)
+	for (i = 0; i < N; i++) {
+		randX = ((double)rand()/(double)(RAND_MAX)) * .5;
+		while (randX == 0.0) randX = ((double)rand()/(double)(RAND_MAX)) * .5;
+		f = (sin((2 * M + 1) * PI * randX) * 
+		     cos(2 * PI * k * randX)) / 
+		     sin(PI * randX);
+		if (f > 0) r_hits++;
+	}
+	}
+	return r_hits;
+}  
+int tvsub(struct timeval *result, struct timeval *t2, struct timeval *t1){
+	long int diff = (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
+	result->tv_sec = diff / 1000000;
+	result->tv_usec = diff % 1000000;
+
+	return (diff<0);
+}
+
 int main(int argc, char * argv[]) {
 	if(argc != 4) {
 		USAGE();
@@ -116,49 +142,23 @@ int main(int argc, char * argv[]) {
 	unsigned int N = (unsigned int) strtol(argv[1], (char **)NULL, 10); if(!N){ USAGE();}
 	int k = (int) strtol(argv[2], (char **)NULL, 10); if(!k){ USAGE();}
 	int M = (int) strtol(argv[3], (char **)NULL, 10); if(!M){ USAGE();}
-	
-	MPI_Init(NULL, NULL);
-	/* Get the number, rank of processes */
-  	int world_size, world_rank;
-	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-	if (world_size != 2) {
-		fprintf(stderr, "World size must be two for %s\n", argv[0]);
-		MPI_Abort(MPI_COMM_WORLD, 1);
-		exit(0);
-	}	
-	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-	//int gpu_rank = (world_rank + 1) % 2;
+	struct timeval begin, end;
 	
 	/* gpu should bite at most 1024*1024*8 of size */
-	int gpu_bite = N / (1024*1024*8);
+	int gpu_bite = N / (1024*1024*4);
 	
 	unsigned int hits = 0;
 	long double result = 0.0; 
-	if (world_rank != 0) {
-    		MPI_Recv(&hits, 1, MPI_INT, world_rank - 1, 0,
-            	MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	
-		hits += montecarlo_singleCPU(N / (3 * (world_size - 1)), k, M);
-	} else {
-    	// Set the token's (hits) value if you are process 0
-		if(gpu_bite > 0){
-			for (unsigned int n = N % gpu_bite; n < (N * 2) / 3; n += gpu_bite)
-				hits += mc_integrationGPU(gpu_bite, M, k);
-		} else {
-			hits += mc_integrationGPU(N * 2 / 3, M, k);
-		}
-	}
+	gettimeofday(&begin, NULL);
+	hits += mc_integrationGPU(N, M, k, 2048);
+	//hits += montecarlo_OMP(N, M, k);
+	//hits += montecarlo_singleCPU(N, M, k);
+	gettimeofday(&end, NULL);
 
-	MPI_Send(&hits, 1, MPI_INT, (world_rank + 1) % world_size,
-         0, MPI_COMM_WORLD);
-
-	// Now process 0 can receive from the last process.
-	if (world_rank == 0) {
-		MPI_Recv(&hits, 1, MPI_INT, world_size - 1, 0,
-		MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-		result = 2.0 * ((long double) hits/N);
-		printf("Resulting integration is [%Lf], (%ld / %ld)\n", result, hits, N);
-	}
-	MPI_Finalize();
+	result = 2.0 * ((long double) hits/N);
+	if (M < 0) {result *= -1;}
+	tvsub(&end, &end, &begin);
+	printf("Resulting integration is [%Lf], in (%ld.%06ld)s, (%ld / %ld)\n", result, end.tv_sec, end.tv_usec, hits, N);
 	return 0;
 }
