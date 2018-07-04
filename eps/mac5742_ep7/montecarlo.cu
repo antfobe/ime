@@ -107,12 +107,14 @@ unsigned int montecarlo_singleCPU(unsigned int N, unsigned int k, unsigned int M
 	return r_hits;
 }
 
-unsigned int montecarlo_OMP(unsigned int N, unsigned int k, unsigned int M){
-	double randX, f;
-	unsigned int r_hits = 0, i =0;
+double montecarlo_OMP(unsigned int N, unsigned int k, unsigned int M, double * f2){
+	double randX, f = 0.0, f_hits = 0.0;
+	unsigned int i =0;
+	//unsigned int r_hits = 0, i =0;
 	srand(time(NULL));
 
-	#pragma omp parallel shared(r_hits) private(i, randX, f)
+	//#pragma omp parallel shared(r_hits) private(i, randX, f)
+	#pragma omp parallel shared(f_hits) private(i, randX, f)
 	{
 	#pragma omp for schedule (static)
 	for (i = 0; i < N; i++) {
@@ -121,10 +123,12 @@ unsigned int montecarlo_OMP(unsigned int N, unsigned int k, unsigned int M){
 		f = (sin((2 * M + 1) * PI * randX) * 
 		     cos(2 * PI * k * randX)) / 
 		     sin(PI * randX);
-		if (f > 0) r_hits++;
+		f2[0] += (f * f);
+		f_hits += f;
+		//if (f > 0) r_hits++;
 	}
 	}
-	return r_hits;
+	return f_hits;
 }  
 int tvsub(struct timeval *result, struct timeval *t2, struct timeval *t1){
 	long int diff = (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
@@ -148,17 +152,24 @@ int main(int argc, char * argv[]) {
 	int gpu_bite = N / (1024*1024*4);
 	
 	unsigned int hits = 0;
-	long double result = 0.0; 
+	long double result = 0.0, err = 0.0;
+	double f2[1]; f2[0] =0.0; 
 	
 	gettimeofday(&begin, NULL);
-	hits += mc_integrationGPU(N, M, k, 2048);
-	//hits += montecarlo_OMP(N, M, k);
+	//hits += mc_integrationGPU(N, M, k, 2048);
+	result += montecarlo_OMP(N, M, k, f2);
 	//hits += montecarlo_singleCPU(N, M, k);
 	gettimeofday(&end, NULL);
 
-	result = 2.0 * ((long double) hits/N);
+	//result = 2.0 * ((long double) hits/N);
+	err = sqrt((f2[0]/N - result * result) / N);
+	result = (long double) result / N;
 	if (M < 0) {result *= -1;}
 	tvsub(&end, &end, &begin);
-	printf("Resulting integration is [%Lf], in (%ld.%06ld)s, (%ld / %ld)\n", result, end.tv_sec, end.tv_usec, hits, N);
+	char wot[256]; sprintf(wot, "%ld.%06ld", end.tv_sec, end.tv_usec);
+	double timu; sscanf(wot, "%lf", &timu);
+	//printf("Resulting integration is [%Lf], in (%ld.%06ld)s, (%ld / %ld)\n", result, end.tv_sec, end.tv_usec, hits, N);
+	//printf("Resulting integration is [%Lf] - err [%lf], in (%f)s\n", result * result * N, sqrt((f2[0]/N)), timu);
+	printf("Resulting integration is [%Lf] - err [%lf], in (%f)s\n", result, err, timu);
 	return 0;
 }

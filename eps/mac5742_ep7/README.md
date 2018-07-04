@@ -8,7 +8,8 @@ Implementação:
 	- Notei que quando M e k se aproximam o resultado difere mais do
 	esperado (~1).
 	Também não esperava ter que implementar	a função em um kernel para ter 
-	ainda que reduzir o resultado...
+	ainda que reduzir o resultado - Notei que isso comprometeu bastante
+	a performance da GPU para calcular a integral.
 	- Build & run: apenas rode o comando 'make' do diretório do exercício 
 	programa e o programa será compilado. Rode 'make test' para executar
 	o programa com argumentos (N,M,k) = (65536,8192,1024).
