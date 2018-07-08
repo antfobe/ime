@@ -45,28 +45,27 @@ int main(int argc, char * argv[]) {
 	}
 	*/
 	syscall(SYS_getrandom, &j, sizeof(unsigned int), 0);
-	unsigned short n = j>>16;
-	unsigned short m = j;
-	shortbits(n);
-	shortbits(m);
-	shortbits(n ^ m);
-	n = n ^ m; /* XORn */
-	printf("XORn = %d : \t\t\t", n); shortbits(n);
-	for (unsigned short p = 0, find = 0, exit = 0; p < USHRT_MAX && exit == 0; p++){
+	unsigned short m = j>>16;
+	unsigned short n = j;
+	printf("n = \t\t");shortbits(n);
+	printf("m = \t\t");shortbits(m);
+	printf("n = n ^ m,\t"); n = n ^ m; shortbits(n);//n = n ^ m; /* Lost n, now XORn (XORn = n ^ m) */
+	printf("m = m ^ n,\t"); m = m ^ n; shortbits(m);//m = m ^ n; /* Lost m, recover n (n = XORn ^ m)*/
+	printf("n = n ^ m,\t"); n = n ^ m; shortbits(n);//n = n ^ m; /* recover m on n (m = XORn ^ n)*/
+	printf("m = \t\t"); shortbits(m);
+	for (unsigned short pm = 0, find = 0; pm < USHRT_MAX; pm++){
+	/* binary search magick
+	for (unsigned short low = 0, mid, high = USHRT_MAX - 1, find; low <= high;){
+		mid = (low + high) / 2;
+		*/
 		/* found m candidate */
-		if (m == n ^ p) {
-			printf("found n! (find,p) = (%d,%d)\n", n, p);
-			shortbits(find);
-			exit = 1;
+		find = pm ^ (n ^ m); // possible n value
+		if (n == find && m == find ^ pm ) {
+			printf("found n! (find,p) = (%d,%d)\n", find, pm);
+			printf("m: ");shortbits(pm);
+			printf("n: ");shortbits(find);
 		}
 	}
-	//m = 1 - n;
-	//n = n ^ m; /* Lost n, now XORn (XORn = n ^ m) */
-	//m = m ^ n; /* Lost m, now XORm (XORm = XORn ^ m)*/
-	//n = n ^ m; /* recover m on n (n = XORn ^ XORm)*/
-	//m = m ^ n; /* recover n on m (m = XORm ^ n)*/
-	//showbits(n);
-	//showbits(m);
 	return 0;
 }
 
