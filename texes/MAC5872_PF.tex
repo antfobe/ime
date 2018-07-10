@@ -1,0 +1,136 @@
+% --------------------------------------------------------------
+% This is all preamble stuff that you don't have to worry about.
+% Head down to where it says "Start here"
+% --------------------------------------------------------------
+ 
+\documentclass[12pt]{article}
+ 
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{fancyhdr}
+
+\usepackage{graphicx}
+	\graphicspath{ {images/} }
+\usepackage{scrextend}
+
+\newcommand\NoIndent[1]{%
+  \par\vbox{\parbox[t]{\linewidth}{#1}}%
+}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+\pagestyle{fancy}
+\setlength{\headheight}{20pt} 
+\rhead{Jean Fobe, $N^oUSP$ 7630573}
+ 
+\begin{document}
+ 
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+ 
+\title{General Test - MAC 5872}
+\thispagestyle{fancy}
+\author{
+	Introduction to Machine Learning\\\\
+    Jean Fobe, NºUSP 7630573
+    }
+
+\maketitle
+
+\begin{enumerate}
+
+\item [\textbf{Q1.}] Alternativa \textit{e} - Nenhuma das afirmações é verdadeira. \\
+Se fosse afirmado que o $sign(w^{T}_tx_n) \geq y$, teríamos que a atualização seria com \[w^{T}_{t+1}x_n \leq w^{T}_tx_n,\] deixando o peso novo menos `positivo' que o antigo. \\
+Em contrapartida, com $sign(w^{T}_tx_n) < y$, a atualização teria como resultado \[w^{T}_{t+1}x_n > w^{T}_tx_n,\] um resultado menos `negativo' que o valor anterior.
+     
+\item [\textbf{Q2.}] Alternativa \textit{1} - Não há perda na aproximação do ``\textit{pocket}" quando comparado ao perceptron linear, uma vez que o algoritmo do ``\textit{pocket}" adiciona somente um mecanismo para guardar o melhor resultado das atualizações realizadas. Podemos colocar que por essa funcionalidade adicional, as implementações do ``\textit{pocket}" se tornam mais lentas para um caso linear, já que para cada atualização feita  deverá ainda ser comparado o resultado com o valor guardado pelo ``\textit{pocket}".
+
+\item [\textbf{Q3.}] Podemos listar os seguintes itens do que aprendemos no curso sobre aprendizado supervisionado:
+	\begin{itemize}
+		\item A função (desconhecida) que queremos aproximar ou ``\textit{target function}";
+		\item Os dados de treinamento que forneceremos para o nosso algoritmo de aprendizado;
+		\item O conjunto de Hipóteses $\mathcal{H}$, como possíveis soluções que ajudam na aproximação pelo aprendizado;
+		\item A aproximação retornada pelo algoritmo ou ``\textit{final hypothesis}";
+		\item A distribuição de probabilidades, como forma encaixar ou fazer o \textit{fit} dos dados de treinamento em um intervalo de probabilidades, $P$;
+		\item Alternativamente, a ``\textit{target function}" como distribuição de probabilidades, ``\textit{target distribution}", levando em consideração possível ruído nos dados.
+	\end{itemize}
+	Retirados dos slides das aulas 4 e 5 do Mostafa, temos os seguintes diagramas:\\
+\includegraphics[scale=.3]{"images/SupervisedLearning-a"}
+\includegraphics[scale=.3]{"images/SupervisedLearning-b"}\\
+	A primeira imagem a esquerda mostrando os componentes do aprendizado supervisionado tendo como alvo uma função desconhecida e a segunda imagem substituindo essa função por uma distribuição.
+
+\item [\textbf{Q4.}] Respondendo a tia:\\
+	\quad $-$ ``Infelizmente 100 dias é uma quantidade muito pequena quando comparada ao total de dias dos últimos 10 anos, em frações teríamos que é $\frac{2}{73}$, aproximadamente $2,7\%$ do total. Posso argumentar que seria possível escolher 100 entre 100 dias que essa estratégia deu certo e a bolsa poderia até ter caído nesses últimos 10 anos.\\
+	Fazendo o contrário da estratégia da amiga e escolhendo 100 dias no mesmo intervalo de tempo, poderia também observar sucesso.\\
+	Em fim, 100 amostras é um valor muito pequeno para avaliar essa estratégia dentro de 10 anos. Geralmente em aprendizado de máquina, separamos os dados de forma aleatória em $80\%$ para treinamento e $20\%$ para validação. Dessa forma observamos quais estratégias deram mais certo nos $80\%$ e vemos se não cometemos nenhuma `falácia' com a massa de dados restante.\\
+	Então não use a estratégia da amiga sem antes procurar os resultados mais a fundo e de forma mais genérica."
+
+\pagebreak
+
+\item [\textbf{Q5.}] Em outras palavras queremos agrupar N pontos de formas diferentes, que é uma questão de combinatória \[\sum_{i=0}^{N}\dbinom{N}{i} = 2^N.\]
+Para provar essa igualdade vamos supor $g(N) = \sum_{i=0}^{N}\dbinom{N}{i}$:
+	\begin{align}
+		\dbinom{N}{N+1} &= \dbinom{N}{-1} = 0\\
+		\dbinom{N+1}{i} &= \dbinom{N}{i} + \dbinom{N}{i-1}\\
+		g(N + 1) - g(N) &= \sum_{i=0}^{N+1}\dbinom{N+1}{i} - \sum_{i=0}^{N}\dbinom{N}{i}\\
+		g(N + 1) - g(N) &= \sum_{i=0}^{N+1} \left( \dbinom{N+1}{i} - \dbinom{N}{i} \right)\\
+		g(N + 1) - g(N) &= \sum_{i=0}^{N+1} \dbinom{N}{i-1} = \sum_{i=0}^{N}\dbinom{N}{i}\\
+		g(N + 1) - g(N) &= g(N)\\
+		g(N + 1) &= 2 \times g(N),\ com\ g(0) = 1\\
+		Como\ g(N)\ dobra\ a\ cada\ incremento\ de\ &N\ por\ 1,\ g(N) = \sum_{i=0}^{N}\dbinom{N}{i} = 2^N
+	\end{align}
+	Como podemos ter um número menor de retas para separar N pontos, temos que $m_{\mathcal{H}}(N) \leq 2^N$.
+
+\item [\textbf{Q6.}] Alternativa \textit{1} -``\textit{Overfitting}" é um termo estatístico usado para descrever uma análise que apresenta resultados muito precisos para apenas uma parte dos valores de um conjunto de dados, sendo essa mesma análise incapaz de se adequar corretamente para os dados restantes.\\
+A quarta edição do \textit{Cambridge Dictionary of Statistics} define \textit{overfitted models} da seguinte forma (p. 314):
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		\textit{``Models that contain more unknown parameters than can be justified by the data."}
+	\end{addmargin}
+Para termos menor ``\textit{Overfitting}" é importante que tenhamos em mente o que é ruído no conjunto de dados em questão e como diminuímos a influência para a análise final. Entre dados muito e pouco ruidosos, teremos uma análise menos comprometida para o caso de menor ruído.\\
+A dimensão VC também tem influência na construção de um modelo. Buscando um modelo que tem uma boa generalização, ou seja menor risco de estar errado, não devemos escolher uma dimensão VC grande, uma vez que isso afetará a flexibilidade da solução, resultando em ``\textit{overfitting}".
+
+\item [\textbf{Q7.}] Problem 1.11, page 38.
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Dataset D of 25 training examples.\\
+		X = R, Y = {-1, +1}\\
+		H = {h1, h2} where h1 = +1, h2 = -1\\
+		Learning algorithms:\\
+		S - choose the hypothesis that agrees the most with D\\
+		C - choose the hypothesis deliberately\\
+		P[f(x) = +1] = p\\
+
+		(a) Can S produce a hypothesis that is guaranteed to perform\\ better than random on any point outside D?\\
+		Answer: No\\
+
+		In case that all examples in D have yn = +1\\
+		(b) Is it possible that the hypothesis that C produces turns out
+		 to be better than the hypothesis that S produces?\\
+		Answer: Yes\\
+
+		(c) If p = 0.9, what is the probability that S will produce a better hypothesis than C?\\
+		Answer: P[P(Sy = f) > P(Cy = f)] where Sy is the output hypothesis of S, Cy is the output hypothesis of C
++ Since yn = +1, Sy = +1. Moreover, P[f(x) = +1] = 0.9 --> P(Sy = f) = 0.9
++ We have, P(Cy = +1) = 0.5, P(Cy = -1) = 0.5, P[f(x) = +1] = 0.9, P[f(x) = -1] = 0.1\\
+		--> P[Cy = f] = 0.5*0.9 + 0.5*0.1 = 0.5\\
+		Since 0.9 > 0.5, P[P(Sy = f) > P(Cy = f)] = 1
+
+		(d) Is there any value of p for which it is more likely than not that C will produce a better hypothesis than S?\\
+		Answer: p < 0.5
+	\end{addmargin}
+\end{enumerate}
+\end{document}
