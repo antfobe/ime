@@ -35,7 +35,7 @@
 \newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
 \pagestyle{fancy}
 \setlength{\headheight}{20pt} 
-\rhead{Jean Fobe, $N^oUSP$ 7630573}
+\rhead{Jean Fobe, NºUSP 7630573}
  
 \begin{document}
  
@@ -104,6 +104,8 @@ A quarta edição do \textit{Cambridge Dictionary of Statistics} define \textit{
 Para termos menor ``\textit{Overfitting}" é importante que tenhamos em mente o que é ruído no conjunto de dados em questão e como diminuímos a influência para a análise final. Entre dados muito e pouco ruidosos, teremos uma análise menos comprometida para o caso de menor ruído.\\
 A dimensão VC também tem influência na construção de um modelo. Buscando um modelo que tem uma boa generalização, ou seja menor risco de estar errado, não devemos escolher uma dimensão VC grande, uma vez que isso afetará a flexibilidade da solução, resultando em ``\textit{overfitting}".
 
+\pagebreak
+
 \item [\textbf{Q7.}] Problem 1.11, page 38.
 	\begin{addmargin}[1em]{2em}% 1em left, 2em right
 		Dataset D of 25 training examples.\\
@@ -113,15 +115,12 @@ A dimensão VC também tem influência na construção de um modelo. Buscando um
 		S - choose the hypothesis that agrees the most with D\\
 		C - choose the hypothesis deliberately\\
 		P[f(x) = +1] = p\\
-
 		(a) Can S produce a hypothesis that is guaranteed to perform\\ better than random on any point outside D?\\
 		Answer: No\\
-
 		In case that all examples in D have yn = +1\\
 		(b) Is it possible that the hypothesis that C produces turns out
 		 to be better than the hypothesis that S produces?\\
 		Answer: Yes\\
-
 		(c) If p = 0.9, what is the probability that S will produce a better hypothesis than C?\\
 		Answer: P[P(Sy = f) > P(Cy = f)] where Sy is the output hypothesis of S, Cy is the output hypothesis of C
 + Since yn = +1, Sy = +1. Moreover, P[f(x) = +1] = 0.9 --> P(Sy = f) = 0.9
@@ -132,5 +131,46 @@ A dimensão VC também tem influência na construção de um modelo. Buscando um
 		(d) Is there any value of p for which it is more likely than not that C will produce a better hypothesis than S?\\
 		Answer: p < 0.5
 	\end{addmargin}
+
+\item [\textbf{Q8.}] Problem 1.12, page 38.
+
+\item [\textbf{Q9.}] Problem 2.2, page 50.
+	\begin{addmargin}[1em]{2em}
+		\begin{itemize}
+			\item[a)] Em (1) temos $\dbinom{N}{1} + \dbinom{N}{0} \geq m_{\mathcal{H}}(N)$.\\
+			Como $\dbinom{N}{1} = N$ e $\dbinom{N}{0} = 1$, $\dbinom{N}{1} + \dbinom{N}{0} = N+1$.\\
+			Então, $N + 1 \geq m_{\mathcal{H}}(N)$, que é verdadeiro.\\
+			Similarmente, em (2), $\dbinom{N}{2} + \dbinom{N}{1} + \dbinom{N}{0} \geq m_{\mathcal{H}}(N)$, isto é,\\ 
+			$\frac{N^2}{2} + \frac{N}{2} + 1 \geq m_{\mathcal{H}}(N)$, que também é verdade.\\
+			Agora  em (3) não temos um \textit{break point}, já que conseguimos gerar todas as dicotomias por $\mathcal{H}$. Consequentemente,  não temos um majorante para (3).
+			\item[b)] Se $2^N \geq m_{\mathcal{H}}(N)$, existe um \textit{break point} para N que será por um polinômio, então respondemos não.
+		\end{itemize}
+	\end{addmargin}
+
+\pagebreak	
+	
+\item [\textbf{Q10.}] Problem 2.3, page 50.
+	\begin{addmargin}[1em]{2em}
+		A dimensão VC será 1, 2 e $\infty$, respectivamente.
+	\end{addmargin}
+\item [\textbf{Q11.}] Problem 2.4, page 52.
+
+\item [\textbf{Q12.}] Problem 2.6, page 56.
+	\begin{itemize}
+		\item[a)] Temos o majorante $e_{teste} \approx 0.096$ pela inequalidade de \textit{Hoeffding} nos dados de teste e como o conjunto de hipóteses é finito, podemos usar a inequalidade de \textit{Hoeffding} para os dados de treino sem apelar para a dimensão VC.\\
+		Como $e_{treino} \approx 0.115 > e_{teste}$, vemos que o majorante nos dados de teste é melhor.
+		\item[b)] Como não estamos mudando o nosso conjunto de hipóteses $\mathcal{H}$, também não estamos lidando com \textit{overfitting}. Isso chega a ser bem curioso, pois permite afirmarmos que com apenas um dado de treino temos as melhores generalizações, lembrando que, nesse caso, a  hipótese tem dimensão suficiente para se ajustar aos dados. Colocando isso em uma expressão, com $M = 1$ e uma hipótese unitária $h$: \[E_{out}(h) \leq \sqrt{\frac{ln \left( \frac{2}{\delta} \right)}{2N}} + E_{in}(h)\]
+	\end{itemize}
+\item [\textbf{Q13.}] Problem 3.6, page 92.
+
+\item [\textbf{Q14.}] Problem 3.7, page 92.
+
+\item [\textbf{Q15.}] Problem 4.4, page 129.
+
+\item [\textbf{Q16.}] Problem 4.8, page 156.
+
+\item [\textbf{Q17.}] Problem 7.6, page 7-10 eChapter 7.
+
+\item [\textbf{Q18.}] Problem 7.10, page 7-20 eChapter 7.
 \end{enumerate}
 \end{document}
