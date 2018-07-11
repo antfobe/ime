@@ -108,31 +108,27 @@ A dimensão VC também tem influência na construção de um modelo. Buscando um
 
 \item [\textbf{Q7.}] Problem 1.11, page 38.
 	\begin{addmargin}[1em]{2em}% 1em left, 2em right
-		Dataset D of 25 training examples.\\
-		X = R, Y = {-1, +1}\\
-		H = {h1, h2} where h1 = +1, h2 = -1\\
-		Learning algorithms:\\
-		S - choose the hypothesis that agrees the most with D\\
-		C - choose the hypothesis deliberately\\
-		P[f(x) = +1] = p\\
-		(a) Can S produce a hypothesis that is guaranteed to perform\\ better than random on any point outside D?\\
-		Answer: No\\
-		In case that all examples in D have yn = +1\\
-		(b) Is it possible that the hypothesis that C produces turns out
-		 to be better than the hypothesis that S produces?\\
-		Answer: Yes\\
-		(c) If p = 0.9, what is the probability that S will produce a better hypothesis than C?\\
-		Answer: P[P(Sy = f) > P(Cy = f)] where Sy is the output hypothesis of S, Cy is the output hypothesis of C
-+ Since yn = +1, Sy = +1. Moreover, P[f(x) = +1] = 0.9 --> P(Sy = f) = 0.9
-+ We have, P(Cy = +1) = 0.5, P(Cy = -1) = 0.5, P[f(x) = +1] = 0.9, P[f(x) = -1] = 0.1\\
-		--> P[Cy = f] = 0.5*0.9 + 0.5*0.1 = 0.5\\
-		Since 0.9 > 0.5, P[P(Sy = f) > P(Cy = f)] = 1
-
-		(d) Is there any value of p for which it is more likely than not that C will produce a better hypothesis than S?\\
-		Answer: p < 0.5
+		Dos \textit{slides} de aula temos a seguinte formula: \[E_{in} = \frac{\sum( e( h(x) , f(x) ) )}{N}\]
+		Quando $h = f,\ e(h,f) = 0$ e quando $h \neq f$, fazemos uso da \textit{risk matrix}.
+		\begin{itemize}
+			\item[Supermarket:] $h \neq f,\ e(h,f) = \left\{\begin{array}{l}10,\ h = -1\ e\ f = 1\\1,\ h = 1\ e\ f = -1\end{array}\right.$\\
+			Aqui queremos minimizar $E_{in}$ para falsos negativos $h = -1\ e\ f = 1$.
+			\item[CIA:] $h \neq f,\ e(h,f) = \left\{\begin{array}{l}1,\ h = -1\ e\ f = 1\\1000,\ h = 1\ e\ f = -1\end{array}\right.$\\
+			Aqui queremos minimizar $E_{in}$ para falsos positivos $h = 1\ e\ f = -1$.
+		\end{itemize}
 	\end{addmargin}
 
 \item [\textbf{Q8.}] Problem 1.12, page 38.
+	\begin{addmargin}[1em]{2em}
+		\begin{itemize}
+			\item[a)] Substituindo $h$ por $h_{mean}$ teremos : \[E_{in}(h_{mean}) = \sum_{n=1}^{N}(\frac{\sum_{n=1}^{N}y_n^2}{N^2} - 2 \times \frac{\sum_{n=1}^{N}y_n^2}{N} + y_n^2) = \sum_{n=1}^{N}(\frac{y^2}{N^2} - \frac{2y^2}{N} + y_n^2)\] \[ E_{in}(h_{mean}) = \frac{\sum_{n=1}^{N}y_n^2}{N} - y^2,\]
+			o erro (quadrático) médio. 
+			\item[b)] Sabendo que o erro absoluto médio (\textit{mean absolute error}) para uma variável real $c$ e uma variável aleatória $X$ é $E(|X - c|)$ e que a mediana é o valor mínimo de $E(|X-c| - X)$, conseguimos fazer um paralelo com o problema em questão, onde $h=|X-c|$ e $y = |X|$. Para N pontos teremos $E_{in}(h_{med}) = \sum_{n+1}^{N}|h_{med} - yn|$.
+			\item[c)] Se $y_N$ se torna um \textit{outlier} em $+ \infty$, o estimador $h_{mean}$, sendo a média de todos $y$, aumenta tendendo ao infinito $h_{mean} \rightarrow \infty$ (admitindo aqui que $y$ não tem mais nenhum ponto em infinito). O estimado $y_{med}$, em contrapartida permanece o mesmo se o ponto perturbado era o de maior valor na amostra, ou muda pouco, caso o contrário.
+		\end{itemize}
+	\end{addmargin}
+
+\pagebreak	
 
 \item [\textbf{Q9.}] Problem 2.2, page 50.
 	\begin{addmargin}[1em]{2em}
@@ -146,29 +142,64 @@ A dimensão VC também tem influência na construção de um modelo. Buscando um
 			\item[b)] Se $2^N \geq m_{\mathcal{H}}(N)$, existe um \textit{break point} para N que será por um polinômio, então respondemos não.
 		\end{itemize}
 	\end{addmargin}
-
-\pagebreak	
 	
-\item [\textbf{Q10.}] Problem 2.3, page 50.
+\item [\textbf{Q10.}] Exercise 2.3, page 50.
 	\begin{addmargin}[1em]{2em}
-		A dimensão VC será 1, 2 e $\infty$, respectivamente.
+		A dimensão VC será 1, 2 e $\infty$, para (i), (ii) e (iii), respectivamente (como visto nos \textit{slides}).
 	\end{addmargin}
-\item [\textbf{Q11.}] Problem 2.4, page 52.
+\item [\textbf{Q11.}] Exercise 2.4, page 52.
+	\begin{addmargin}[1em]{2em}
+		\begin{itemize}
+			\item[a)] Vamos amostrar $d$ amostras em $\mathcal{D}$, obtendo a matriz de linhas formadas pelas amostras: \[D = \begin{bmatrix} 1 & 0 \\ 0 & I_d	\end{bmatrix}, I_d\ uma\ matriz\ de \ identidade\ d \times d\]
+			Vamos provar pela identidade que $D$ é irreversível: 
+			\begin{align*}
+				det \begin{pmatrix} X & Y \\ Z & W	\end{pmatrix} & = det(X) \times \det(W-Z \times X^{-1} \times Y);\\
+				det(D) & = det(1) \times det(I_d - 1 \times 0) = 1. 
+			\end{align*}
+			Para um vetor de pesos \textbf{w} podemos gerar cada dicotomia selecionando o sinal de cada dimensão \textbf{b}, \textbf{b} $ = G\ \times$ \textbf{w}. Então, $d_{VC} \geq d + 1$.
+			\item[b)] Amostrando $d + 1$ itens, observamos que $d + 2$ será uma combinação linear desse primeiro itens, já que pegamos todos os itens (como em `\textit{a)}') que podiam ser gerados pelas combinações de 0 ou 1 de $d$ itens. Em outras palavras, não temos mais parâmetros para variar em \textbf{b} e gerar as dicotomias. Então, $d_{VC} \leq d + 1$.
+		\end{itemize}
+	\end{addmargin}
 
-\item [\textbf{Q12.}] Problem 2.6, page 56.
-	\begin{itemize}
-		\item[a)] Temos o majorante $e_{teste} \approx 0.096$ pela inequalidade de \textit{Hoeffding} nos dados de teste e como o conjunto de hipóteses é finito, podemos usar a inequalidade de \textit{Hoeffding} para os dados de treino sem apelar para a dimensão VC.\\
-		Como $e_{treino} \approx 0.115 > e_{teste}$, vemos que o majorante nos dados de teste é melhor.
-		\item[b)] Como não estamos mudando o nosso conjunto de hipóteses $\mathcal{H}$, também não estamos lidando com \textit{overfitting}. Isso chega a ser bem curioso, pois permite afirmarmos que com apenas um dado de treino temos as melhores generalizações, lembrando que, nesse caso, a  hipótese tem dimensão suficiente para se ajustar aos dados. Colocando isso em uma expressão, com $M = 1$ e uma hipótese unitária $h$: \[E_{out}(h) \leq \sqrt{\frac{ln \left( \frac{2}{\delta} \right)}{2N}} + E_{in}(h)\]
-	\end{itemize}
-\item [\textbf{Q13.}] Problem 3.6, page 92.
-
-\item [\textbf{Q14.}] Problem 3.7, page 92.
-
-\item [\textbf{Q15.}] Problem 4.4, page 129.
-
+\item [\textbf{Q12.}] Exercise 2.6, page 60.
+	\begin{addmargin}[1em]{2em}
+		\begin{itemize}
+			\item[a)] Temos o majorante $E_{test} \approx 0.096$, pela inequalidade de \textit{Hoeffding}, nos dados de teste e como o conjunto de hipóteses é finito, podemos também usar a inequalidade de \textit{Hoeffding} para os dados de treino sem apelar para a dimensão VC.\\
+			Como $E_{train} = E_{in} \approx 0.115 > E_{test}$, vemos que o majorante nos dados de teste é melhor.
+			\item[b)] Como não estamos mudando o nosso conjunto de hipóteses $\mathcal{H}$, também não estamos lidando com \textit{overfitting}. Isso chega a ser bem curioso, pois permite afirmarmos que com apenas um dado de treino temos as melhores generalizações, lembrando que, nesse caso, a  hipótese tem dimensão suficiente para se ajustar aos dados. Colocando isso em uma expressão, com $M = 1$ e uma hipótese unitária $h$: \[E_{out}(h) \leq \sqrt{\frac{ln \left( \frac{2}{\delta} \right)}{2N}} + E_{in}(h)\]
+		\end{itemize}
+	\end{addmargin}
+\item [\textbf{Q13.}] Exercise 3.6, page 92.
+	\begin{addmargin}[1em]{2em}
+		\begin{itemize}
+			\item[a)]
+			\item[b)]
+		\end{itemize}
+	\end{addmargin}
+\item [\textbf{Q14.}] Exercise 3.7, page 92.
+	\begin{addmargin}[1em]{2em}
+		wot
+	\end{addmargin}
+\item [\textbf{Q15.}] Exercise 4.4, page 129.
+	\begin{addmargin}[1em]{2em}
+		Sabendo que:
+		\begin{align*}
+			E_{in}(\mathbf{w}) & = \frac{(\mathbf{w}^TZ^TZ\mathbf{w} - 2 \mathbf{w}^TZ^Ty + y^Ty)}{N}\\
+			Para\ \nabla E_{in}(\mathbf{w}) & = 0,\ subtraimos\ \mathbf{w_{lin}}\ de\ \mathbf{w}\ e\ multiplicamos\ y^T\ por\ I\ -\ H\ (hat\ matrix),\\
+			E_{in}(\mathbf{w}) & = \frac{((\mathbf{w - w_{lin}})^TZ^TZ(\mathbf{w - w_{lin}}) - 2 \mathbf{w}^TZ^Ty + y^T(I - H)y)}{N}
+		\end{align*}
+		\begin{itemize}
+			\item[a)] Queremos $\nabla E_{in}(\mathbf{w}) = 0$, então, da expressão acima o valor de \textbf{w} que minimiza $E_{in}$ é $\mathbf{w_{lin}}$.
+			\item[b)] O menor $E_{in}$ ocorre quando $\mathbf{w_{lin}} = (Z^TZ)^{-1}Z^Ty$.
+		\end{itemize}
+	\end{addmargin}
 \item [\textbf{Q16.}] Problem 4.8, page 156.
-
+	\begin{addmargin}[1em]{2em}
+		Uma forma de regularizar a função de custo para evitar \textit{overfitting} é indtroduzir uma gaussiana de media $\mu = 0$ por cima dos pesos, efetivamente mudando a funçaõ de custo da seguinte forma: \[\tilde{E}(\mathbf{w}) = E(\mathbf{w}) + \frac{\lambda \mathbf{w}^2}{2}.\]
+		Observe que isso penaliza pesos grandes e limita a liberdade do modelo proporcionalmente ao parâmetro $\lambda$.\\
+		Aplicando o gradiente descendente a essa nova função de custo obtemos: \[\mathbf{w}(t+1) \leftarrow (1-2\eta \lambda)\mathbf{w}(t) - \eta \nabla E_{in}(\mathbf{w}(t)),\]
+		onde queriamos chegar.
+	\end{addmargin}
 \item [\textbf{Q17.}] Problem 7.6, page 7-10 eChapter 7.
 
 \item [\textbf{Q18.}] Problem 7.10, page 7-20 eChapter 7.
