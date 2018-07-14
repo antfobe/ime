@@ -200,9 +200,92 @@ A dimensão VC também tem influência na construção de um modelo. Buscando um
 		Aplicando o gradiente descendente a essa nova função de custo obtemos: \[\mathbf{w}(t+1) \leftarrow (1-2\eta \lambda)\mathbf{w}(t) - \eta \nabla E_{in}(\mathbf{w}(t)),\]
 		onde queriamos chegar.
 	\end{addmargin}
-\item [\textbf{Q17.}] Exercise 7.6, page 7-10 eChapter 7.
+\item [\textbf{Q17.}] Exercise 7.6, page 7-10 e-Chapter 7.
+	\begin{addmargin}[1em]{2em}
+		Numa rede com $L$ níveis (\textit{layers}), $Q$ compreende uma operação de soma e uma operação de multiplicação $L$ vezes. Já $V$ compreende $L+1$ $\theta$-avaliações.\\
+		A resposta dada no exercício coloca que são feitas $O(Q)$ operações de adição e multiplicação, além de $O(V)$ $\theta$-avaliações numa \textit{forward propagation}.
+	\end{addmargin}
+\item [\textbf{Q18.}] Exercise 7.10, page 7-20 e-Chapter 7.
+	\begin{addmargin}[1em]{2em}
+		O numero de conexões ou pesos em um rede neural pode ser contado pela soma do produto do numero de nós nos níveis (\textit{layers}) conectados mais um, representando o \textit{bias}, isto é: \[\#\mathbf{w}= \sum_{i=1}^{L} \left( (\#inputs^{(i)} + 1) \times \#nodes^{(i)} \right) \] 
+		Numa rede neural com $\mathbf{d} = [m,\ 10,\ 10,\ 1]$, teremos: \[\#\mathbf{w} = \underbrace{(m + 1) \times 10}_\textit{hidden layer 1}\ +\ \underbrace{(10 + 1) \times 10}_\textit{hidden layer 2}\ +\ \underbrace{(10 + 1) \times 1}_\textit{output} = 131 + 10m\]
+	\end{addmargin}	
+
+\pagebreak
+
+\item [\textbf{Q19.}] Resumo de ``\textit{Introduction to ROC analysis, by Tom Fawcett}":
+	\begin{addmargin}[1em]{2em}
+	O artigo se dedica a exposição da análise ROC, se estendendo a erros e casos onde sua aplicação é indevida.\\
+	\textit{Receiver operating characteristics graph} ou ROC é uma técnica utilizada para visualização, organização e seleção de classificadores, baseada na sua performance, que é dada pelo \textit{tradeoff} entre acertos contra falsos positivos. O artigo cita aplicações históricas nos campos de medicina e, mais recentemente, em aprendizado de máquina e mineração de dados.\\
+	O gráfico ou espaço ROC é composto por dois eixos, as abcissas representando a taxa de falsos positivos e as ordenadas, a taxa de verdadeiros positivos. Quanto melhor for a performance de um classificador, mais ele se aproximará do canto superior esquerdo do gráfico, em oposição, quanto pior for a performance do classificador, ele estará mais ao canto inferior direito. A diagonal $x=y$ representa estratégias de adivinhar aleatoriamente uma classe, a liberdade, ou taxa de falsos positivos, subindo ao longo dessa reta.\\
+	Curvas em ROC aparecem quando classificadores probabilísticos são avaliados. Dessa forma a curva é composta pela chance dos pontos do classificador estarem acima de um valor ou \textit{threshold}.\\
+	Um diferencial de ROC frente as outras técnicas de avaliação de desempenho em classificação é o de ser indiferente a amostragem assimétrica de classes e aprendizado sensível a custo. Isso é demonstrado no artigo pela técnica de \textit{precision-recall} frente a ROC, variando proporção de amostras de classes de 1:1 a 1:10 - enquanto as curvas em \textit{precision-recall} perdem a forma, as ROC ficam inalteradas.\\
+	Para aproveitarmos todo o potencial do ROC é importante que tenhamos uma curva de avaliações ou \textit{scores} dos classificadores, o que é um problema para aqueles que são discretos. O artigo discorre sobre formas de extrair \textit{scores} de classificadores discretos, entre elas, olhando as instâncias estatísticas que compõe o modelo - sim, o mais interessante é até como o autor descreve, indicando algum nível de \textit{data snooping}.\\
+	Ao avaliar classificadores é mais direto termos um valor escalar para a performance. Como ROC é um gráfico, um método de adquirir esse valor escalar é pelo calculo da área sob a curva ROC ou \textit{Area Under ROC Curve} (\textit{AUC}). Pela definição de ROC, nenhum classificador com utilidade prática terá AUC menor que 0.5, ou seja, um classificador que esteja abaixo da diagonal $x=y$. Similarmente, um bom classificador terá AUC mais próximo de 1. A AUC também tem uma propriedade estatística interessante de privilegiar classificadores com maior número de positivos frente ao número de negativos. Cuidado deve ser tomado para comparar classificadores baseado apenas na performance AUC - o autor coloca isso como incorreto, pois pode estar-se amostrando apenas dados que aumentem a performance do classificador na AUC.
 	
-\item [\textbf{Q18.}] Exercise 7.10, page 7-20 eChapter 7.
-https://www.quora.com/How-can-I-know-the-number-of-weights-to-be-calculated-for-%E2%80%9Cx%E2%80%9D-inputs-connected-to-a-hidden-layer-of-%E2%80%9Cy%E2%80%9D-neurons
+\pagebreak
+
+	Uma forma de comparar classificadores pelo uso de AUC é tirando médias dessas curvas e o artigo aborda duas técnicas: \textit{Vertical averaging}, por amostras verticais de curvas ROC fixando a taxa de falsos positivos e tirando a média dos verdadeiros positivos, e \textit{Threshold averaging}, baseando a média nos valores de \textit{threshold} que produziram os pontos (com isso evitando efeitos negativos da taxa de falsos negativos).\\
+	O artigo ainda discorre sobre casos multi classe e considerações adicionais nesses casos, envolvendo complexidade computacional e estratégias de organização das classes no gráfico ROC.\\
+	Encerrando o documento, o autor descreve com o exemplo \textit{CoIL Challenge 2000} como interpolar classificadores, obtendo um novo classificador antes não disponível.
+	\end{addmargin}	
+
+\item [\textbf{Q20.}] Auto-avaliação:
+	\begin{enumerate}
+		\item Você assistiu a todas as aulas do Mostafa previamente às aulas presenciais? 
+		Se não, o que a/o fez não assistir? Como você avalia seu entendimento das aulas
+		do Mostafa em relação ao inglês e ao conteúdo?\\
+		\textit{-- Resp}: Assisti a todas as aulas do Mostafa antes das aulas presenciais. O inglês, apesar do sotaque, era bom e ainda tinha a possibilidade de colocar legenda nos vídeos. O conteúdo foi bastante teórico e, não tendo experiência no assunto, achei difícil de compreender alguns conceitos básicos como \textit{forward propagation}, regressão logística e cálculos de erros.\\
+		
+		\item Você leu algum capítulo do livro? Lembra quais? Qual a sua avaliação, em
+		termos de entendimento, do auxílio do livro?\\
+		\textit{-- Resp}: Li trechos dos capítulos 3 e 4 além dos e-Chapters, porém assim como as vídeo-aulas achei o conteúdo muito teórico e prolixo - dificilmente chegava em uma pergunta de exercício e consegui pensar de pronto em uma resposta.\\
+		
+		\item Você resolveu algum exercício do livro, ou de algum ``homework''? Lembra quais? 
+		Qual a sua avaliação, em termos de entendimento, dessas atividades? Você acha que o professor 
+		deveria cobrar que essas atividades fossem feitas?\\
+		\textit{-- Resp}: Tentei fazer alguns exercícios, mas não me lembro bem para citar-los. Fiquei desanimado por não ter como conferir respostas - até achei respostas das \textit{homeworks} em alguns sites, mas novamente, por ser o meu primeiro contato formal com aprendizado de máquina, não ter um gabarito fez bastante falta. Talvez fosse interessante que algumas dessas atividades fossem feitas até porque parte delas são testes, mas preferiria os exercícios em \textit{jupyter notebook}, muito mais didáticos, ao longo da disciplina.\\
+		
+		\item Quantas horas por semana você tem para estudar extra-classe? Dessas horas, quantas você 
+		usou para acompanhar esta disciplina?\\
+		\textit{-- Resp}: Tenho 20 horas semanais disponíveis, das quais cheguei a usar, principalmente para a prova, 30. Em média 8 horas ao longo do curso (acabei dedicando bastante tempo a competição do \textit{kaggle}).\\
+		
+		\item Você tem motivação para vir às aulas e participar das discussões? Se sim, o que aumentaria 
+		ainda mais sua motivação? Se não, o que você sugere para que as aulas sejam motivadoras?\\
+		\textit{-- Resp}: Entendo que a ênfase da disciplina é teórica e gostei bastante das discussões, porém, pelo menos para mim, faltou contato com a parte prática - que pude ter mais tarde com a competição do \textit{kaggle}. E isso me ficou um pouco complicado por que, talvez pela minha formação, eu preciso ter um problema mais direto para incentivar a buscar soluções, mas não consigo pensar em uma alternativa que deixe as aulas mais motivadoras nesse sentido.\\
+		
+		\item A disciplina satisfez suas expectativas? O sistema ``flipped class'' (aulas do Mostafa sendo
+		discutidas na aula presencial) funcionou para seu aprendizado? Comente.\\
+		\textit{-- Resp}: A disciplina satisfez as minhas expectativas e desmistificou bastante o que é aprendizado de máquina. Consegui construir uma série de modelos diferentes e avaliar a performance de cada um na competição do \textit{kaggle}. Os \textit{jupyter notebooks} também foram bem interessantes e práticos. O sistema \textit{flipped class} me pareceu mais interessante do que aulas convencionais, porém as aulas que ficaram mais claras foram aquelas que o professor tinha uma visão oposta a do Mostafa - os pontos em questão ficavam mais evidentes.\\
+		
+		\item Além do que foi dado, o que mais você gostaria de aprender? Existe algum tópico você gostaria 
+		que fossem aprofundado?\\
+		\textit{-- Resp}: Entrei no curso tendo muito pouco conhecimento efetivo de aprendizado de máquina, então fiquei bem contente com tudo que foi abordado - até ROC, nessa avaliação. Uma curiosidade minha, que foi abordada por uma das palestras, é sobre modelos em tempo real, mas talvez não seja o foco da disciplina. Também, após o curso, tive interesse por interpolação e convolução de modelos.\\
+				
+		\item A quantidade e a dificuldade das tarefas práticas foi adequada e suficiente? Você
+		  sente-se seguro para usar aprendizado de máquina? O que poderia ser melhorado nas 
+		tarefas? Avalie cada uma das tarefas.\\
+		\textit{-- Resp}: A dificuldade foi justa, porém mais que a dificuldade foi a excelente didática, nunca cursei uma matéria que tivesse uma tarefa interativa, incluindo até o \textit{kaggle} - de que só tinha ouvido falar. Me sinto seguro para aplicar aprendizado de máquina e escolher entre modelos diferentes. O que poderia ser melhorado seria a frequência das tarefas e a quantidade, poderíamos ter mais de duas ou três, se o tempo para cada uma for adequado.\\
+		Avalio cada uma das tarefas como excelente, excluindo a do \textit{notebook} sobre uso de \textit{numpy} - achei um pouco desnecessária.\\
+				
+		\item Faça uma breve auto-avaliação de seu desempenho considerando sua 
+		         facilidade com o conteúdo da disciplina, seu entendimento dos 
+		         conceitos, sua assiduidade às aulas, sua
+		         participação em aulas e seu desempenho nas tarefas. Se você se
+		         sentir confortável para isso, atribua-se uma nota de 0 a 10
+		         de acordo com sua auto-avaliação. Essa nota será considerada
+		         no cômputo final da sua nota, caso o professor entenda que
+		         você soube se auto-avaliar.\\
+		\textit{-- Resp}: Coloquei as minhas opiniões sobre a disciplina e meu desempenho nos itens anteriores, aqui tentarei me atribuir uma nota em cada um dos critérios solicitados.
+		\begin{itemize}
+			\item Facilidade com o conteúdo: 8.5;	
+			\item Entendimento dos conceitos: 8.0;
+			\item Assiduidade as aulas: 9.6;
+			\item Participação em aulas: 9.2;
+			\item Desempenho nas tarefas: 9.5;
+			\item Nota de auto-avaliação: 8.96 (média);
+		\end{itemize}
+	\end{enumerate}
+
 \end{enumerate}
 \end{document}
