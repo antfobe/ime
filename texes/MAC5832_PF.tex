@@ -63,7 +63,7 @@
      
 \item [\textbf{Q2.}] Esta questão foi formulada em uma das aulas: vimos o algoritmo ``Pocket'', que é uma alternativa ao perceptron quando \cal{D} não é linearmente separável. Quais as diferenças entre os dois algoritmos se \cal{D} for linearmente separável? Escolha uma alternativa e justifique. 
 	\begin{addmargin}[1em]{2em}% 1em left, 2em right
-		Alternativa \textit{1} - Não há perda na aproximação do ``\textit{pocket}" quando comparado ao perceptron linear, uma vez que o algoritmo do ``\textit{pocket}" adiciona somente um mecanismo para guardar o melhor resultado das atualizações realizadas. Podemos colocar que por essa funcionalidade adicional, as implementações do ``\textit{pocket}" se tornam mais lentas para um caso linear, já que para cada atualização feita  deverá ainda ser comparado o resultado com o valor guardado pelo ``\textit{pocket}".
+		Alternativa \textit{1} - Não há perda na aproximação do ``\textit{pocket}" quando comparado ao perceptron linear para dados linearmente separáveis, uma vez que o algoritmo do ``\textit{pocket}" adiciona somente um mecanismo para guardar o melhor resultado das atualizações realizadas. Podemos colocar que, por essa funcionalidade adicional, as implementações do ``\textit{pocket}" se tornam mais lentas para um caso linear, já que para cada atualização feita  deverá ainda ser comparado o resultado com o valor guardado pelo ``\textit{pocket}".
 	\end{addmargin}
 
 \item [\textbf{Q3.}] Durante a disciplina foi discutido exaustivamente o modelo de aprendizado supervisionado. Liste os elementos envolvidos num processo de aprendizado supervisionado e como eles se relacionam. Faça um diagrama para ajudar sua explicação. 
@@ -77,6 +77,7 @@
 				\item A distribuição de probabilidades, como forma encaixar ou fazer o \textit{fit} dos dados de treinamento em um intervalo de probabilidades, $P$;
 				\item Alternativamente, a ``\textit{target function}" como distribuição de probabilidades, ``\textit{target distribution}", levando em consideração possível ruído nos dados.
 			\end{itemize}
+			A relação entre cada um desses itens, resumidamente, é da seguinte forma: a partir da \textit{target function} ou \textit{target distribuition} obtemos dados pontuais, que podem ser separados em exemplos de treinamento de acordo com uma distribuição de probabilidades. Esses dados e um conjunto de hipóteses são usados por um algoritmo de aprendizado para gerar um hipótese final que aproxima a \textit{target function} ou a \textit{target distribuition}.\\
 			Retirados dos slides das aulas 4 e 5 do Mostafa, temos os seguintes diagramas:
 		\includegraphics[scale=.3]{"images/SupervisedLearning-a"}
 		\includegraphics[scale=.3]{"images/SupervisedLearning-b"}\\
