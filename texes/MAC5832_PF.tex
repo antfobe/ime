@@ -54,57 +54,81 @@
 
 \begin{enumerate}
 
-\item [\textbf{Q1.}] Alternativa \textit{e} - Nenhuma das afirmações é verdadeira. \\
-Se fosse afirmado que o $sign(w^{T}_tx_n) \geq y$, teríamos que a atualização seria com \[w^{T}_{t+1}x_n \leq w^{T}_tx_n,\] deixando o peso novo menos `positivo' que o antigo. \\
-Em contrapartida, com $sign(w^{T}_tx_n) < y$, a atualização teria como resultado \[w^{T}_{t+1}x_n > w^{T}_tx_n,\] um resultado menos `negativo' que o valor anterior.
-     
-\item [\textbf{Q2.}] Alternativa \textit{1} - Não há perda na aproximação do ``\textit{pocket}" quando comparado ao perceptron linear, uma vez que o algoritmo do ``\textit{pocket}" adiciona somente um mecanismo para guardar o melhor resultado das atualizações realizadas. Podemos colocar que por essa funcionalidade adicional, as implementações do ``\textit{pocket}" se tornam mais lentas para um caso linear, já que para cada atualização feita  deverá ainda ser comparado o resultado com o valor guardado pelo ``\textit{pocket}".
-
-\item [\textbf{Q3.}] Podemos listar os seguintes itens do que aprendemos no curso sobre aprendizado supervisionado:
-	\begin{itemize}
-		\item A função (desconhecida) que queremos aproximar ou ``\textit{target function}";
-		\item Os dados de treinamento que forneceremos para o nosso algoritmo de aprendizado;
-		\item O conjunto de Hipóteses $\mathcal{H}$, como possíveis soluções que ajudam na aproximação pelo aprendizado;
-		\item A aproximação retornada pelo algoritmo ou ``\textit{final hypothesis}";
-		\item A distribuição de probabilidades, como forma encaixar ou fazer o \textit{fit} dos dados de treinamento em um intervalo de probabilidades, $P$;
-		\item Alternativamente, a ``\textit{target function}" como distribuição de probabilidades, ``\textit{target distribution}", levando em consideração possível ruído nos dados.
-	\end{itemize}
-	Retirados dos slides das aulas 4 e 5 do Mostafa, temos os seguintes diagramas:\\
-\includegraphics[scale=.3]{"images/SupervisedLearning-a"}
-\includegraphics[scale=.3]{"images/SupervisedLearning-b"}\\
-	A primeira imagem a esquerda mostrando os componentes do aprendizado supervisionado tendo como alvo uma função desconhecida e a segunda imagem substituindo essa função por uma distribuição.
-
-\item [\textbf{Q4.}] Respondendo a tia:\\
-	\quad $-$ ``Infelizmente 100 dias é uma quantidade muito pequena quando comparada ao total de dias dos últimos 10 anos, em frações teríamos que é $\frac{2}{73}$, aproximadamente $2,7\%$ do total. Posso argumentar que seria possível escolher 100 entre 100 dias que essa estratégia deu certo e a bolsa poderia até ter caído nesses últimos 10 anos.\\
-	Fazendo o contrário da estratégia da amiga e escolhendo 100 dias no mesmo intervalo de tempo, poderia também observar sucesso.\\
-	Em fim, 100 amostras é um valor muito pequeno para avaliar essa estratégia dentro de 10 anos. Geralmente em aprendizado de máquina, separamos os dados de forma aleatória em $80\%$ para treinamento e $20\%$ para validação. Dessa forma observamos quais estratégias deram mais certo nos $80\%$ e vemos se não cometemos nenhuma `falácia' com a massa de dados restante.\\
-	Então não use a estratégia da amiga sem antes procurar os resultados mais a fundo e de forma mais genérica."
-
-\pagebreak
-
-\item [\textbf{Q5.}] Em outras palavras queremos agrupar N pontos de formas diferentes, que é uma questão de combinatória \[\sum_{i=0}^{N}\dbinom{N}{i} = 2^N.\]
-Para provar essa igualdade vamos supor $g(N) = \sum_{i=0}^{N}\dbinom{N}{i}$:
-	\begin{align}
-		\dbinom{N}{N+1} &= \dbinom{N}{-1} = 0\\
-		\dbinom{N+1}{i} &= \dbinom{N}{i} + \dbinom{N}{i-1}\\
-		g(N + 1) - g(N) &= \sum_{i=0}^{N+1}\dbinom{N+1}{i} - \sum_{i=0}^{N}\dbinom{N}{i}\\
-		g(N + 1) - g(N) &= \sum_{i=0}^{N+1} \left( \dbinom{N+1}{i} - \dbinom{N}{i} \right)\\
-		g(N + 1) - g(N) &= \sum_{i=0}^{N+1} \dbinom{N}{i-1} = \sum_{i=0}^{N}\dbinom{N}{i}\\
-		g(N + 1) - g(N) &= g(N)\\
-		g(N + 1) &= 2 \times g(N),\ com\ g(0) = 1\\
-		Como\ g(N)\ dobra\ a\ cada\ incremento\ de\ &N\ por\ 1,\ g(N) = \sum_{i=0}^{N}\dbinom{N}{i} = 2^N
-	\end{align}
-	Como podemos ter um número menor de retas para separar N pontos, temos que $m_{\mathcal{H}}(N) \leq 2^N$.
-
-\item [\textbf{Q6.}] Alternativa \textit{1} -``\textit{Overfitting}" é um termo estatístico usado para descrever uma análise que apresenta resultados muito precisos para apenas uma parte dos valores de um conjunto de dados, sendo essa mesma análise incapaz de se adequar corretamente para os dados restantes.\\
-A quarta edição do \textit{Cambridge Dictionary of Statistics} define \textit{overfitted models} da seguinte forma (p. 314):
+\item [\textbf{Q1.}] Esta questão foi formulada em uma das aulas: de acordo com a regra de atualização da fórmula do perceptron abaixo, qual das afirmações é verdadeira? Justifique. \[sign(\mathbf{w}_t^T \mathbf{x}_n) \ne y \Rightarrow \mathbf{w}_{t+1} \leftarrow \mathbf{w}_t + y_n \mathbf{x}_n\]
 	\begin{addmargin}[1em]{2em}% 1em left, 2em right
-		\textit{``Models that contain more unknown parameters than can be justified by the data."}
+		Alternativa \textit{e} - Nenhuma das afirmações é verdadeira. \\
+		Se fosse afirmado que o $sign(\mathbf{w}_t^T \mathbf{x}_n) \geq y$, teríamos que a atualização seria com \[\mathbf{w}_{t+1}^T \mathbf{x}_n \leq \mathbf{w}_t^T \mathbf{x}_n,\] deixando o peso novo menos `positivo' que o antigo. \\
+		Em contrapartida, com $sign(\mathbf{w}_t^T \mathbf{x}_n) < y$, a atualização teria como resultado \[\mathbf{w}_{t+1}^T \mathbf{x}_n > \mathbf{w}_t^T \mathbf{x}_n,\] um resultado menos `negativo' que o valor anterior.
 	\end{addmargin}
-Para termos menor ``\textit{Overfitting}" é importante que tenhamos em mente o que é ruído no conjunto de dados em questão e como diminuímos a influência para a análise final. Entre dados muito e pouco ruidosos, teremos uma análise menos comprometida para o caso de menor ruído.\\
-A dimensão VC também tem influência na construção de um modelo. Buscando um modelo que tem uma boa generalização, ou seja menor risco de estar errado, não devemos escolher uma dimensão VC grande, uma vez que isso afetará a flexibilidade da solução, resultando em ``\textit{overfitting}".
+     
+\item [\textbf{Q2.}] Esta questão foi formulada em uma das aulas: vimos o algoritmo ``Pocket'', que é uma alternativa ao perceptron quando \cal{D} não é linearmente separável. Quais as diferenças entre os dois algoritmos se \cal{D} for linearmente separável? Escolha uma alternativa e justifique. 
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Alternativa \textit{1} - Não há perda na aproximação do ``\textit{pocket}" quando comparado ao perceptron linear, uma vez que o algoritmo do ``\textit{pocket}" adiciona somente um mecanismo para guardar o melhor resultado das atualizações realizadas. Podemos colocar que por essa funcionalidade adicional, as implementações do ``\textit{pocket}" se tornam mais lentas para um caso linear, já que para cada atualização feita  deverá ainda ser comparado o resultado com o valor guardado pelo ``\textit{pocket}".
+	\end{addmargin}
+
+\item [\textbf{Q3.}] Durante a disciplina foi discutido exaustivamente o modelo de aprendizado supervisionado. Liste os elementos envolvidos num processo de aprendizado supervisionado e como eles se relacionam. Faça um diagrama para ajudar sua explicação. 
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Podemos listar os seguintes itens do que aprendemos no curso sobre aprendizado supervisionado:
+			\begin{itemize}
+				\item A função (desconhecida) que queremos aproximar ou ``\textit{target function}";
+				\item Os dados de treinamento que forneceremos para o nosso algoritmo de aprendizado;
+				\item O conjunto de Hipóteses $\mathcal{H}$, como possíveis soluções que ajudam na aproximação pelo aprendizado;
+				\item A aproximação retornada pelo algoritmo ou ``\textit{final hypothesis}";
+				\item A distribuição de probabilidades, como forma encaixar ou fazer o \textit{fit} dos dados de treinamento em um intervalo de probabilidades, $P$;
+				\item Alternativamente, a ``\textit{target function}" como distribuição de probabilidades, ``\textit{target distribution}", levando em consideração possível ruído nos dados.
+			\end{itemize}
+			Retirados dos slides das aulas 4 e 5 do Mostafa, temos os seguintes diagramas:
+		\includegraphics[scale=.3]{"images/SupervisedLearning-a"}
+		\includegraphics[scale=.3]{"images/SupervisedLearning-b"}\\
+			A primeira imagem a esquerda mostrando os componentes do aprendizado supervisionado tendo como alvo uma função desconhecida e a segunda imagem substituindo essa função por uma distribuição.
+	\end{addmargin}
 
 \pagebreak
+
+\item [\textbf{Q4.}] Questão baseada num ``homework''. A sua tia ficou sabendo que você está fazendo esta disciplina e tem uma pergunta para você. Responda a pergunta usando o que aprendeu nesta disciplina. Lembre-se que sua tia não é especialista em aprendizado de
+  máquina, mas ela é muito esperta e vai ficar chateada se você não for convincente em seus argumentos.
+	\begin{itemize}
+		\item ``Uma amiga minha disse que ganha dinheiro na bolsa comprando ações cujo valor estão em baixa até o final da manhã pois elas sobem de tarde e vice-versa (isto é, vendendo ações cujo valor aumentam até o final da manhã pois elas diminuem de preço de tarde). Eu mesma examinei 100 dias (escolhidos aleatoriamente nos últimos 10 anos) de
+  comportamento do mercado e em 80 desses dias verifiquei que minha amiga estava certa. Devo usar a estratégia da minha amiga?''
+	\end{itemize}
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Respondendo a tia:\\
+			\quad $-$ ``Infelizmente 100 dias é uma quantidade muito pequena quando comparada ao total de dias dos últimos 10 anos, em frações teríamos que é $\frac{2}{73}$, aproximadamente $2,7\%$ do total. Posso argumentar que seria possível escolher 100 entre 100 dias que essa estratégia deu certo e a bolsa poderia até ter caído nesses últimos 10 anos.\\
+			Fazendo o contrário da estratégia da amiga e escolhendo 100 dias no mesmo intervalo de tempo, poderia também observar sucesso.\\
+			Em fim, 100 amostras é um valor muito pequeno para avaliar essa estratégia dentro de 10 anos. Geralmente em aprendizado de máquina, separamos os dados de forma aleatória em $80\%$ para treinamento e $20\%$ para validação. Dessa forma observamos quais estratégias deram mais certo nos $80\%$ e vemos se não cometemos nenhuma `falácia' com a massa de dados restante.\\
+			Então não use a estratégia da amiga sem antes procurar os resultados mais a fundo e de forma mais genérica."
+	\end{addmargin}
+
+\item [\textbf{Q5.}] O maior número de retas possíveis que separam N pontos no plano não é maior que $2^N$, isto é, $m_\mathcal{H}(N) \le 2^N$. Justifique.
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Em outras palavras queremos separar N pontos por retas de formas diferentes. Sabendo que agrupar N pontos de formas diferentes é uma questão de combinatória: \[\sum_{i=0}^{N}\dbinom{N}{i} = 2^N.\]
+		Para provar essa igualdade vamos supor $g(N) = \sum_{i=0}^{N}\dbinom{N}{i}$:
+			\begin{align}
+				\dbinom{N}{N+1} &= \dbinom{N}{-1} = 0\\
+				\dbinom{N+1}{i} &= \dbinom{N}{i} + \dbinom{N}{i-1}\\
+				g(N + 1) - g(N) &= \sum_{i=0}^{N+1}\dbinom{N+1}{i} - \sum_{i=0}^{N}\dbinom{N}{i}\\
+				g(N + 1) - g(N) &= \sum_{i=0}^{N+1} \left( \dbinom{N+1}{i} - \dbinom{N}{i} \right)\\
+				g(N + 1) - g(N) &= \sum_{i=0}^{N+1} \dbinom{N}{i-1} = \sum_{i=0}^{N}\dbinom{N}{i}\\
+				g(N + 1) - g(N) &= g(N)\\
+				g(N + 1) &= 2 \times g(N),\ com\ g(0) = 1\\
+				Como\ g(N)\ dobra\ a\ cada\ incremento\ de\ &N\ por\ 1,\ g(N) = \sum_{i=0}^{N}\dbinom{N}{i} = 2^N
+			\end{align}
+			Como podemos ter um número menor de retas para separar N pontos, temos que $m_{\mathcal{H}}(N) \leq 2^N$.
+\end{addmargin}
+
+\pagebreak
+
+\item [\textbf{Q6.}] Questão de uma das aulas do curso: baseado na aula sobre ``overfitting'' e a discussão de como os dados com ruído e a dimensão VC influenciam no problema, diga qual das seguintes situações tem menor risco de ``overfitting''. Justifique definindo ``overfitting'' e explicando porque a alternativa que você escolheu
+  é a mais adequada.
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Alternativa \textit{1} -``\textit{Overfitting}" é um termo estatístico usado para descrever uma análise que apresenta resultados muito precisos para apenas uma parte dos valores de um conjunto de dados, sendo essa mesma análise incapaz de se adequar corretamente para os dados restantes.\\
+		A quarta edição do \textit{Cambridge Dictionary of Statistics} define \textit{overfitted models} da seguinte forma (p. 314):
+			\begin{addmargin}[1em]{2em}% 1em left, 2em right
+				\textit{``Models that contain more unknown parameters than can be justified by the data."}
+			\end{addmargin}
+		Para termos menor ``\textit{Overfitting}" é importante que tenhamos em mente o que é ruído no conjunto de dados em questão e como diminuímos a influência para a análise final. Entre dados muito e pouco ruidosos, teremos uma análise menos comprometida para o caso de menor ruído.\\
+		A dimensão VC também tem influência na construção de um modelo. Buscando um modelo que tem uma boa generalização, ou seja menor risco de estar errado, não devemos escolher uma dimensão VC grande, uma vez que isso afetará a flexibilidade da solução, resultando em ``\textit{overfitting}".
+	\end{addmargin}
 
 \item [\textbf{Q7.}] Problem 1.11, page 38.
 	\begin{addmargin}[1em]{2em}% 1em left, 2em right
@@ -127,8 +151,6 @@ A dimensão VC também tem influência na construção de um modelo. Buscando um
 			\item[c)] Se $y_N$ se torna um \textit{outlier} em $+ \infty$, o estimador $h_{mean}$, sendo a média de todos $y$, aumenta tendendo ao infinito $h_{mean} \rightarrow \infty$ (admitindo aqui que $y$ não tem mais nenhum ponto em infinito). O estimado $y_{med}$, em contrapartida permanece o mesmo se o ponto perturbado era o de maior valor na amostra, ou muda pouco, caso o contrário.
 		\end{itemize}
 	\end{addmargin}
-
-\pagebreak	
 
 \item [\textbf{Q9.}] Problem 2.2, page 50.
 	\begin{addmargin}[1em]{2em}
@@ -234,40 +256,27 @@ A dimensão VC também tem influência na construção de um modelo. Buscando um
 	\begin{enumerate}
 		\item Você assistiu a todas as aulas do Mostafa previamente às aulas presenciais? 
 		Se não, o que a/o fez não assistir? Como você avalia seu entendimento das aulas
-		do Mostafa em relação ao inglês e ao conteúdo?\\
-		\textit{-- Resp}: Assisti a todas as aulas do Mostafa antes das aulas presenciais. O inglês, apesar do sotaque, era bom e ainda tinha a possibilidade de colocar legenda nos vídeos. O conteúdo foi bastante teórico e, não tendo experiência no assunto, achei difícil de compreender alguns conceitos básicos como \textit{forward propagation}, regressão logística e cálculos de erros.\\
-		
+		do Mostafa em relação ao inglês e ao conteúdo?
+		\item[\textit{-- Resp}:] Assisti a todas as aulas do Mostafa antes das aulas presenciais. O inglês, apesar do sotaque, era bom e ainda tinha a possibilidade de colocar legenda nos vídeos. O conteúdo foi bastante teórico e, não tendo experiência no assunto, achei difícil de compreender alguns conceitos básicos como \textit{forward propagation}, regressão logística e cálculos de erros.		
 		\item Você leu algum capítulo do livro? Lembra quais? Qual a sua avaliação, em
-		termos de entendimento, do auxílio do livro?\\
-		\textit{-- Resp}: Li trechos dos capítulos 3 e 4 além dos e-Chapters, porém assim como as vídeo-aulas achei o conteúdo muito teórico e prolixo - dificilmente chegava em uma pergunta de exercício e consegui pensar de pronto em uma resposta.\\
-		
+		termos de entendimento, do auxílio do livro?
+		\item[\textit{-- Resp}:] Li trechos dos capítulos 3 e 4 além dos e-Chapters, porém assim como as vídeo-aulas achei o conteúdo muito teórico e prolixo - dificilmente chegava em uma pergunta de exercício e consegui pensar de pronto em uma resposta.		
 		\item Você resolveu algum exercício do livro, ou de algum ``homework''? Lembra quais? 
 		Qual a sua avaliação, em termos de entendimento, dessas atividades? Você acha que o professor 
-		deveria cobrar que essas atividades fossem feitas?\\
-		\textit{-- Resp}: Tentei fazer alguns exercícios, mas não me lembro bem para citar-los. Fiquei desanimado por não ter como conferir respostas - até achei respostas das \textit{homeworks} em alguns sites, mas novamente, por ser o meu primeiro contato formal com aprendizado de máquina, não ter um gabarito fez bastante falta. Talvez fosse interessante que algumas dessas atividades fossem feitas até porque parte delas são testes, mas preferiria os exercícios em \textit{jupyter notebook}, muito mais didáticos, ao longo da disciplina.\\
-		
-		\item Quantas horas por semana você tem para estudar extra-classe? Dessas horas, quantas você 
-		usou para acompanhar esta disciplina?\\
-		\textit{-- Resp}: Tenho 20 horas semanais disponíveis, das quais cheguei a usar, principalmente para a prova, 30. Em média 8 horas ao longo do curso (acabei dedicando bastante tempo a competição do \textit{kaggle}).\\
-		
-		\item Você tem motivação para vir às aulas e participar das discussões? Se sim, o que aumentaria 
-		ainda mais sua motivação? Se não, o que você sugere para que as aulas sejam motivadoras?\\
-		\textit{-- Resp}: Entendo que a ênfase da disciplina é teórica e gostei bastante das discussões, porém, pelo menos para mim, faltou contato com a parte prática - que pude ter mais tarde com a competição do \textit{kaggle}. E isso me ficou um pouco complicado por que, talvez pela minha formação, eu preciso ter um problema mais direto para incentivar a buscar soluções, mas não consigo pensar em uma alternativa que deixe as aulas mais motivadoras nesse sentido.\\
-		
+		deveria cobrar que essas atividades fossem feitas?
+		\item[\textit{-- Resp}:] Tentei fazer alguns exercícios, mas não me lembro bem para citar-los. Fiquei desanimado por não ter como conferir respostas - até achei respostas das \textit{homeworks} em alguns sites, mas novamente, por ser o meu primeiro contato formal com aprendizado de máquina, não ter um gabarito fez bastante falta. Talvez fosse interessante que algumas dessas atividades fossem feitas até porque parte delas são testes, mas preferiria os exercícios em \textit{jupyter notebook}, muito mais didáticos, ao longo da disciplina.		
+		\item Quantas horas por semana você tem para estudar extra-classe? Dessas horas, quantas você usou para acompanhar esta disciplina?
+		\item[\textit{-- Resp}:] Tenho 20 horas semanais disponíveis, das quais cheguei a usar, principalmente para a prova, 30. Em média 8 horas ao longo do curso (acabei dedicando bastante tempo a competição do \textit{kaggle}).
+		\item Você tem motivação para vir às aulas e participar das discussões? Se sim, o que aumentaria ainda mais sua motivação? Se não, o que você sugere para que as aulas sejam motivadoras?
+		\item[\textit{-- Resp}:] Entendo que a ênfase da disciplina é teórica e gostei bastante das discussões, porém, pelo menos para mim, faltou contato com a parte prática - que pude ter mais tarde com a competição do \textit{kaggle}. E isso me ficou um pouco complicado por que, talvez pela minha formação, eu preciso ter um problema mais direto para incentivar a buscar soluções, mas não consigo pensar em uma alternativa que deixe as aulas mais motivadoras nesse sentido.		
 		\item A disciplina satisfez suas expectativas? O sistema ``flipped class'' (aulas do Mostafa sendo
-		discutidas na aula presencial) funcionou para seu aprendizado? Comente.\\
-		\textit{-- Resp}: A disciplina satisfez as minhas expectativas e desmistificou bastante o que é aprendizado de máquina. Consegui construir uma série de modelos diferentes e avaliar a performance de cada um na competição do \textit{kaggle}. Os \textit{jupyter notebooks} também foram bem interessantes e práticos. O sistema \textit{flipped class} me pareceu mais interessante do que aulas convencionais, porém as aulas que ficaram mais claras foram aquelas que o professor tinha uma visão oposta a do Mostafa - os pontos em questão ficavam mais evidentes.\\
-		
-		\item Além do que foi dado, o que mais você gostaria de aprender? Existe algum tópico você gostaria 
-		que fossem aprofundado?\\
-		\textit{-- Resp}: Entrei no curso tendo muito pouco conhecimento efetivo de aprendizado de máquina, então fiquei bem contente com tudo que foi abordado - até ROC, nessa avaliação. Uma curiosidade minha, que foi abordada por uma das palestras, é sobre modelos em tempo real, mas talvez não seja o foco da disciplina. Também, após o curso, tive interesse por interpolação e convolução de modelos.\\
-				
-		\item A quantidade e a dificuldade das tarefas práticas foi adequada e suficiente? Você
-		  sente-se seguro para usar aprendizado de máquina? O que poderia ser melhorado nas 
-		tarefas? Avalie cada uma das tarefas.\\
-		\textit{-- Resp}: A dificuldade foi justa, porém mais que a dificuldade foi a excelente didática, nunca cursei uma matéria que tivesse uma tarefa interativa, incluindo até o \textit{kaggle} - de que só tinha ouvido falar. Me sinto seguro para aplicar aprendizado de máquina e escolher entre modelos diferentes. O que poderia ser melhorado seria a frequência das tarefas e a quantidade, poderíamos ter mais de duas ou três, se o tempo para cada uma for adequado.\\
-		Avalio cada uma das tarefas como excelente, excluindo a do \textit{notebook} sobre uso de \textit{numpy} - achei um pouco desnecessária.\\
-				
+		discutidas na aula presencial) funcionou para seu aprendizado? Comente.
+		\item[\textit{-- Resp}:] A disciplina satisfez as minhas expectativas e desmistificou bastante o que é aprendizado de máquina. Consegui construir uma série de modelos diferentes e avaliar a performance de cada um na competição do \textit{kaggle}. Os \textit{jupyter notebooks} também foram bem interessantes e práticos. O sistema \textit{flipped class} me pareceu mais interessante do que aulas convencionais, porém as aulas que ficaram mais claras foram aquelas que o professor tinha uma visão oposta a do Mostafa - os pontos em questão ficavam mais evidentes.		
+		\item Além do que foi dado, o que mais você gostaria de aprender? Existe algum tópico você gostaria que fossem aprofundado?
+		\item[\textit{-- Resp}:] Entrei no curso tendo muito pouco conhecimento efetivo de aprendizado de máquina, então fiquei bem contente com tudo que foi abordado - até ROC, nessa avaliação. Uma curiosidade minha, que foi abordada por uma das palestras, é sobre modelos em tempo real, mas talvez não seja o foco da disciplina. Também, após o curso, tive interesse por interpolação e convolução de modelos.				
+		\item A quantidade e a dificuldade das tarefas práticas foi adequada e suficiente? Você sente-se seguro para usar aprendizado de máquina? O que poderia ser melhorado nas tarefas? Avalie cada uma das tarefas.
+		\item[\textit{-- Resp}:] A dificuldade foi justa, porém mais que a dificuldade foi a excelente didática, nunca cursei uma matéria que tivesse uma tarefa interativa, incluindo até o \textit{kaggle} - de que só tinha ouvido falar. Me sinto seguro para aplicar aprendizado de máquina e escolher entre modelos diferentes. O que poderia ser melhorado seria a frequência das tarefas e a quantidade - poderíamos ter mais de duas ou três, se o tempo para cada uma for adequado.\\
+		Avalio cada uma das tarefas como excelente, excluindo a do \textit{notebook} sobre uso de \textit{numpy} - achei um pouco desnecessária.				
 		\item Faça uma breve auto-avaliação de seu desempenho considerando sua 
 		         facilidade com o conteúdo da disciplina, seu entendimento dos 
 		         conceitos, sua assiduidade às aulas, sua
@@ -275,8 +284,8 @@ A dimensão VC também tem influência na construção de um modelo. Buscando um
 		         sentir confortável para isso, atribua-se uma nota de 0 a 10
 		         de acordo com sua auto-avaliação. Essa nota será considerada
 		         no cômputo final da sua nota, caso o professor entenda que
-		         você soube se auto-avaliar.\\
-		\textit{-- Resp}: Coloquei as minhas opiniões sobre a disciplina e meu desempenho nos itens anteriores, aqui tentarei me atribuir uma nota em cada um dos critérios solicitados.
+		         você soube se auto-avaliar.
+		\item[\textit{-- Resp}:] Coloquei as minhas opiniões sobre a disciplina e meu desempenho nos itens anteriores, aqui tentarei me atribuir uma nota em cada um dos critérios solicitados.
 		\begin{itemize}
 			\item Facilidade com o conteúdo: 8.5;	
 			\item Entendimento dos conceitos: 8.0;
