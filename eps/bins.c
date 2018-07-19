@@ -1,20 +1,35 @@
+/* COMPILE gcc -o bins -lcrypto bins.c */
+
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <limits.h>
 #include <sys/random.h>
 #include <sys/syscall.h>
+#include <openssl/sha.h>
 
 #define _GNU_SOURCE
 #define USAGE() do { printf("Usage: ./bins { number, number, ..., number }\n"); exit(0); } while(0)
-    
-void showbits(unsigned int x){
-    int i; 
-    for(i=(sizeof(int)*8)-1; i>=0; i--)
-            (x&(1u<<i))?putchar('1'):putchar('0');
-    
-    printf("\n");
+   
+void sha256(char *string, char outputBuffer[65]){
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, string, strlen(string));
+    SHA256_Final(hash, &sha256);
+    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++){
+        sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
+    }
+    outputBuffer[64] = 0;
+}
+
+char * showbits(unsigned int x, char * buffer){
+    strcpy(buffer, "");
+    for(int i = (sizeof(int)*8)-1; i >= 0; i--)
+            (x&(1u<<i))?strncat(buffer, "1", 1):strncat(buffer, "0", 1);
+    return buffer;    
 }
 
 void shortbits(short x){
@@ -28,13 +43,15 @@ void shortbits(short x){
 int main(int argc, char * argv[]) {
 	srand(time(NULL));
 	unsigned int j = 0;
+    char bits[33];
 	for(int args = 1; args < argc; args++) {
 		j = (unsigned int) strtol(argv[args], (char **)NULL, 10); if(!j){ USAGE();}
 		printf("%u in binary\t\t", j);
 		/* assume we have a function that prints a binary string when given 
 		   a decimal integer 
 		 */
-		showbits(j);
+		showbits(j, bits);
+        printf("bits - %s\n", bits);
 	}
 	/*int m, n;
 	// the loop for right shift operation 
