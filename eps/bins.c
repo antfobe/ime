@@ -25,11 +25,10 @@ void sha256(char *string, char outputBuffer[65]){
     outputBuffer[64] = 0;
 }
 
-char * showbits(unsigned int x, char * buffer){
+void showbits(unsigned int x, char * buffer){
     strcpy(buffer, "");
     for(int i = (sizeof(int)*8)-1; i >= 0; i--)
             (x&(1u<<i))?strncat(buffer, "1", 1):strncat(buffer, "0", 1);
-    return buffer;    
 }
 
 void shortbits(short x){
@@ -44,6 +43,7 @@ int main(int argc, char * argv[]) {
 	srand(time(NULL));
 	unsigned int j = 0;
     char bits[33];
+    char hash[65];
 	for(int args = 1; args < argc; args++) {
 		j = (unsigned int) strtol(argv[args], (char **)NULL, 10); if(!j){ USAGE();}
 		printf("%u in binary\t\t", j);
@@ -51,7 +51,8 @@ int main(int argc, char * argv[]) {
 		   a decimal integer 
 		 */
 		showbits(j, bits);
-        printf("bits - %s\n", bits);
+        sha256(bits, hash);
+        printf("bits - %s\nsha256:\t%s\n", bits, hash);
 	}
 	/*int m, n;
 	// the loop for right shift operation 
