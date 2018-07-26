@@ -63,6 +63,11 @@ int main(int argc, char * argv[]) {
 	}
 	*/
 	syscall(SYS_getrandom, &j, sizeof(unsigned int), 0);
+    
+    char check[65];
+    showbits(j, bits);
+    sha256(bits, hash);
+        printf("bits - %s\nsha256:\t%s\n", bits, hash);
 	unsigned short m = j>>16;
 	unsigned short n = j;
 	printf("n = \t\t");shortbits(n);
@@ -71,6 +76,10 @@ int main(int argc, char * argv[]) {
 	printf("m = m ^ n,\t"); m = m ^ n; shortbits(m);//m = m ^ n; /* Lost m, recover n (n = XORn ^ m)*/
 	printf("n = n ^ m,\t"); n = n ^ m; shortbits(n);//n = n ^ m; /* recover m on n (m = XORn ^ n)*/
 	printf("m = \t\t"); shortbits(m);
+    
+    showbits(((unsigned int)n<<16) + (unsigned int)m, bits);
+    sha256(bits, hash);
+        printf("bits - %s\nsha256:\t%s\n", bits, hash);
 	for (unsigned short pm = 0, find = 0; pm < USHRT_MAX; pm++){
 	/* binary search magick
 	for (unsigned short low = 0, mid, high = USHRT_MAX - 1, find; low <= high;){
@@ -78,12 +87,15 @@ int main(int argc, char * argv[]) {
 		*/
 		/* found m candidate */
 		find = pm ^ (n ^ m); // possible n value
-		if (n == find && m == find ^ pm ) {
+		//if (n == find && m == find ^ pm ) {
+        showbits(((unsigned int)pm<<16) + (unsigned int)find, bits);
+        sha256(bits, check);
+		if (strcmp(hash, check) == 0) {
 			printf("found n! (find,p) = (%d,%d)\n", find, pm);
 			printf("m: ");shortbits(pm);
 			printf("n: ");shortbits(find);
+        printf("bits - %s\nsha256:\t%s\n", bits, check);
 		}
 	}
 	return 0;
 }
-
