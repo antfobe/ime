@@ -41,7 +41,7 @@ void shortbits(short x){
 
 int main(int argc, char * argv[]) {
 	srand(time(NULL));
-	unsigned int j = 0;
+	unsigned int j = '0';
     char bits[33];
     char hash[65];
 	for(int args = 1; args < argc; args++) {
@@ -52,7 +52,7 @@ int main(int argc, char * argv[]) {
 		 */
 		showbits(j, bits);
         sha256(bits, hash);
-        printf("bits - %s\nsha256:\t%s\n", bits, hash);
+        printf("bits -- %s\nsha256:\t%s\n", bits, hash);
 	}
 	/*int m, n;
 	// the loop for right shift operation 
@@ -67,7 +67,7 @@ int main(int argc, char * argv[]) {
     char check[65];
     showbits(j, bits);
     sha256(bits, hash);
-        printf("bits - %s\nsha256:\t%s\n", bits, hash);
+        printf("bits -- %s\nsha256:\t%s\n", bits, hash);
 	unsigned short m = j>>16;
 	unsigned short n = j;
 	printf("n = \t\t");shortbits(n);
@@ -79,22 +79,18 @@ int main(int argc, char * argv[]) {
     
     showbits(((unsigned int)n<<16) + (unsigned int)m, bits);
     sha256(bits, hash);
-        printf("bits - %s\nsha256:\t%s\n", bits, hash);
+        printf("bits -- %s\nsha256:\t%s\n", bits, hash);
 	for (unsigned short pm = 0, find = 0; pm < USHRT_MAX; pm++){
-	/* binary search magick
-	for (unsigned short low = 0, mid, high = USHRT_MAX - 1, find; low <= high;){
-		mid = (low + high) / 2;
-		*/
+	/* needs binary search magick */
 		/* found m candidate */
 		find = pm ^ (n ^ m); // possible n value
-		//if (n == find && m == find ^ pm ) {
         showbits(((unsigned int)pm<<16) + (unsigned int)find, bits);
         sha256(bits, check);
 		if (strcmp(hash, check) == 0) {
 			printf("found n! (find,p) = (%d,%d)\n", find, pm);
 			printf("m: ");shortbits(pm);
 			printf("n: ");shortbits(find);
-        printf("bits - %s\nsha256:\t%s\n", bits, check);
+        printf("bits -- %s\nsha256:\t%s\n", bits, check);
 		}
 	}
 	return 0;
