@@ -36,15 +36,15 @@ unsigned char xorstring_reduce(unsigned char * string){
 unsigned char * xor_expand(unsigned char seed, unsigned char * stophash, unsigned long stopsize) {
     short pow = 1, carry = 0;
     unsigned char * output = NULL, * outxor = NULL, hash[65] = {};
-        
+
+    outxor = (unsigned char *)malloc((stopsize / 2) * sizeof(unsigned char));
+    if(outxor == NULL) {MALLOC_CHECK("outxor");}
+    outxor[0] = seed;
+    output = (unsigned char *)malloc((stopsize) * sizeof(unsigned char));
+    if(output == NULL) {MALLOC_CHECK("output");}
+
     while(strcmp(hash, stophash) != 0 && pow <= stopsize) {
-        outxor = realloc(outxor, pow * sizeof(char));
-        if(outxor == NULL) {MALLOC_CHECK("outxor");}
-        if(pow == 1) {outxor[0] = seed;}
-            
         pow <<= 1;
-        output = realloc(output, pow * sizeof(char));
-        if(output == NULL) {MALLOC_CHECK("output");}
 
         for(long i = 0; i < pow/2 && pow > 2; i++){
             outxor[i] = output[i];

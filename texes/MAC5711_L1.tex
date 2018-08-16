@@ -1,0 +1,55 @@
+% to change the appearance of the header, questions, problems or subproblems, see the homework.cls file or
+% override the \Problem, \Subproblem, \question or \printtitle commands.
+
+% The hidequestions option hides the questions. Remove it to print the questions in the text.
+
+\title{MAC5711- Lista 1}
+
+\documentclass{homework}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\newtheorem*{theorem}{Lema do Bombeamento}
+
+% Set up your name, the course name and the homework set number.
+\homeworksetup{
+    username={Jean Fobe, N$^o$USP 7630573},
+    course={Análise de Algorítmos - MAC4722},
+    setnumber=1}
+\begin{document}% this also prints the header.
+\pagestyle{fancy}
+\fancyfoot[L]{Jean Fobe, 7630573}
+
+% use starred problems or subproblems to apply manual numbering.
+\problem*{1}
+\question{Lembre-se que $lg\ n$ denota o logaritmo de base 2 de $n$. Usando a definição da notação O, prove que}
+	\begin{enumerate}
+		\item[(b)] $n \times lg^5n$ é O($n^2$), mas $n^2$ não é O($n \times lg^5n$)\\
+			$Resp:$ Tendo $f(n)=lg^5n$ e $g(n) = n$, queremos saber qual é maior, para tanto usaremos $L'Hospital$: 
+			\begin{align*}
+				& \lim_{n \to \infty} \frac{f(n)}{g(n)} = \lim_{n \to \infty} \frac{f'(n)}{g'(n)}\\
+				& \lim_{n \to \infty} \frac{f'(n)}{g'(n)} = \lim_{n \to \infty} \frac{f_2(n)}{g_2(n)} = \lim_{n \to \infty} \frac{5lg^4n}{n}\\
+				& \lim_{n \to \infty} \frac{f'_2(n)}{g'_2(n)} = \lim_{n \to \infty} \frac{g_3(n)}{f_3(n)} = \lim_{n \to \infty} \frac{20lg^3n}{n}\\
+				& \lim_{n \to \infty} \frac{f'_3(n)}{g'_3(n)} = \lim_{n \to \infty} \frac{g_4(n)}{f_4(n)} = \lim_{n \to \infty} \frac{60lg^2n}{n}\\
+				& \lim_{n \to \infty} \frac{f'_4(n)}{g'_4(n)} = \lim_{n \to \infty} \frac{g_5(n)}{f_5(n)} = \lim_{n \to \infty} \frac{120lg\ n}{n}\\
+				& \lim_{n \to \infty} \frac{f'_5(n)}{g'_5(n)} = \lim_{n \to \infty} \frac{120}{n} = 0\\
+			\end{align*}
+			Com isso, temos que $lg^5n$ é O($n$) e $n$ não é O($lg^5n$), consequentemente, $n \times lg^5n$ é O($n^2$), mas $n^2$ não é O($n \times lg^5n$).			
+	\end{enumerate}		
+		
+\problem*{2}
+\question{Prove ou dê um contra-exemplo para as afirmações abaixo:}
+	\begin{enumerate}
+		\item[(c)] Se $f(n) =$ O($g(n)$) e $g(n) = \Theta(h(n))$, então $f(n) = \Theta(h(n))$\\
+		$Resp:$ Vamos dar um contra-exemplo para a afirmação acima, para tanto, vamos supor $g(n) = 3.2^n,\ h(n) = 7.2^n$ e $f(n) = n$.\\
+		Como existem constantes positivas $c_1,c_2$ e $n_0$, com $c_1.2^n \leq g(n) \leq h(n) \leq c_2.2^n$, para todo $n \geq n_0$, $g(n) = \Theta(h(n))$.\\
+		Agora para $c$ e $n_{b0}$ constantes positivas $f(n) \leq c.g(n),\ n \geq n_{b0}$,  de forma que $f(n)=$ O($g(n)$), todavia, não existe constante positiva $c_3$ para que $c_1.2^n \leq c_3.n$ para um valor constante positivo $n_{c0}$ suficientemente grande e $n \geq n_{c0}$.\\
+		Portanto, $f(n) \neq \Theta(h(n))$.
+	\end{enumerate}
+\end{document}
