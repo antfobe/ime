@@ -1,0 +1,316 @@
+% --------------------------------------------------------------
+% This is all preamble stuff that you don't have to worry about.
+% Head down to where it says "Start here"
+% --------------------------------------------------------------
+ 
+\documentclass[12pt]{article}
+ 
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{fancyhdr}
+
+\usepackage{graphicx}
+	\graphicspath{ {images/} }
+\usepackage{scrextend}
+
+\newcommand\NoIndent[1]{%
+  \par\vbox{\parbox[t]{\linewidth}{#1}}%
+}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+\pagestyle{fancy}
+\setlength{\headheight}{20pt} 
+\rhead{Jean Fobe, NºUSP 7630573}
+ 
+\begin{document}
+ 
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+ 
+\title{General Test - MAC 5872}
+\thispagestyle{fancy}
+\author{
+	Introduction to Machine Learning\\\\
+    Jean Fobe, NºUSP 7630573
+    }
+
+\maketitle
+
+\begin{enumerate}
+
+\item [\textbf{Q1.}] Esta questão foi formulada em uma das aulas: de acordo com a regra de atualização da fórmula do perceptron abaixo, qual das afirmações é verdadeira? Justifique. \[sign(\mathbf{w}_t^T \mathbf{x}_n) \ne y \Rightarrow \mathbf{w}_{t+1} \leftarrow \mathbf{w}_t + y_n \mathbf{x}_n\]
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Alternativa \textit{e} - Nenhuma das afirmações é verdadeira. \\
+		Se fosse afirmado que o $sign(\mathbf{w}_t^T \mathbf{x}_n) \geq y$, teríamos que a atualização seria com \[\mathbf{w}_{t+1}^T \mathbf{x}_n \leq \mathbf{w}_t^T \mathbf{x}_n,\] deixando o peso novo menos `positivo' que o antigo. \\
+		Em contrapartida, com $sign(\mathbf{w}_t^T \mathbf{x}_n) < y$, a atualização teria como resultado \[\mathbf{w}_{t+1}^T \mathbf{x}_n > \mathbf{w}_t^T \mathbf{x}_n,\] um resultado menos `negativo' que o valor anterior.
+	\end{addmargin}
+     
+\item [\textbf{Q2.}] Esta questão foi formulada em uma das aulas: vimos o algoritmo ``Pocket'', que é uma alternativa ao perceptron quando \cal{D} não é linearmente separável. Quais as diferenças entre os dois algoritmos se \cal{D} for linearmente separável? Escolha uma alternativa e justifique. 
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Alternativa \textit{1} - Não há perda na aproximação do ``\textit{pocket}" quando comparado ao perceptron linear para dados linearmente separáveis, uma vez que o algoritmo do ``\textit{pocket}" adiciona somente um mecanismo para guardar o melhor resultado das atualizações realizadas. Podemos colocar que, por essa funcionalidade adicional, as implementações do ``\textit{pocket}" se tornam mais lentas para um caso linear, já que para cada atualização feita  deverá ainda ser comparado o resultado com o valor guardado pelo ``\textit{pocket}".
+	\end{addmargin}
+
+\item [\textbf{Q3.}] Durante a disciplina foi discutido exaustivamente o modelo de aprendizado supervisionado. Liste os elementos envolvidos num processo de aprendizado supervisionado e como eles se relacionam. Faça um diagrama para ajudar sua explicação. 
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Podemos listar os seguintes itens do que aprendemos no curso sobre aprendizado supervisionado:
+			\begin{itemize}
+				\item A função (desconhecida) que queremos aproximar ou ``\textit{target function}";
+				\item Os dados de treinamento que forneceremos para o nosso algoritmo de aprendizado;
+				\item O conjunto de Hipóteses $\mathcal{H}$, como possíveis soluções que ajudam na aproximação pelo aprendizado;
+				\item A aproximação retornada pelo algoritmo ou ``\textit{final hypothesis}";
+				\item A distribuição de probabilidades, como forma encaixar ou fazer o \textit{fit} dos dados de treinamento em um intervalo de probabilidades, $P$;
+				\item Alternativamente, a ``\textit{target function}" como distribuição de probabilidades, ``\textit{target distribution}", levando em consideração possível ruído nos dados.
+			\end{itemize}
+			A relação entre cada um desses itens, resumidamente, é da seguinte forma: a partir da \textit{target function} ou \textit{target distribuition} obtemos dados pontuais, que podem ser separados em exemplos de treinamento de acordo com uma distribuição de probabilidades. Esses dados e um conjunto de hipóteses são usados por um algoritmo de aprendizado para gerar um hipótese final que aproxima a \textit{target function} ou a \textit{target distribuition}.\\
+			Retirados dos slides das aulas 4 e 5 do Mostafa, temos os seguintes diagramas:
+		\includegraphics[scale=.3]{"images/SupervisedLearning-a"}
+		\includegraphics[scale=.3]{"images/SupervisedLearning-b"}\\
+			A primeira imagem a esquerda mostrando os componentes do aprendizado supervisionado tendo como alvo uma função desconhecida e a segunda imagem substituindo essa função por uma distribuição.
+	\end{addmargin}
+
+\pagebreak
+
+\item [\textbf{Q4.}] Questão baseada num ``homework''. A sua tia ficou sabendo que você está fazendo esta disciplina e tem uma pergunta para você. Responda a pergunta usando o que aprendeu nesta disciplina. Lembre-se que sua tia não é especialista em aprendizado de
+  máquina, mas ela é muito esperta e vai ficar chateada se você não for convincente em seus argumentos.
+	\begin{itemize}
+		\item ``Uma amiga minha disse que ganha dinheiro na bolsa comprando ações cujo valor estão em baixa até o final da manhã pois elas sobem de tarde e vice-versa (isto é, vendendo ações cujo valor aumentam até o final da manhã pois elas diminuem de preço de tarde). Eu mesma examinei 100 dias (escolhidos aleatoriamente nos últimos 10 anos) de
+  comportamento do mercado e em 80 desses dias verifiquei que minha amiga estava certa. Devo usar a estratégia da minha amiga?''
+	\end{itemize}
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Respondendo a tia:\\
+			\quad $-$ ``Infelizmente 100 dias é uma quantidade muito pequena quando comparada ao total de dias dos últimos 10 anos, em frações teríamos que é $\frac{2}{73}$, aproximadamente $2,7\%$ do total. Posso argumentar que seria possível escolher 100 entre 100 dias que essa estratégia deu certo e a bolsa poderia até ter caído nesses últimos 10 anos.\\
+			Fazendo o contrário da estratégia da amiga e escolhendo 100 dias no mesmo intervalo de tempo, poderia também observar sucesso.\\
+			Em fim, 100 amostras é um valor muito pequeno para avaliar essa estratégia dentro de 10 anos. Geralmente em aprendizado de máquina, separamos os dados de forma aleatória em $80\%$ para treinamento e $20\%$ para validação. Dessa forma observamos quais estratégias deram mais certo nos $80\%$ e vemos se não cometemos nenhuma `falácia' com a massa de dados restante.\\
+			Então não use a estratégia da amiga sem antes procurar os resultados mais a fundo e de forma mais genérica."
+	\end{addmargin}
+
+\item [\textbf{Q5.}] O maior número de retas possíveis que separam N pontos no plano não é maior que $2^N$, isto é, $m_\mathcal{H}(N) \le 2^N$. Justifique.
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Em outras palavras queremos separar N pontos por retas de formas diferentes. Sabendo que agrupar N pontos de formas diferentes é uma questão de combinatória: \[\sum_{i=0}^{N}\dbinom{N}{i} = 2^N.\]
+		Para provar essa igualdade vamos supor $g(N) = \sum_{i=0}^{N}\dbinom{N}{i}$:
+			\begin{align}
+				\dbinom{N}{N+1} &= \dbinom{N}{-1} = 0\\
+				\dbinom{N+1}{i} &= \dbinom{N}{i} + \dbinom{N}{i-1}\\
+				g(N + 1) - g(N) &= \sum_{i=0}^{N+1}\dbinom{N+1}{i} - \sum_{i=0}^{N}\dbinom{N}{i}\\
+				g(N + 1) - g(N) &= \sum_{i=0}^{N+1} \left( \dbinom{N+1}{i} - \dbinom{N}{i} \right)\\
+				g(N + 1) - g(N) &= \sum_{i=0}^{N+1} \dbinom{N}{i-1} = \sum_{i=0}^{N}\dbinom{N}{i}\\
+				g(N + 1) - g(N) &= g(N)\\
+				g(N + 1) &= 2 \times g(N),\ com\ g(0) = 1\\
+				Como\ g(N)\ dobra\ a\ cada\ incremento\ de\ &N\ por\ 1,\ g(N) = \sum_{i=0}^{N}\dbinom{N}{i} = 2^N
+			\end{align}
+			Como podemos ter um número menor de retas para separar N pontos, temos que $m_{\mathcal{H}}(N) \leq 2^N$.
+\end{addmargin}
+
+\pagebreak
+
+\item [\textbf{Q6.}] Questão de uma das aulas do curso: baseado na aula sobre ``overfitting'' e a discussão de como os dados com ruído e a dimensão VC influenciam no problema, diga qual das seguintes situações tem menor risco de ``overfitting''. Justifique definindo ``overfitting'' e explicando porque a alternativa que você escolheu
+  é a mais adequada.
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Alternativa \textit{1} -``\textit{Overfitting}" é um termo estatístico usado para descrever uma análise que apresenta resultados muito precisos para apenas uma parte dos valores de um conjunto de dados, sendo essa mesma análise incapaz de se adequar corretamente para os dados restantes.\\
+		A quarta edição do \textit{Cambridge Dictionary of Statistics} define \textit{overfitted models} da seguinte forma (p. 314):
+			\begin{addmargin}[1em]{2em}% 1em left, 2em right
+				\textit{``Models that contain more unknown parameters than can be justified by the data."}
+			\end{addmargin}
+		Para termos menor ``\textit{Overfitting}" é importante que tenhamos em mente o que é ruído no conjunto de dados em questão e como diminuímos a influência para a análise final. Entre dados muito e pouco ruidosos, teremos uma análise menos comprometida para o caso de menor ruído.\\
+		A dimensão VC também tem influência na construção de um modelo. Buscando um modelo que tem uma boa generalização, ou seja menor risco de estar errado, não devemos escolher uma dimensão VC grande, uma vez que isso afetará a flexibilidade da solução, resultando em ``\textit{overfitting}".
+	\end{addmargin}
+
+\item [\textbf{Q7.}] Problem 1.11, page 38.
+	\begin{addmargin}[1em]{2em}% 1em left, 2em right
+		Dos \textit{slides} de aula temos a seguinte formula: \[E_{in} = \frac{\sum( e( h(x) , f(x) ) )}{N}\]
+		Quando $h = f,\ e(h,f) = 0$ e quando $h \neq f$, fazemos uso da \textit{risk matrix}.
+		\begin{itemize}
+			\item[Supermarket:] $h \neq f,\ e(h,f) = \left\{\begin{array}{l}10,\ h = -1\ e\ f = 1\\1,\ h = 1\ e\ f = -1\end{array}\right.$\\
+			Aqui queremos minimizar $E_{in}$ para falsos negativos $h = -1\ e\ f = 1$.
+			\item[CIA:] $h \neq f,\ e(h,f) = \left\{\begin{array}{l}1,\ h = -1\ e\ f = 1\\1000,\ h = 1\ e\ f = -1\end{array}\right.$\\
+			Aqui queremos minimizar $E_{in}$ para falsos positivos $h = 1\ e\ f = -1$.
+		\end{itemize}
+	\end{addmargin}
+
+\item [\textbf{Q8.}] Problem 1.12, page 38.
+	\begin{addmargin}[1em]{2em}
+		\begin{itemize}
+			\item[a)] Substituindo $h$ por $h_{mean}$ teremos : \[E_{in}(h_{mean}) = \sum_{n=1}^{N}(\frac{\sum_{n=1}^{N}y_n^2}{N^2} - 2 \times \frac{\sum_{n=1}^{N}y_n^2}{N} + y_n^2) = \sum_{n=1}^{N}(\frac{y^2}{N^2} - \frac{2y^2}{N} + y_n^2)\] \[ E_{in}(h_{mean}) = \frac{\sum_{n=1}^{N}y_n^2}{N} - y^2,\]
+			o erro (quadrático) médio. 
+			\item[b)] Sabendo que o erro absoluto médio (\textit{mean absolute error}) para uma variável real $c$ e uma variável aleatória $X$ é $E(|X - c|)$ e que a mediana é o valor mínimo de $E(|X-c| - X)$, conseguimos fazer um paralelo com o problema em questão, onde $h=|X-c|$ e $y = |X|$. Para N pontos teremos $E_{in}(h_{med}) = \sum_{n+1}^{N}|h_{med} - yn|$.
+			\item[c)] Se $y_N$ se torna um \textit{outlier} em $+ \infty$, o estimador $h_{mean}$, sendo a média de todos $y$, aumenta tendendo ao infinito $h_{mean} \rightarrow \infty$ (admitindo aqui que $y$ não tem mais nenhum ponto em infinito). O estimado $y_{med}$, em contrapartida permanece o mesmo se o ponto perturbado era o de maior valor na amostra, ou muda pouco, caso o contrário.
+		\end{itemize}
+	\end{addmargin}
+
+\item [\textbf{Q9.}] Problem 2.2, page 50.
+	\begin{addmargin}[1em]{2em}
+		\begin{itemize}
+			\item[a)] Em (1) temos $\dbinom{N}{1} + \dbinom{N}{0} \geq m_{\mathcal{H}}(N)$.\\
+			Como $\dbinom{N}{1} = N$ e $\dbinom{N}{0} = 1$, $\dbinom{N}{1} + \dbinom{N}{0} = N+1$.\\
+			Então, $N + 1 \geq m_{\mathcal{H}}(N)$, que é verdadeiro.\\
+			Similarmente, em (2), $\dbinom{N}{2} + \dbinom{N}{1} + \dbinom{N}{0} \geq m_{\mathcal{H}}(N)$, isto é,\\ 
+			$\frac{N^2}{2} + \frac{N}{2} + 1 \geq m_{\mathcal{H}}(N)$, que também é verdade.\\
+			Agora  em (3) não temos um \textit{break point}, já que conseguimos gerar todas as dicotomias por $\mathcal{H}$. Consequentemente,  não temos um majorante para (3).
+			\item[b)] Se $2^N \geq m_{\mathcal{H}}(N)$, existe um \textit{break point} para N que será por um polinômio, então respondemos não.
+		\end{itemize}
+	\end{addmargin}
+	
+\item [\textbf{Q10.}] Exercise 2.3, page 50.
+	\begin{addmargin}[1em]{2em}
+		A dimensão VC será 1, 2 e $\infty$, para (i), (ii) e (iii), respectivamente (como visto nos \textit{slides}).
+	\end{addmargin}
+\item [\textbf{Q11.}] Exercise 2.4, page 52.
+	\begin{addmargin}[1em]{2em}
+		\begin{itemize}
+			\item[a)] Vamos amostrar $d$ amostras em $\mathcal{D}$, obtendo a matriz de linhas formadas pelas amostras: \[D = \begin{bmatrix} 1 & 0 \\ 0 & I_d	\end{bmatrix}, I_d\ uma\ matriz\ de \ identidade\ d \times d\]
+			Vamos provar pela identidade que $D$ é irreversível: 
+			\begin{align*}
+				det \begin{pmatrix} X & Y \\ Z & W	\end{pmatrix} & = det(X) \times \det(W-Z \times X^{-1} \times Y);\\
+				det(D) & = det(1) \times det(I_d - 1 \times 0) = 1. 
+			\end{align*}
+			Para um vetor de pesos \textbf{w} podemos gerar cada dicotomia selecionando o sinal de cada dimensão \textbf{b}, \textbf{b} $ = G\ \times$ \textbf{w}. Então, $d_{VC} \geq d + 1$.
+			\item[b)] Amostrando $d + 1$ itens, observamos que $d + 2$ será uma combinação linear desse primeiro itens, já que pegamos todos os itens (como em `\textit{a)}') que podiam ser gerados pelas combinações de 0 ou 1 de $d$ itens. Em outras palavras, não temos mais parâmetros para variar em \textbf{b} e gerar as dicotomias. Então, $d_{VC} \leq d + 1$.
+		\end{itemize}
+	\end{addmargin}
+
+\item [\textbf{Q12.}] Exercise 2.6, page 60.
+	\begin{addmargin}[1em]{2em}
+		\begin{itemize}
+			\item[a)] Temos o majorante $E_{test} \approx 0.096$, pela inequalidade de \textit{Hoeffding}, nos dados de teste e como o conjunto de hipóteses é finito, podemos também usar a inequalidade de \textit{Hoeffding} para os dados de treino sem apelar para a dimensão VC.\\
+			Como $E_{train} = E_{in} \approx 0.115 > E_{test}$, vemos que o majorante nos dados de teste é melhor.
+			\item[b)] Como não estamos mudando o nosso conjunto de hipóteses $\mathcal{H}$, também não estamos lidando com \textit{overfitting}. Isso chega a ser bem curioso, pois permite afirmarmos que com apenas um dado de treino temos as melhores generalizações, lembrando que, nesse caso, a  hipótese tem dimensão suficiente para se ajustar aos dados. Colocando isso em uma expressão, com $M = 1$ e uma hipótese unitária $h$: \[E_{out}(h) \leq \sqrt{\frac{ln \left( \frac{2}{\delta} \right)}{2N}} + E_{in}(h)\]
+		\end{itemize}
+	\end{addmargin}
+\item [\textbf{Q13.}] Exercise 3.6, page 92.
+	\begin{addmargin}[1em]{2em}
+		\begin{itemize}
+			\item[a)] Para $h(x) = \theta(\mathbf{w}^T \mathbf{x})$ e tendo \textit{likelihood} definida por: \[likelihood(h)\propto \prod_{n=1}^Nh(y_n \mathbf{x}_n).\]
+			Assim podemos obter o máximo da \textit{likelihood}:
+			\begin{align*}
+				\max_h\ likelihood(h) & \propto \prod_{n=1}^Nh(y_n \mathbf{x}_n),\\
+				mas,\ \max_\mathbf{w}\ likelihood(\mathbf{w}) & \propto \prod_{n=1}^N\theta(y_n \mathbf{w}^T \mathbf{x}_n),\\
+				e\ ainda,\ \min_\mathbf{w}\ \frac{1}{N} \times \sum_{n=1}^{N}-ln\ \theta(y_n \mathbf{w}^T \mathbf{x}_n) & = \min_\mathbf{w}\ E_{in}(\mathbf{w}).
+			\end{align*}
+			Assim mostramos como o máximo da \textit{likelihood} para a hipótese facilita a tarefa de achar $h$ que minimiza $E_{in}(\mathbf{w})$.
+			\item[b)] Conforme o item acima, para $h(x) = \theta(\mathbf{w}^T \mathbf{x})$, $0 \leq \theta(s) \leq 1$, define-se uma curva sigmoide que separa as duas classes. A transição dessa curva entre as duas classes é dada por $y \mathbf{w} \mathbf{x}$ e a minimização do erro acontece da mesma forma como a do item \textit{(3.9)}.
+		\end{itemize}
+	\end{addmargin}
+\item [\textbf{Q14.}] Exercise 3.7, page 92.
+	\begin{addmargin}[1em]{2em}
+		Na regressão logística temos que o erro de entropia cruzada (\textit{cross-entropy error}) é dado da seguinte forma: \[Para\ \theta(s) = \frac{1}{1 + e^{-s}}: \frac{\sum_{n=1}^{N}(-ln\ \theta(y_n \mathbf{w}^T \mathbf{x}_n))}{N} = \underbrace{\frac{\sum_{n=1}^{N}(ln(1 + e^{(y_n \mathbf{w}^T \mathbf{x}_n)}))}{N}}_\textit{$E_{in}(\mathbf{w})$}\]
+		\[err(\mathbf{w}, \mathbf{x}, y) = ln(1 + e^{-y\mathbf{w}\mathbf{x}}) \qquad \mathbf{(\ cross-entropy\ error)} \]
+		A partir de $E_{in}(\mathbf{w})$ podemos obter $\nabla E_{in}(\mathbf{w}) = \frac{1}{N} \times \sum_{n=1}^{N}\theta(-y_n \mathbf{w}^T \mathbf{x}_n) (-y_n\mathbf{x}_n)$. Aqui observamos que cada exemplo classificado incorretamente recebe um peso adicional quando comparados aos que  foram colocadas na classe correta e, de fato, aqueles contribuem mais para o gradiente.
+	\end{addmargin}
+\item [\textbf{Q15.}] Exercise 4.4, page 129.
+	\begin{addmargin}[1em]{2em}
+		Sabendo que:
+		\begin{align*}
+			E_{in}(\mathbf{w}) & = \frac{(\mathbf{w}^TZ^TZ\mathbf{w} - 2 \mathbf{w}^TZ^Ty + y^Ty)}{N}\\
+			Para\ \nabla E_{in}(\mathbf{w}) & = 0,\ subtraimos\ \mathbf{w_{lin}}\ de\ \mathbf{w}\ e\ multiplicamos\ y^T\ por\ I\ -\ H\ (hat\ matrix),\\
+			E_{in}(\mathbf{w}) & = \frac{((\mathbf{w - w_{lin}})^TZ^TZ(\mathbf{w - w_{lin}}) - 2 \mathbf{w}^TZ^Ty + y^T(I - H)y)}{N}
+		\end{align*}
+		\begin{itemize}
+			\item[a)] Queremos $\nabla E_{in}(\mathbf{w}) = 0$, então, da expressão acima o valor de \textbf{w} que minimiza $E_{in}$ é $\mathbf{w_{lin}}$.
+			\item[b)] O menor $E_{in}$ ocorre quando $\mathbf{w_{lin}} = (Z^TZ)^{-1}Z^Ty$.
+		\end{itemize}
+	\end{addmargin}
+\item [\textbf{Q16.}] Problem 4.8, page 156.
+	\begin{addmargin}[1em]{2em}
+		Uma forma de regularizar a função de custo para evitar \textit{overfitting} é indtroduzir uma gaussiana de media $\mu = 0$ por cima dos pesos, efetivamente mudando a funçaõ de custo da seguinte forma: \[\tilde{E}(\mathbf{w}) = E(\mathbf{w}) + \frac{\lambda \mathbf{w}^2}{2}.\]
+		Observe que isso penaliza pesos grandes e limita a liberdade do modelo proporcionalmente ao parâmetro $\lambda$.\\
+		Aplicando o gradiente descendente a essa nova função de custo obtemos: \[\mathbf{w}(t+1) \leftarrow (1-2\eta \lambda)\mathbf{w}(t) - \eta \nabla E_{in}(\mathbf{w}(t)),\]
+		onde queriamos chegar.
+	\end{addmargin}
+
+\pagebreak
+
+\item [\textbf{Q17.}] Exercise 7.6, page 7-10 e-Chapter 7.
+	\begin{addmargin}[1em]{2em}
+		Numa rede com $L$ níveis (\textit{layers}), $Q$ compreende uma operação de soma e uma operação de multiplicação $L$ vezes. Já $V$ compreende $L+1$ $\theta$-avaliações.\\
+		A resposta dada no exercício coloca que são feitas $O(Q)$ operações de adição e multiplicação, além de $O(V)$ $\theta$-avaliações numa \textit{forward propagation}.
+	\end{addmargin}
+\item [\textbf{Q18.}] Exercise 7.10, page 7-20 e-Chapter 7.
+	\begin{addmargin}[1em]{2em}
+		O numero de conexões ou pesos em um rede neural pode ser contado pela soma do produto do numero de nós nos níveis (\textit{layers}) conectados mais um, representando o \textit{bias}, isto é: \[\#\mathbf{w}= \sum_{i=1}^{L} \left( (\#inputs^{(i)} + 1) \times \#nodes^{(i)} \right) \] 
+		Numa rede neural com $\mathbf{d} = [m,\ 10,\ 10,\ 1]$, teremos: \[\#\mathbf{w} = \underbrace{(m + 1) \times 10}_\textit{hidden layer 1}\ +\ \underbrace{(10 + 1) \times 10}_\textit{hidden layer 2}\ +\ \underbrace{(10 + 1) \times 1}_\textit{output} = 131 + 10m\]
+	\end{addmargin}	
+
+\pagebreak
+
+\item [\textbf{Q19.}] Resumo de ``\textit{Introduction to ROC analysis, by Tom Fawcett}":
+	\begin{addmargin}[1em]{2em}
+	O artigo se dedica a exposição da análise ROC, se estendendo a erros e casos onde sua aplicação é indevida.\\
+	\textit{Receiver operating characteristics graph} ou ROC é uma técnica utilizada para visualização, organização e seleção de classificadores, baseada na sua performance, que é dada pelo \textit{tradeoff} entre acertos contra falsos positivos. O artigo cita aplicações históricas nos campos de medicina e, mais recentemente, em aprendizado de máquina e mineração de dados.\\
+	O gráfico ou espaço ROC é composto por dois eixos, as abcissas representando a taxa de falsos positivos e as ordenadas, a taxa de verdadeiros positivos. Quanto melhor for a performance de um classificador, mais ele se aproximará do canto superior esquerdo do gráfico, em oposição, quanto pior for a performance do classificador, ele estará mais ao canto inferior direito. A diagonal $x=y$ representa estratégias de adivinhar aleatoriamente uma classe, a liberdade, ou taxa de falsos positivos, subindo ao longo dessa reta.\\
+	Curvas em ROC aparecem quando classificadores probabilísticos são avaliados. Dessa forma a curva é composta pela chance dos pontos do classificador estarem acima de um valor ou \textit{threshold}.\\
+	Um diferencial de ROC frente as outras técnicas de avaliação de desempenho em classificação é o de ser indiferente a amostragem assimétrica de classes e aprendizado sensível a custo. Isso é demonstrado no artigo pela técnica de \textit{precision-recall} frente a ROC, variando proporção de amostras de classes de 1:1 a 1:10 - enquanto as curvas em \textit{precision-recall} perdem a forma, as ROC ficam inalteradas.\\
+	Para aproveitarmos todo o potencial do ROC é importante que tenhamos uma curva de avaliações ou \textit{scores} dos classificadores, o que é um problema para aqueles que são discretos. O artigo discorre sobre formas de extrair \textit{scores} de classificadores discretos, entre elas, olhando as instâncias estatísticas que compõe o modelo - sim, o mais interessante é até como o autor descreve, indicando algum nível de \textit{data snooping}.\\
+	Ao avaliar classificadores é mais direto termos um valor escalar para a performance. Como ROC é um gráfico, um método de adquirir esse valor escalar é pelo calculo da área sob a curva ROC ou \textit{Area Under ROC Curve} (\textit{AUC}). Pela definição de ROC, nenhum classificador com utilidade prática terá AUC menor que 0.5, ou seja, um classificador que esteja abaixo da diagonal $x=y$. Similarmente, um bom classificador terá AUC mais próximo de 1. A AUC também tem uma propriedade estatística interessante de privilegiar classificadores com maior número de positivos frente ao número de negativos. Cuidado deve ser tomado para comparar classificadores baseado apenas na performance AUC - o autor coloca isso como incorreto, pois pode estar-se amostrando apenas dados que aumentem a performance do classificador na AUC.
+	
+\pagebreak
+
+	Uma forma de comparar classificadores pelo uso de AUC é tirando médias dessas curvas e o artigo aborda duas técnicas: \textit{Vertical averaging}, por amostras verticais de curvas ROC fixando a taxa de falsos positivos e tirando a média dos verdadeiros positivos, e \textit{Threshold averaging}, baseando a média nos valores de \textit{threshold} que produziram os pontos (com isso evitando efeitos negativos da taxa de falsos negativos).\\
+	O artigo ainda discorre sobre casos multi classe e considerações adicionais nesses casos, envolvendo complexidade computacional e estratégias de organização das classes no gráfico ROC.\\
+	Encerrando o documento, o autor descreve com o exemplo \textit{CoIL Challenge 2000} como interpolar classificadores, obtendo um novo classificador antes não disponível.
+	\end{addmargin}	
+
+\item [\textbf{Q20.}] Auto-avaliação:
+	\begin{enumerate}
+		\item Você assistiu a todas as aulas do Mostafa previamente às aulas presenciais? 
+		Se não, o que a/o fez não assistir? Como você avalia seu entendimento das aulas
+		do Mostafa em relação ao inglês e ao conteúdo?
+		\item[\textit{-- Resp}:] Assisti a todas as aulas do Mostafa antes das aulas presenciais. O inglês, apesar do sotaque, era bom e ainda tinha a possibilidade de colocar legenda nos vídeos. O conteúdo foi bastante teórico e, não tendo experiência no assunto, achei difícil de compreender alguns conceitos básicos como \textit{forward propagation}, regressão logística e cálculos de erros.		
+		\item Você leu algum capítulo do livro? Lembra quais? Qual a sua avaliação, em
+		termos de entendimento, do auxílio do livro?
+		\item[\textit{-- Resp}:] Li trechos dos capítulos 3 e 4 além dos e-Chapters, porém assim como as vídeo-aulas achei o conteúdo muito teórico e prolixo - dificilmente chegava em uma pergunta de exercício e consegui pensar de pronto em uma resposta.		
+		\item Você resolveu algum exercício do livro, ou de algum ``homework''? Lembra quais? 
+		Qual a sua avaliação, em termos de entendimento, dessas atividades? Você acha que o professor 
+		deveria cobrar que essas atividades fossem feitas?
+		\item[\textit{-- Resp}:] Tentei fazer alguns exercícios, mas não me lembro bem para citar-los. Fiquei desanimado por não ter como conferir respostas - até achei respostas das \textit{homeworks} em alguns sites, mas novamente, por ser o meu primeiro contato formal com aprendizado de máquina, não ter um gabarito fez bastante falta. Talvez fosse interessante que algumas dessas atividades fossem feitas até porque parte delas são testes, mas preferiria os exercícios em \textit{jupyter notebook}, muito mais didáticos, ao longo da disciplina.		
+		\item Quantas horas por semana você tem para estudar extra-classe? Dessas horas, quantas você usou para acompanhar esta disciplina?
+		\item[\textit{-- Resp}:] Tenho 20 horas semanais disponíveis, das quais cheguei a usar, principalmente para a prova, 30. Em média 8 horas ao longo do curso (acabei dedicando bastante tempo a competição do \textit{kaggle}).
+		\item Você tem motivação para vir às aulas e participar das discussões? Se sim, o que aumentaria ainda mais sua motivação? Se não, o que você sugere para que as aulas sejam motivadoras?
+		\item[\textit{-- Resp}:] Entendo que a ênfase da disciplina é teórica e gostei bastante das discussões, porém, pelo menos para mim, faltou contato com a parte prática - que pude ter mais tarde com a competição do \textit{kaggle}. E isso me ficou um pouco complicado por que, talvez pela minha formação, eu preciso ter um problema mais direto para incentivar a buscar soluções, mas não consigo pensar em uma alternativa que deixe as aulas mais motivadoras nesse sentido.		
+		\item A disciplina satisfez suas expectativas? O sistema ``flipped class'' (aulas do Mostafa sendo
+		discutidas na aula presencial) funcionou para seu aprendizado? Comente.
+		\item[\textit{-- Resp}:] A disciplina satisfez as minhas expectativas e desmistificou bastante o que é aprendizado de máquina. Consegui construir uma série de modelos diferentes e avaliar a performance de cada um na competição do \textit{kaggle}. Os \textit{jupyter notebooks} também foram bem interessantes e práticos. O sistema \textit{flipped class} me pareceu mais interessante do que aulas convencionais, porém as aulas que ficaram mais claras foram aquelas que o professor tinha uma visão oposta a do Mostafa - os pontos em questão ficavam mais evidentes.		
+		\item Além do que foi dado, o que mais você gostaria de aprender? Existe algum tópico você gostaria que fossem aprofundado?
+		\item[\textit{-- Resp}:] Entrei no curso tendo muito pouco conhecimento efetivo de aprendizado de máquina, então fiquei bem contente com tudo que foi abordado - até ROC, nessa avaliação. Uma curiosidade minha, que foi abordada por uma das palestras, é sobre modelos em tempo real, mas talvez não seja o foco da disciplina. Também, após o curso, tive interesse por interpolação e convolução de modelos.				
+		\item A quantidade e a dificuldade das tarefas práticas foi adequada e suficiente? Você sente-se seguro para usar aprendizado de máquina? O que poderia ser melhorado nas tarefas? Avalie cada uma das tarefas.
+		\item[\textit{-- Resp}:] A dificuldade foi justa, porém mais que a dificuldade foi a excelente didática. Nunca cursei uma matéria que tivesse uma tarefa interativa, incluindo até o \textit{kaggle} - de que só tinha ouvido falar. Me sinto seguro para aplicar aprendizado de máquina e escolher entre modelos diferentes. O que poderia ser melhorado seria a frequência das tarefas e a quantidade - poderíamos ter mais de duas ou três, se o tempo para cada uma for adequado.\\
+		Avalio cada uma das tarefas como excelente, excluindo a do \textit{notebook} sobre uso de \textit{numpy} - achei um pouco desnecessária.			
+		
+\pagebreak		
+			
+		\item Faça uma breve auto-avaliação de seu desempenho considerando sua 
+		         facilidade com o conteúdo da disciplina, seu entendimento dos 
+		         conceitos, sua assiduidade às aulas, sua
+		         participação em aulas e seu desempenho nas tarefas. Se você se
+		         sentir confortável para isso, atribua-se uma nota de 0 a 10
+		         de acordo com sua auto-avaliação. Essa nota será considerada
+		         no cômputo final da sua nota, caso o professor entenda que
+		         você soube se auto-avaliar.
+		\item[\textit{-- Resp}:] Coloquei as minhas opiniões sobre a disciplina e meu desempenho nos itens anteriores, aqui tentarei me atribuir uma nota em cada um dos critérios solicitados.
+		\begin{itemize}
+			\item Facilidade com o conteúdo: 8.5;	
+			\item Entendimento dos conceitos: 8.0;
+			\item Assiduidade as aulas: 9.6;
+			\item Participação em aulas: 9.2;
+			\item Desempenho nas tarefas: 9.5;
+			\item Nota de auto-avaliação: 8.96 (média);
+		\end{itemize}
+	\end{enumerate}
+
+\end{enumerate}
+\end{document}

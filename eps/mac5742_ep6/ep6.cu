@@ -3,6 +3,7 @@
 
 #define N 3
 #define N2 N * N
+#define BLOCK_SIZE 512
 
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true){
@@ -15,30 +16,19 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
 long mnum = 0;
 
 __global__
-void minappl(int * arrayM, int * arrayS, int mnum){
+void minappl(int * arrayM, int mnum){
 	extern __shared__ int smin[N2];
 	unsigned int i = (blockIdx.x*blockDim.x + threadIdx.x);
-	if (!(i % 2) && i <= mnum) {
-		/* each thread loads one element from global to shared mem */
-	/*	for (unsigned int j = 0; j < N * N; j++) {
-			smin[j] = arrayM[(i % mnum) * N * N + j];
+	if (i < mnum) {
+		/* do reduction in shared mem */
+		for (unsigned int offset = 1; offset <= mnum; offset <<= 1) {
+			if (i + offset < mnum)
+				for (unsigned int j = 0; j < N * N; j++){
+					arrayM[i * N * N + j] = min(arrayM[i * N * N + j], arrayM[(i + offset) * N * N + j]);
+				}
+//			printf("> i, offset, min: [%d,%d] {%d}\n", i, offset, arrayM[i * N * N]);
 		}
 		__syncthreads();
-	*/	
-		/* do reduction in shared mem */
-		for (unsigned int s = 1; s < mnum; s <<= 1) {
-			if ((i + s) <= mnum) {
-				for (unsigned int j = 0; j < N * N; j++){
-					arrayM[i * N * N + j] = min(arrayM[i * N * N + j], arrayM[(i + s) * N * N + j]);
-					smin[j] = arrayM[i * N * N + j];
-				}
-			}
-			__syncthreads();	
-		}
-		/* write block result to global mem */
-	if (i == 0)
-		for (unsigned int j = 0; j < N * N; j++)
-				arrayS[j] = smin[j];
 	}
 }
 
@@ -70,27 +60,19 @@ int main(int argc, char * argv[]){
 	}
 
 	int * M = file2buffer(argv[1]);
-	int S[N2];
 	int * dM; gpuErrchk(cudaMalloc(&dM, mnum*N*N*sizeof(int)));
-	int * dS; gpuErrchk(cudaMalloc(&dS, N*N*sizeof(int)));
-
-	/* Initialize S */
-	for (int i = 0; i < N * N; i++){
-		S[i] = M[i];
-//		printf("S[%d][%d]: %d\n", i / N, i % N, S[i]);
-	}
 
 	gpuErrchk(cudaMemcpy(dM, M, mnum*N*N*sizeof(int), cudaMemcpyHostToDevice));
-	gpuErrchk(cudaMemcpy(dS, S, N*N*sizeof(int), cudaMemcpyHostToDevice));
-	minappl<<<N * N, mnum * N * N>>>(dM, dS, mnum);
+	minappl<<<(N * N * mnum) / BLOCK_SIZE, BLOCK_SIZE>>>(dM, mnum);
 	gpuErrchk( cudaPeekAtLastError() );
 	gpuErrchk( cudaDeviceSynchronize() );
-	gpuErrchk(cudaMemcpy(S, dS, N*N*sizeof(int), cudaMemcpyDeviceToHost));
+	gpuErrchk(cudaMemcpy(M, dM, N*N*sizeof(int), cudaMemcpyDeviceToHost));
 
 	for (int i = 0; i < N * N; i++)
-		printf("S[%d][%d]: %d\n", i / N + 1, i % N + 1, S[i]);
+		printf("S[%d][%d]: %d\n", i / N + 1, i % N + 1, M[i]);
 
-	gpuErrchk(cudaFree(dS));
 	gpuErrchk(cudaFree(dM));
 	free(M);
+	
+	return 0;
 }

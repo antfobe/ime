@@ -16,7 +16,7 @@ printf "$MNUM\n" > $FNAME;
 for i in $(seq 1 $MNUM) ; do
 	printf "∗∗∗\n" >> $FNAME;
 	for j in $(seq 1 3) ; do
-		printf "$(( (RANDOM % 10) + (RANDOM % 15) )) $(( (RANDOM % 10) + (RANDOM % 15) )) $(( (RANDOM % 10) + (RANDOM % 15) ))\n" >> $FNAME;
+		printf "$(( (RANDOM % 10 + RANDOM) + (RANDOM % 15) )) $(( (RANDOM % 400) )) $(( (RANDOM % 100) + (RANDOM % 15) ))\n" >> $FNAME;
 	done
 done
 
