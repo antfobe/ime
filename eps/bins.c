@@ -34,6 +34,49 @@ unsigned char xorstring_reduce(unsigned char * string){
 }
 
 unsigned char * xor_expand(unsigned char seed, unsigned char * stophash, unsigned long stopsize) {
+    short pow, carry = 0;
+    unsigned char * output = NULL, * outxor = NULL, hash[65] = {};
+
+    outxor = (unsigned char *)malloc((stopsize / 2) * sizeof(unsigned char));
+    if(outxor == NULL) {MALLOC_CHECK("outxor");}
+    outxor[0] = seed;
+    output = (unsigned char *)malloc((stopsize) * sizeof(unsigned char));
+    if(output == NULL) {MALLOC_CHECK("output");}
+
+    while(strcmp(hash, stophash) != 0)
+        for (pow = 2; pow < stopsize; pow <<= 1){
+            while(output[pow/2 - 1] < USHRT_MAX){
+                printf("o[0-3] = %d, %d, %d, %d;\n", output[0],output[1],output[2],output[3]);
+                for(short i = 0; i < USHRT_MAX; i++){
+                    output[0]++;
+                    for(long x = 0; x < pow/2; x++) {
+                        output[x+pow/2] = output[x] ^ outxor[x];
+                    }
+                    sha256(output, hash);
+                    if(strcmp(hash, stophash) == 0) {
+                        free(outxor);
+                        return output;
+                    }
+                }
+                printf("WOT\n\n");
+                /*need to trap here until array is full (close to overflow)
+                 * - adding while at beggining*/
+                carry = 1;
+                for(long y = 0; y < pow/2 && carry == 1; y++) {
+                    if(output[y] != USHRT_MAX) {
+                        output[y]++;
+                        carry = 0;
+                    } else {
+                        output[y] = 0;
+                    }
+                }
+            }
+            if(pow >= 4) printf("o[0-3] = %d, %d, %d, %d;\n", output[0],output[1],output[2],output[3]);
+        }
+    return output;
+}
+/*
+unsigned char * xor_expand(unsigned char seed, unsigned char * stophash, unsigned long stopsize) {
     short pow = 1, carry = 0;
     unsigned char * output = NULL, * outxor = NULL, hash[65] = {};
 
@@ -45,6 +88,10 @@ unsigned char * xor_expand(unsigned char seed, unsigned char * stophash, unsigne
 
     while(strcmp(hash, stophash) != 0 && pow <= stopsize) {
         pow <<= 1;
+
+        if(pow == 2) {
+            outxor[0] = seed;
+        }
 
         for(long i = 0; i < pow/2 && pow > 2; i++){
             outxor[i] = output[i];
@@ -79,7 +126,7 @@ unsigned char * xor_expand(unsigned char seed, unsigned char * stophash, unsigne
     }
     return NULL;
 }
-
+*/
 unsigned char * read4file(char * filename, long length){
     FILE * f = fopen(filename, "r");
     char * buffer = NULL;
