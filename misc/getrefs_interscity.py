@@ -11,21 +11,24 @@ import scholarly
 #    except StopIteration:
 #        print(article + ',' + author + ',Unknown affiliation,')
 
-iter = 0
 def readref_tree(article_name, citation):
-    print("starting iter: ["+str(iter)+"]")
+    print("At: ["+article_name+"]")
     ## im assuming if it knows the citing article, it has its name
-    article = next(scholarly.search_pubs_query(article_name)).fill()
-    if article.get_citedby() is not None:
-        for citation in article.get_citedby():
-            readref_tree(citation.bib['title'], article_name)
-    else:
-        for author in article.bib['author'].split('and'):
-            query = scholarly.search_author(author)
-            try:
-                this = next(query)
-                print(article + ',' + author + ',' + this.affiliation + ',' + citation)
-            except StopIteration:
-                print(article + ',' + author + ',Unknown affiliation,' + citation)
+    article = scholarly.search_pubs_query(article_name)
+    try:
+        article = next(article).fill()
+        if article.get_citedby() is not None:
+            for citation in article.get_citedby():
+                readref_tree(citation.bib['title'], article_name)
+        else:
+            for author in article.bib['author'].split('and'):
+                query = scholarly.search_author(author)
+                try:
+                    this = next(query)
+                    print(article_name + ',' + author + ',' + this.affiliation + ',' + citation)
+                except StopIteration:
+                    print(article_name + ',' + author + ',Unknown affiliation,' + citation)
+    except:
+        print(article_name + ',Request not completed,Unknown affiliation,Request not completed')
 
 readref_tree('Software Platforms for Smart Cities: Concepts, Requirements, Challenges, and a Unified Reference Architecture','')
