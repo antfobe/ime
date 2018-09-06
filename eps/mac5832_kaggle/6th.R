@@ -1,3 +1,11 @@
+# !/usr/bin/env Rscript
+args = commandArgs(trailingOnly=TRUE)
+
+# test if there is only one argument: if not, return an error
+if (length(args)!=2) {
+  stop("Usage: Rscript --vanilla 6th.R <datatrain.csv> <datatest.csv> <y-row_name>.n", call.=FALSE)
+}
+
 if(!require("install.load")) {install.packages("install.load"); library("install.load")}
 
 lapply(c('foreach', 'doParallel', 'parallel', 'e1071', 'parallelSVM', 'caret', 'pROC'), 
@@ -8,22 +16,22 @@ set.seed(svmseed);
 
 doParallel::registerDoParallel(cores = parallel::detectCores()-1);
 
-data <- read.csv(file = "train.csv");
-test <- read.csv(file = "test.csv");
+data <- read.csv(file = args[1]);
+test <- read.csv(file = args[2]);
 
 ## encode data to apply learning methods
-conv2numeric <- c("job", "marital", "education", "default", "housing", "loan", "contact", "poutcome");
-data[, conv2numeric] <- sapply(data[, conv2numeric], FUN = as.numeric);
-test[, conv2numeric] <- sapply(test[, conv2numeric], FUN = as.numeric);
+# conv2numeric <- c("job", "marital", "education", "default", "housing", "loan", "contact", "poutcome");
+# data[, conv2numeric] <- sapply(data[, conv2numeric], FUN = as.numeric);
+# test[, conv2numeric] <- sapply(test[, conv2numeric], FUN = as.numeric);
 
-x <- subset(data, select = c(poutcome));
-y <- subset(data, select = y);
+x <- subset(data, select = c(-args[3]));
+y <- subset(data, select = args[3]);
 ## woah - cannot use just 't', apparently messes with built-in functions: 
 ## https://stats.stackexchange.com/questions/233531/object-of-type-closure-is-not-subsettable
-test_t <- subset(test, select = c(-id));
-
-xsim <- x[sample(nrow(x), nrow(y)),];
-system.time(svm_model <- parallelSVM::parallelSVM(x, y$y,
+# test_t <- subset(test, select = c(-id));
+test_t <- subset(test, select = c(-args[3]));
+# xsim <- x[sample(nrow(x), nrow(y)),];
+system.time(svm_model <- parallelSVM::parallelSVM(x, y$args[3],
                                       type = "C-classification",
                                       kernel = "radial",
                                       seed = svmseed,
@@ -61,7 +69,7 @@ write.csv(data.frame(id = test$id, pred = round(pred_numeric)), file = "parallel
 
 x$fold <- caret::createFolds(1:nrow(x), k = 10, list = FALSE);
 ### PARAMETER LIST ###
-parms <- expand.grid(cost = c(2.4, 2.5), gamma = c(0.004518313, 0.0044));
+parms <- expand.grid(cost = c(0.1, 1, 10), gamma = c(1, 10, 1000));
 ### LOOP THROUGH PARAMETER VALUES ###
 result <- foreach::foreach(i = 1:nrow(parms), .combine = rbind) %do% {
     c <- parms[i, ]$cost;

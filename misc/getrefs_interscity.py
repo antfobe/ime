@@ -11,24 +11,31 @@ import scholarly
 #    except StopIteration:
 #        print(article + ',' + author + ',Unknown affiliation,')
 
-def readref_tree(article_name, citation):
+def readref_tree(article_name, citation, found):
     print("At: ["+article_name+"]")
     ## im assuming if it knows the citing article, it has its name
     article = scholarly.search_pubs_query(article_name)
     try:
         article = next(article).fill()
-        if article.get_citedby() is not None:
-            for citation in article.get_citedby():
-                readref_tree(citation.bib['title'], article_name)
+        if article.get_citedby() is not None and not any(article.get_citedby() in c for c in found['citations']):
+            found['citations'].append(article.get_citedby())
+            for ref in article.get_citedby():
+                readref_tree(ref.bib['title'], article_name, found)
         else:
             for author in article.bib['author'].split('and'):
-                query = scholarly.search_author(author)
-                try:
-                    this = next(query)
-                    print(article_name + ',' + author + ',' + this.affiliation + ',' + citation)
-                except StopIteration:
-                    print(article_name + ',' + author + ',Unknown affiliation,' + citation)
+                if not any(author in a for a in found['authors']):
+                    found['authors'].append(author)
+                    query = scholarly.search_author(author)
+                    try:
+                        this = next(query)
+                        with open('refsout.csv', 'a') as f:
+                            f.write(article_name + ',' + author + ',' + this.affiliation + ',' + citation)
+                    except StopIteration:
+                        with open('refsout.csv', 'a') as f:
+                            f.write(article_name + ',' + author + ',Unknown affiliation,' + citation)
     except:
-        print(article_name + ',Request not completed,Unknown affiliation,Request not completed')
+        with open('refsout.csv', 'a') as f:
+            f.write(article_name + ',Request not completed,Unknown affiliation,Request not completed')
 
-readref_tree('Software Platforms for Smart Cities: Concepts, Requirements, Challenges, and a Unified Reference Architecture','')
+memdict = {'authors': [], 'citations': []}
+readref_tree('Software Platforms for Smart Cities: Concepts, Requirements, Challenges, and a Unified Reference Architecture', '', memdict)
