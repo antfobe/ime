@@ -2,7 +2,7 @@
 args = commandArgs(trailingOnly=TRUE)
 
 # test if there is only one argument: if not, return an error
-if (length(args)!=2) {
+if (length(args)!=3) {
   stop("Usage: Rscript --vanilla 6th.R <datatrain.csv> <datatest.csv> <y-row_name>.n", call.=FALSE)
 }
 
@@ -11,11 +11,13 @@ if(!require("install.load")) {install.packages("install.load"); library("install
 lapply(c('foreach', 'doParallel', 'parallel', 'e1071', 'parallelSVM', 'caret', 'pROC'), 
        FUN = install_load);
 
+cat("Setting\tseed ...\n\n");
 svmseed <- as.numeric(format(Sys.Date(), "%Y"));
 set.seed(svmseed);
 
 doParallel::registerDoParallel(cores = parallel::detectCores()-1);
 
+cat("Loading\tdata ...\n\n");
 data <- read.csv(file = args[1]);
 test <- read.csv(file = args[2]);
 
@@ -24,14 +26,16 @@ test <- read.csv(file = args[2]);
 # data[, conv2numeric] <- sapply(data[, conv2numeric], FUN = as.numeric);
 # test[, conv2numeric] <- sapply(test[, conv2numeric], FUN = as.numeric);
 
-x <- subset(data, select = c(-args[3]));
+x <- subset(data, select = -which(names(data) %in% c(args[3], names(data)[1])));
 y <- subset(data, select = args[3]);
 ## woah - cannot use just 't', apparently messes with built-in functions: 
 ## https://stats.stackexchange.com/questions/233531/object-of-type-closure-is-not-subsettable
 # test_t <- subset(test, select = c(-id));
-test_t <- subset(test, select = c(-args[3]));
+test_t <- subset(test, select = -which(names(test) %in% c(args[3], names(test)[1])));
 # xsim <- x[sample(nrow(x), nrow(y)),];
-system.time(svm_model <- parallelSVM::parallelSVM(x, y$args[3],
+
+cat("Training model ...\n\n");
+system.time(svm_model <- parallelSVM::parallelSVM(x, y[,1],
                                       type = "C-classification",
                                       kernel = "radial",
                                       seed = svmseed,
@@ -40,28 +44,22 @@ system.time(svm_model <- parallelSVM::parallelSVM(x, y$args[3],
                                       numberCores = parallel::detectCores()-1));
 
 ## performance
-system.time(pred <- predict(svm_model, x, decision.values = TRUE, probability = TRUE));
+system.time(pred <- predict(svm_model, x, decision.values = TRUE));
+
+cat("\nPrediction summary: \n");
+cat(c(names(summary(pred)), "\n", summary(pred), "\n"))
 pred <- attributes(pred);
-pred_numeric <- sapply(1:nrow(pred$probabilities), 
-                       FUN = function(X) {
-                           pred$probabilities[X,][names(pred$probabilities[X,]) == 1]});
-cat("Performance : [", 
-    length(pred_numeric[round(pred_numeric) == y$y])/nrow(y), 
-    "], #y = ", length(round(pred_numeric)[round(pred_numeric) == 1]), " out of ",
-    sum(y$y[round(pred_numeric) == 1]), "\n");
 
 ##data.frame(matrix(pred$probabilities[y$y != round(pred_numeric)], ncol = 2), 
 ##y$y[y$y != round(pred_numeric)])
 
-system.time(pred <- predict(svm_model, test_t, decision.values = TRUE, probability = TRUE));
+system.time(pred <- predict(svm_model, test_t, decision.values = TRUE));
 pred <- attributes(pred);
-pred_numeric <- sapply(1:nrow(pred$probabilities), 
-                       FUN = function(X) {
-                         pred$probabilities[X,][names(pred$probabilities[X,]) == 1]});
-cat("#y = ", length(round(pred_numeric)[round(pred_numeric) == 1]),"\n");
+# pred_numeric <- sapply(1:nrow(pred$probabilities), 
+#                        FUN = function(X) {
+#                          pred$probabilities[X,][names(pred$probabilities[X,]) == 1]});
 
-write.csv(data.frame(id = test$id, pred = pred_numeric), file = "parallel-nontuned.csv", row.names = FALSE);
-write.csv(data.frame(id = test$id, pred = round(pred_numeric)), file = "parallel-nontuned-rounded.csv", row.names = FALSE);
+write.csv(data.frame(id = 1:nrow(test), pred = as.character(pred)), file = "parallel-nontuned.csv", row.names = FALSE);
 
 ## Tunning
 ### SPLIT DATA INTO K FOLDS ###
