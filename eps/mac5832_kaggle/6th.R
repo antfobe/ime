@@ -67,7 +67,7 @@ write.csv(data.frame(id = 1:nrow(test), pred = as.character(pred)), file = "para
 
 x$fold <- caret::createFolds(1:nrow(x), k = 10, list = FALSE);
 ### PARAMETER LIST ###
-parms <- expand.grid(cost = c(0.1, 1, 10), gamma = c(1, 10, 1000));
+parms <- expand.grid(cost = c(seq(from = 0.0005, to = 0.004, by = 0.0005)), gamma = c(seq(from = 1.0, to = 10.0, by = 0.1)));
 ### LOOP THROUGH PARAMETER VALUES ###
 result <- foreach::foreach(i = 1:nrow(parms), .combine = rbind) %do% {
     c <- parms[i, ]$cost;
@@ -86,6 +86,7 @@ result <- foreach::foreach(i = 1:nrow(parms), .combine = rbind) %do% {
     data.frame(parms[i, ], roc = roc$auc[1]);
 }
 
+saveRDS(result, "seq-vector_gridsearch-result.rds");
 
 #svm_model_after_tune <- e1071::svm(y$y ~ ., data = x, kernel = "radial",
 #                                   cost = svm_tune$best.parameters$cost, gamma = svm_tune$best.parameters$gamma);

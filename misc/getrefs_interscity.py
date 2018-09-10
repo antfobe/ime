@@ -29,13 +29,13 @@ def readref_tree(article_name, citation, found):
                     try:
                         this = next(query)
                         with open('refsout.csv', 'a') as f:
-                            f.write(article_name + ',' + author + ',' + this.affiliation + ',' + citation)
+                            f.write(article_name + ',' + author + ',' + this.affiliation + ',' + citation + '\n')
                     except StopIteration:
                         with open('refsout.csv', 'a') as f:
-                            f.write(article_name + ',' + author + ',Unknown affiliation,' + citation)
+                            f.write(article_name + ',' + author + ',Unknown affiliation,' + citation + '\n')
     except:
         with open('refsout.csv', 'a') as f:
-            f.write(article_name + ',Request not completed,Unknown affiliation,Request not completed')
+            f.write(article_name + ',Request not completed,Unknown affiliation,Request not completed' + '\n')
 
 memdict = {'authors': [], 'citations': []}
 readref_tree('Software Platforms for Smart Cities: Concepts, Requirements, Challenges, and a Unified Reference Architecture', '', memdict)
