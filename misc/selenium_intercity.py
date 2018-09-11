@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
-import unittest, time, re, random
+import unittest, time, re, random, bibtexparser, json
 
 class AppDynamicsJob(unittest.TestCase):
     def setUp(self):
@@ -19,6 +19,7 @@ class AppDynamicsJob(unittest.TestCase):
         self.accept_next_alert = True
 
     def test_app_dynamics_job(self):
+        ## initialization, config settigs
         driver = self.driver
         driver.get("https://scholar.google.com.br/")
         driver.find_element_by_id("gs_hdr_tsi").click()
@@ -30,30 +31,38 @@ class AppDynamicsJob(unittest.TestCase):
         driver.find_element_by_xpath("(.//*[normalize-space(text()) and normalize-space(.)='Fazer login'])[1]/following::span[1]").click()
         driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='Pesquisa avançada'])[2]/following::span[2]").click()
         time.sleep(random.uniform(3,7))
+        ## set search results to 20 per page
         driver.find_element_by_id("gs_num-b").click()
         driver.find_element_by_link_text("20").click()
         time.sleep(random.uniform(3,7))
+        ## set bibtex export links
         driver.find_element_by_id("gs_settings_import_some").click()
         time.sleep(random.uniform(3,7))
         driver.find_element_by_name("save").click()
         time.sleep(random.uniform(3,7))
+        ## search article name in scholar's search bar
         driver.find_element_by_id("gs_hdr_tsi").click()
         time.sleep(random.uniform(3,7))
         driver.find_element_by_id("gs_hdr_tsi").clear()
         driver.find_element_by_id("gs_hdr_tsi").send_keys("Software Platforms for Smart Cities: Concepts, Requirements, Challenges, and a Unified Reference Architecture")
         driver.find_element_by_id("gs_hdr_frm").submit()
         time.sleep(random.uniform(3,7))
-
+        ## get bibtex references, append citing article and save entry as json
         driver.find_element_by_link_text("Importe para o BibTeX").click()
-        with open("bibtex_refs.txt", "a") as f:
-            f.write(driver.find_element_by_tag_name("pre").get_attribute("innerHTML") + "\n")
+        parser = bibtexparser.bparser.BibTexParser()
+        parser.customization = bibtexparser.customization.convert_to_unicode
+        bib_db = bibtexparser.loads(driver.find_element_by_tag_name("pre").get_attribute("innerHTML"), parser=parser)
+        bib_entry = bib_db.get_entry_list()[0]
+        bib_entry["cited"] = ""
+            with open("bibtex_refs.txt", "a") as f:
+                f.write(json.dumps(bib_entry) + "\n")
 
+        ## return to scholars landing page/end initialization
         driver.get("https://scholar.google.com.br/")
         time.sleep(random.uniform(3,7))
         driver.find_element_by_id("gs_hdr_tsi").send_keys("Software Platforms for Smart Cities: Concepts, Requirements, Challenges, and a Unified Reference Architecture")
         driver.find_element_by_id("gs_hdr_frm").submit()
         time.sleep(random.uniform(3,7))
-        init_handle = driver.current_window_handle
         action = ActionChains(driver)
 
         track = {'articles': [], 'authors': []}
