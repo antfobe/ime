@@ -67,7 +67,7 @@ write.csv(data.frame(id = 1:nrow(test), pred = as.character(pred)), file = "para
 
 x$fold <- caret::createFolds(1:nrow(x), k = 10, list = FALSE);
 ### PARAMETER LIST ###
-parms <- expand.grid(cost = c(seq(from = 0.0005, to = 0.004, by = 0.0005)), gamma = c(seq(from = 1.5, to = 4.0, by = 0.1)));
+parms <- expand.grid(cost = c(seq(from = 0.0001, to = 0.0005, by = 0.0001)), gamma = c(seq(from = 0.9, to = 1.5, by = 0.05)));
 ### LOOP THROUGH PARAMETER VALUES ###
 result <- foreach::foreach(i = 1:nrow(parms), .combine = rbind) %do% {
     c <- parms[i, ]$cost;

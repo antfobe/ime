@@ -1,0 +1,252 @@
+% to change the appearance of the header, questions, problems or subproblems, see the homework.cls file or
+% override the \Problem, \Subproblem, \question or \printtitle commands.
+
+% The hidequestions option hides the questions. Remove it to print the questions in the text.
+
+\title{MAC5711- Lista 2}
+
+\documentclass{homework}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\usepackage[noend]{algpseudocode}
+
+\newcommand{\ph}{\phantom}
+\newcommand{\Particione}{\mbox{P{\small ARTICIONE}}}
+\newcommand{\Quicksort}{\mbox{Q{\small UICKSORT}}}
+\newcommand{\Mergesort}{\mbox{M{\small ERGESORT}}}
+
+\newcommand{\Oh}{\mathrm{O}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pseudocode
+\newcommand{\larr}{\leftarrow}
+\newcommand{\se}{\textbf{se}} 
+\newcommand{\iif}{\textbf{if}} 
+\newcommand{\entao}{\textbf{então}} 
+\newcommand{\tthen}{\textbf{then}} 
+\newcommand{\senao}{\textbf{senão}} 
+\newcommand{\eelse}{\textbf{else}} 
+\newcommand{\enquanto}{\textbf{enquanto}} 
+\newcommand{\escolha}{\textbf{escolha}} 
+\newcommand{\wwhile}{\textbf{while}} 
+\newcommand{\para}{\textbf{para}}
+\newcommand{\cada}{\textbf{cada}} 
+\newcommand{\for}{\textbf{for}} 
+\newcommand{\ate}{\textbf{até}} 
+\newcommand{\tto}{\textbf{to}} 
+\newcommand{\decrescendoate}{\textbf{decrescendo até}} 
+\newcommand{\repita}{\textbf{repita}} 
+\newcommand{\ateque}{\textbf{até que}} 
+\newcommand{\faca}{\textbf{faça}} 
+\newcommand{\leia}{\textbf{leia}} 
+\newcommand{\ddo}{\textbf{do}} 
+\newcommand{\e}{\textbf{e}} 
+\newcommand{\aand}{\textbf{and}} 
+\newcommand{\ou}{\textbf{ou}} 
+\newcommand{\oor}{\textbf{or}} 
+\newcommand{\pare}{\textbf{pare}} 
+\newcommand{\devolva}{\textbf{devolva}} 
+\newcommand{\return}{\textbf{return}} 
+
+\newenvironment{pseudoc}
+         {\begin{list}%
+                {}%
+                {%
+                 \sffamily%
+                 \setlength{\partopsep}{1ex}%
+                 \setlength{\topsep}{1ex}%
+                 \setlength{\leftmargin}{\parindent}%
+                 \setlength{\parsep}{0.5ex}%
+                }%
+          \item}%
+         {\end{list}%
+         }
+\newenvironment{pseudocode}%
+         {\begin{pseudoc}%
+          \textbf{\textrm{Algoritmo}}\hspace{0.7ex}\ignorespaces%
+         }%
+         {\end{pseudoc}}
+
+%% Pascal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newenvironment{pascal}%
+         {\begin{list}%
+                {}%
+                {%
+                 \setlength{\partopsep}{5mm}%
+                 \setlength{\topsep}{0mm}%
+                 \setlength{\parsep}{0mm}%
+                 \setlength{\leftmargin}{8mm}% era 10mm
+                }%
+          \item}%
+         {\end{list}}
+\newenvironment{pascalsmall}% small, with more parsep
+         {\small%
+          \begin{list}%
+                {}%
+                {%
+                 \setlength{\partopsep}{5mm}%
+                 \setlength{\topsep}{0mm}%
+                 \setlength{\parsep}{1.5mm}%
+                 \setlength{\leftmargin}{8mm}% era 10mm
+                }%
+          \item}%
+         {\end{list}%
+          \normalsize}
+\newenvironment{pascalnomargin}%
+         {\begin{list}%
+                {}%
+                {%
+                 \setlength{\partopsep}{5mm}%
+                 \setlength{\topsep}{0mm}%
+                 \setlength{\parsep}{0mm}%
+                 \setlength{\leftmargin}{0mm}%
+                }%
+          \item}%
+         {\end{list}}
+\newenvironment{pascalnomarginsmall}% small, with more parsep
+         {\small%
+          \begin{list}%
+                {}%
+                {%
+                 \setlength{\partopsep}{5mm}%
+                 \setlength{\topsep}{0mm}%
+                 \setlength{\parsep}{2mm}%
+                 \setlength{\leftmargin}{0mm}%
+                }%
+          \item}%
+         {\end{list}%
+          \normalsize}
+\newcommand{\x}{\hspace*{6mm}}
+\newcommand{\xx}{\hspace*{15mm}}
+\newcommand{\xxx}{\hspace*{24mm}}
+\newcommand{\xxxx}{\hspace*{32mm}}
+\newcommand{\xxxxx}{\hspace*{40mm}}
+\newcommand{\xxxxxx}{\hspace*{48mm}}
+\newcommand{\xxxxxxx}{\hspace*{56mm}}
+\newcommand{\xxxxxxxx}{\hspace*{64mm}}
+
+%\newcommand{\x}{\phantom{9}}
+%\newcommand{\xx}{\phantom{99}}
+\newlength{\digit}
+\settowidth{\digit}{0}
+\renewcommand{\d}{\hspace{2.5mm}}
+\newlength{\smalldigit}
+\settowidth{\smalldigit}{\small 9}
+\newcommand{\sd}{\hspace{\smalldigit}}
+\newlength{\tinydigit}
+\settowidth{\tinydigit}{\tiny 9}
+\newcommand{\td}{\hspace{\tinydigit}}
+
+\pagestyle{empty}
+\setlength{\textwidth}{16cm}
+\setlength{\textheight}{24cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\topmargin}{-.5cm}
+
+\newcommand{\sse}{\Longleftrightarrow}
+\newcommand{\tdots}{\,.\,.\,} % in place of \ldots
+
+\def\risonho{{$\bigcirc\!\!\!\!\!\lower.02cm\hbox{\vbox{\offinterlineskip\hbox{$\>\!..$}\vskip.07cm\hbox{$\scriptscriptstyle\smile$}}}$}}
+\def\tristonho{{$\bigcirc\!\!\!\!\!\lower.02cm\hbox{\vbox{\offinterlineskip\hbox{$\>\!..$}\vskip.07cm\hbox{$\scriptscriptstyle\frown$}}}$}}
+
+\sloppy
+
+% Set up your name, the course name and the homework set number.
+\homeworksetup{
+    username={Jean Fobe, N$^o$USP 7630573},
+    course={Análise de Algorítmos - MAC5711},
+    setnumber=3}
+\begin{document}% this also prints the header.
+\pagestyle{fancy}
+\fancyfoot[L]{Jean Fobe, 7630573}
+
+% use starred problems or subproblems to apply manual numbering.
+\problem*{3}
+\question{
+	Considere o algoritmo ($\mathsf{MaiorMenor}(V,n)$) que calcula o maior e o menor elemento
+	de um vetor $v[1 \tdots n]$ com elementos distintos. 
+	
+	\newcommand{\maior}{\mbox{\emph{maior}}}
+	\newcommand{\menor}{\mbox{\emph{menor}}}
+	
+	Suponha que a entrada do algoritmo é uma permutação de 1 a $n$
+	escolhida uniformemente dentre todas as permutações de 1 a $n$. 
+	
+	Qual é o número esperado de comparações executadas na linha 6 do
+	algoritmo?\\
+	Qual é o número esperado de atribuições efetuadas na
+	linha~7 do algoritmo? 
+}
+	\begin{enumerate}
+		\item[Resp:] No pior caso teremos $n-2$ comparações e no melhor caso $0$ comparações, \\
+		quando $v[i] > v[1], 1 < i \leq n$.\\
+		Admitindo a linearidade (e independência da quantidade de comparações) entre execução do algoritmo e o tamanho do vetor $v$ de entrada, temos que o número esperado de comparações será \[E(n) = \frac{(n-2+0).\frac{n-2}{2}}{(n-2)} = \frac{n-2}{2}\]\\
+		Agora para a linha 7 do algoritmo, sabemos que ela só sera executada se a comparação na linha 6 for verdadeira, ou seja, admitindo as mesmas condições da afirmação anterior teremos \[E(n) = \frac{\frac{n-2}{2}}{2} = \frac{n-2}{4}\]\\
+		(Lembrando que os valores de $n$ devem ser aqueles para que $E(n)$ é um inteiro positivo)
+	\end{enumerate}
+
+\problem*{6}
+\question{
+	Tanto $\mathsf{Mergesort}$ quanto $\mathsf{Quicksort}$ foram vistos para ordenar um
+	vetor. Considere agora o caso em que os dados estão montados numa lista
+	(simplesmente) ligada. É importante não piorar a complexidade dos algoritmos;
+	deveriam ser mais eficientes que criar um vetor de apontadores para as
+	células, ordenar esse vetor conforme o conteúdo das células, e usar esse vetor
+	para reordenar as células.  Cada algoritmo traz desafios diferentes:
+	\begin{itemize}
+	    \item $\mathsf{Mergesort}$: intercalar duas listas ordenadas é fácil.  Mas como
+	  dividir uma lista em duas do mesmo tamanho de forma eficiente?  Para vetores,
+	  essa divisão era trivial; é preciso tomar cuidado para não aumentar a
+	  complexidade do algoritmo.  O gasto de memória deve ser constante, a
+	  menos da pilha de recursão.
+	
+	    \item $\mathsf{Quicksort}$: Aqui o desafio é fazer o particionamento de forma estável
+	  e concatenar sublistas rapidamente.  Tente fazer também a forma aleatorizada.
+	\end{itemize}
+	Em cada caso, justifique a complexidade.
+}
+	\begin{enumerate}
+		\item[$Resp:$] Segue o algoritmo:\\
+			$\mathsf{MergeSortList}(list\ l)$
+			\begin{algorithmic}[1]
+				\State $count\gets 0$
+				\If {$n > 1$}
+					\State $q\gets \floor{\frac{n+1}{2}}$
+					\State $count\gets \mathsf{InvertedCount}(X,p,q)$
+					\State $count\gets count + \mathsf{InvertedCount}(X,q+1,n)$
+					\For {$i\gets p$ to $q$}
+						\State $Y[i]\gets X[i]$
+					\EndFor
+					\For {$j\gets q+1$ to $n$}
+						\State $Y[n+q+1-j]\gets X[j]$
+					\EndFor
+					\State $i\gets p$
+					\State $j\gets n$
+					\For {$k\gets p$ to $n$}
+						\If {$Y[i] < X[j]$}
+							\State $X[k]\gets Y[i]$
+							\State $i\gets i + 1$
+						\Else
+							\State $X[k]\gets Y[j]$
+							\State $j\gets j - 1$
+							\State $count\gets count + 1$							
+						\EndIf
+					\EndFor			
+				\EndIf
+				\State return count
+			\end{algorithmic}
+		Observando o algoritmos acima, temos uma similaridade quase completa com o $\mathsf{MergeSort}(A,p,r)$ visto em sala, as únicas mudanças sendo a inclusão no início do algoritmo da variável $count$, o seu incremento quando $Y[i] > X[j]$ (linha 19) e os retornos de função (algoritmo).\\ 
+		Sabendo que $\mathsf{MergeSort}$ é O$(n \lg n)$, podemos ver que $\mathsf{InvertedCount}$ tem o mesmo consumo de tempo.
+	\end{enumerate}
+\end{document}
