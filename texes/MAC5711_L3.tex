@@ -21,146 +21,6 @@
 
 \usepackage[noend]{algpseudocode}
 
-\newcommand{\ph}{\phantom}
-\newcommand{\Particione}{\mbox{P{\small ARTICIONE}}}
-\newcommand{\Quicksort}{\mbox{Q{\small UICKSORT}}}
-\newcommand{\Mergesort}{\mbox{M{\small ERGESORT}}}
-
-\newcommand{\Oh}{\mathrm{O}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Pseudocode
-\newcommand{\larr}{\leftarrow}
-\newcommand{\se}{\textbf{se}} 
-\newcommand{\iif}{\textbf{if}} 
-\newcommand{\entao}{\textbf{então}} 
-\newcommand{\tthen}{\textbf{then}} 
-\newcommand{\senao}{\textbf{senão}} 
-\newcommand{\eelse}{\textbf{else}} 
-\newcommand{\enquanto}{\textbf{enquanto}} 
-\newcommand{\escolha}{\textbf{escolha}} 
-\newcommand{\wwhile}{\textbf{while}} 
-\newcommand{\para}{\textbf{para}}
-\newcommand{\cada}{\textbf{cada}} 
-\newcommand{\for}{\textbf{for}} 
-\newcommand{\ate}{\textbf{até}} 
-\newcommand{\tto}{\textbf{to}} 
-\newcommand{\decrescendoate}{\textbf{decrescendo até}} 
-\newcommand{\repita}{\textbf{repita}} 
-\newcommand{\ateque}{\textbf{até que}} 
-\newcommand{\faca}{\textbf{faça}} 
-\newcommand{\leia}{\textbf{leia}} 
-\newcommand{\ddo}{\textbf{do}} 
-\newcommand{\e}{\textbf{e}} 
-\newcommand{\aand}{\textbf{and}} 
-\newcommand{\ou}{\textbf{ou}} 
-\newcommand{\oor}{\textbf{or}} 
-\newcommand{\pare}{\textbf{pare}} 
-\newcommand{\devolva}{\textbf{devolva}} 
-\newcommand{\return}{\textbf{return}} 
-
-\newenvironment{pseudoc}
-         {\begin{list}%
-                {}%
-                {%
-                 \sffamily%
-                 \setlength{\partopsep}{1ex}%
-                 \setlength{\topsep}{1ex}%
-                 \setlength{\leftmargin}{\parindent}%
-                 \setlength{\parsep}{0.5ex}%
-                }%
-          \item}%
-         {\end{list}%
-         }
-\newenvironment{pseudocode}%
-         {\begin{pseudoc}%
-          \textbf{\textrm{Algoritmo}}\hspace{0.7ex}\ignorespaces%
-         }%
-         {\end{pseudoc}}
-
-%% Pascal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newenvironment{pascal}%
-         {\begin{list}%
-                {}%
-                {%
-                 \setlength{\partopsep}{5mm}%
-                 \setlength{\topsep}{0mm}%
-                 \setlength{\parsep}{0mm}%
-                 \setlength{\leftmargin}{8mm}% era 10mm
-                }%
-          \item}%
-         {\end{list}}
-\newenvironment{pascalsmall}% small, with more parsep
-         {\small%
-          \begin{list}%
-                {}%
-                {%
-                 \setlength{\partopsep}{5mm}%
-                 \setlength{\topsep}{0mm}%
-                 \setlength{\parsep}{1.5mm}%
-                 \setlength{\leftmargin}{8mm}% era 10mm
-                }%
-          \item}%
-         {\end{list}%
-          \normalsize}
-\newenvironment{pascalnomargin}%
-         {\begin{list}%
-                {}%
-                {%
-                 \setlength{\partopsep}{5mm}%
-                 \setlength{\topsep}{0mm}%
-                 \setlength{\parsep}{0mm}%
-                 \setlength{\leftmargin}{0mm}%
-                }%
-          \item}%
-         {\end{list}}
-\newenvironment{pascalnomarginsmall}% small, with more parsep
-         {\small%
-          \begin{list}%
-                {}%
-                {%
-                 \setlength{\partopsep}{5mm}%
-                 \setlength{\topsep}{0mm}%
-                 \setlength{\parsep}{2mm}%
-                 \setlength{\leftmargin}{0mm}%
-                }%
-          \item}%
-         {\end{list}%
-          \normalsize}
-\newcommand{\x}{\hspace*{6mm}}
-\newcommand{\xx}{\hspace*{15mm}}
-\newcommand{\xxx}{\hspace*{24mm}}
-\newcommand{\xxxx}{\hspace*{32mm}}
-\newcommand{\xxxxx}{\hspace*{40mm}}
-\newcommand{\xxxxxx}{\hspace*{48mm}}
-\newcommand{\xxxxxxx}{\hspace*{56mm}}
-\newcommand{\xxxxxxxx}{\hspace*{64mm}}
-
-%\newcommand{\x}{\phantom{9}}
-%\newcommand{\xx}{\phantom{99}}
-\newlength{\digit}
-\settowidth{\digit}{0}
-\renewcommand{\d}{\hspace{2.5mm}}
-\newlength{\smalldigit}
-\settowidth{\smalldigit}{\small 9}
-\newcommand{\sd}{\hspace{\smalldigit}}
-\newlength{\tinydigit}
-\settowidth{\tinydigit}{\tiny 9}
-\newcommand{\td}{\hspace{\tinydigit}}
-
-\pagestyle{empty}
-\setlength{\textwidth}{16cm}
-\setlength{\textheight}{24cm}
-\setlength{\oddsidemargin}{0cm}
-\setlength{\topmargin}{-.5cm}
-
-\newcommand{\sse}{\Longleftrightarrow}
-\newcommand{\tdots}{\,.\,.\,} % in place of \ldots
-
-\def\risonho{{$\bigcirc\!\!\!\!\!\lower.02cm\hbox{\vbox{\offinterlineskip\hbox{$\>\!..$}\vskip.07cm\hbox{$\scriptscriptstyle\smile$}}}$}}
-\def\tristonho{{$\bigcirc\!\!\!\!\!\lower.02cm\hbox{\vbox{\offinterlineskip\hbox{$\>\!..$}\vskip.07cm\hbox{$\scriptscriptstyle\frown$}}}$}}
-
-\sloppy
 
 % Set up your name, the course name and the homework set number.
 \homeworksetup{
@@ -175,7 +35,7 @@
 \problem*{3}
 \question{
 	Considere o algoritmo ($\mathsf{MaiorMenor}(V,n)$) que calcula o maior e o menor elemento
-	de um vetor $v[1 \tdots n]$ com elementos distintos. 
+	de um vetor $v[1 \ ...\ n]$ com elementos distintos. 
 	
 	\newcommand{\maior}{\mbox{\emph{maior}}}
 	\newcommand{\menor}{\mbox{\emph{menor}}}
@@ -217,36 +77,87 @@
 	Em cada caso, justifique a complexidade.
 }
 	\begin{enumerate}
-		\item[$Resp:$] Segue o algoritmo:\\
+
+\pagebreak	
+	
+		\item[$Resp:$] Segue o algoritmo $\mathsf{MergeSortList}$ (para listas de tamanho de potências de 2):\\
 			$\mathsf{MergeSortList}(list\ l)$
 			\begin{algorithmic}[1]
-				\State $count\gets 0$
-				\If {$n > 1$}
-					\State $q\gets \floor{\frac{n+1}{2}}$
-					\State $count\gets \mathsf{InvertedCount}(X,p,q)$
-					\State $count\gets count + \mathsf{InvertedCount}(X,q+1,n)$
-					\For {$i\gets p$ to $q$}
-						\State $Y[i]\gets X[i]$
-					\EndFor
-					\For {$j\gets q+1$ to $n$}
-						\State $Y[n+q+1-j]\gets X[j]$
-					\EndFor
-					\State $i\gets p$
-					\State $j\gets n$
-					\For {$k\gets p$ to $n$}
-						\If {$Y[i] < X[j]$}
-							\State $X[k]\gets Y[i]$
-							\State $i\gets i + 1$
-						\Else
-							\State $X[k]\gets Y[j]$
-							\State $j\gets j - 1$
-							\State $count\gets count + 1$							
-						\EndIf
-					\EndFor			
+				\If {length of {$l \leq 1$}}
+					\textbf{return} l
 				\EndIf
-				\State return count
+				\State $left \gets empty list$
+				\State $right \gets empty list$
+				\For {\textbf{each} $x$ \textbf{with index} $i$ \textbf{in} $l$}
+					\If {$i < $ (length of $l$)$/2$}
+						\State add x to left
+					\Else
+						\State add x to right
+					\EndIf
+				\EndFor
+				\State $left \gets MergeSortList(left)$
+				\State $right \gets MergeSortList(right)$
+				\State \textbf{return} $MergeList(left,right)$
 			\end{algorithmic}
-		Observando o algoritmos acima, temos uma similaridade quase completa com o $\mathsf{MergeSort}(A,p,r)$ visto em sala, as únicas mudanças sendo a inclusão no início do algoritmo da variável $count$, o seu incremento quando $Y[i] > X[j]$ (linha 19) e os retornos de função (algoritmo).\\ 
-		Sabendo que $\mathsf{MergeSort}$ é O$(n \lg n)$, podemos ver que $\mathsf{InvertedCount}$ tem o mesmo consumo de tempo.
+			
+			$\mathsf{MergeList}(list\ left, list\ right)$
+			\begin{algorithmic}[1]
+				\State $result \gets empty list$
+				\While {left is not empty \textbf{and} right is not empty}
+					\If {$first(left) \leq first(right)$}
+						\State add first(left) to result
+						\State $left \gets rest(left)$
+					\Else
+						\State add first(right) to result
+						\State $right \gets rest(right)$
+					\EndIf
+				\EndWhile
+				\While {left is not empty}
+					\State add first(left) to result
+					\State $left \gets rest(left)$
+				\EndWhile
+				\While {right is not empty}
+					\State add first(right) to result
+					\State $right \gets rest(right)$
+				\EndWhile
+				\State \textbf{return} result
+			\end{algorithmic}
+		Observando o algoritmos acima, temos uma grande similaridade com o $\mathsf{MergeSort}(A,p,r)$ visto em sala, as principais mudanças sendo a ordenação de uma lista ao invés de vetor. A chamada $\mathsf{MergeList}$ custa $n = m + o$, em que $m,o$ são os tamanhos das listas da esquerda e direita respectivamente.\\
+		Sabendo que $\mathsf{MergeSort}$ é O$(n \lg n)$, podemos ver que $\mathsf{MergeSortList}$ tem o mesmo consumo de tempo para uma lista de tamanho $n$.
+		\item[$Resp:$] Segue o algoritmo $\mathsf{QuickSortList}$ (para listas de tamanho de potências de 2):\\
+		$\mathsf{QuickSortList}(list\ l, element\ first(list), element\ last(list))$
+		\begin{algorithmic}[1]
+			\If {$firs(l) < last(l)$}
+				\State $split \gets Partition(l,first(l),last(l))$
+				\State $QuickSortList(l,first(l),split-1)$
+				\State $QuickSortList(l,split+1,last(l))$
+			\EndIf
+			\State \textbf{return} l
+		\end{algorithmic}
+		
+		$\mathsf{Partition}(list\ l, element\ a, element\ b)$
+		\begin{algorithmic}[1]
+			\State $pivot \gets first(l)$
+			\State $leftmark \gets l.next(a)$
+			\State $rightmark \gets b$
+			\While {true}
+				\While {$leftmark \leq rightmark$ \textbf{and} $leftmark \leq pivot$}
+					\State $leftmark \gets l.next(leftmark)$
+				\EndWhile
+				\While {$rightmark \geq pivot$ \textbf{and} $leftmark \leq rightmark$}
+					\State $rightmark \gets l.previous(rightmark)$
+				\EndWhile
+				\If {$leftmark > rightmark$}
+					\State \textbf{return} rightmark
+				\Else
+					\State $rightmark \longleftrightarrow leftmark$
+				\EndIf
+			\EndWhile
+		\end{algorithmic}
+
+\pagebreak		
+		
+		Nesse algoritmo	percebemos que $\mathsf{Partition}$ demorar $n2$ no pior caso, uma vez que serão feitas $n$ trocas do tipo $rightmark \longleftrightarrow leftmark$ para uma lista $l$ de tamanho $n$. Adicionalmente a chamada recursiva adiciona $n$ a ordem de grandeza no pior caso, fazendo $\mathsf{QuickSortList}$ demorar $n^2$. Do jeito que foi implementado, $\mathsf{QuickSortList}$ não é estável, pois não se mantém as referências das trocas realizadas.
+		
 	\end{enumerate}
 \end{document}
