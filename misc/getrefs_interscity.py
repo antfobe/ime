@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
-import unittest, time, re, random, bibtexparser, json, unicodedata
+import unittest, time, re, random, bibtexparser, json, unicodedata, os
 
 #search_query = scholarly.search_pubs_query('Software Platforms for Smart Cities: Concepts, Requirements, Challenges, and a Unified Reference Architecture')
 #article = next(search_query).fill()
@@ -120,5 +120,6 @@ readref_tree(driver.current_url, '', article_list, parser)
 driver.close()
 with open("bibtex_refs.txt", "r") as f:
     lines = [line.rstrip('\n') for line in f]
+os.remove("bibtex_refs.txt")
 with open("bibtex_refs.json", "w") as f:
     f.write(json.dumps(lines, sort_keys=True, indent=4, separators=(',', ': ')))
