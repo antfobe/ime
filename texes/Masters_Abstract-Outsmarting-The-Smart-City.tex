@@ -1,0 +1,79 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Memo
+% LaTeX Template
+% Version 1.0 (30/12/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Rob Oakes (http://www.oak-tree.us) with modifications by:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper,11pt]{texMemo} % Set the paper size (letterpaper, a4paper, etc) and font size (10pt, 11pt or 12pt)
+
+\usepackage{parskip} % Adds spacing between paragraphs
+\setlength{\parindent}{15pt} % Indent paragraphs
+
+%\usepackage[ddmmyyyy]{datetime} 
+
+%----------------------------------------------------------------------------------------
+%	MEMO INFORMATION
+%----------------------------------------------------------------------------------------
+
+\memohead{Outsmarting The Smart City}
+
+\memoby{Jean Fobe} % Recipient(s)
+
+\memofrom{\textit{Black Hat 2018} - \textit{White Paper: Outsmarting the Smart City}. Daniel Crowley, Mauro Paredes, Jennifer Savage. August 2018}
+
+\memosubject{Segurança da informação no contexto de cidades inteligentes, com uma abordagem voltada para \textit{penetration testing}.} % Memo subject
+
+\memodate{\today} % Date, set to \today for automatically printing todays date
+
+%\logo{\includegraphics[width=0.3\textwidth]{logo.png}} % Institution logo at the top right of the memo, comment out this line for no logo
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the memo header information
+
+%----------------------------------------------------------------------------------------
+%	MEMO CONTENT
+%----------------------------------------------------------------------------------------
+
+\begin{itemize}
+	\item[Sumario:] "(...) Em uma época em que as pessoas estão comprando uma miríade de dispositivos de Internet das Coisas (\textit{IoT}) para suas casas inteligentes, (...) a tecnologia das cidades inteligentes está em toda parte quando você sabe onde procurá-la. Os dispositivos estão em caixas aparafusadas a postes de ruas, em cima de prédios e em veículos da cidade. Às vezes, são muito visíveis, como os parquímetros conectados à internet, que permitem que os indivíduos paguem seu estacionamento com o celular. Às vezes eles são menos óbvios, como sensores ocultos projetados para detectar inundações ou radiação. (...) Esta pesquisa examina a segurança mais intrinsecamente dos dispositivos atualmente em uso. Técnicas tradicionais de reconhecimento e aplicação de testes foram usadas para revelar o quão profundamente falhos são muitos desses dispositivos."
+	\item[Itens:] O artigo começa citando alguns aplicações de tecnologia para o contexto de cidades inteligentes:
+	\begin{itemize}
+		\item \textit{Disaster Management}, na detecção de desastres naturais e na consequente resposta e planos de \\
+		evacuação.
+		\item \textit{Surveillance}, por cameras, sensores de sons de tiros e coletores de dados de dispositivos móveis.
+		\item \textit{Resourse Management}, pelos sensores que ajudam a reduzir uso e manutenção de recursos de \\
+		água, energia e esgoto.
+		\item \textit{Traffic Management}, na gestão de informações de transporte da cidade para maior eficiência e \\
+		automação de cobranças de estacionamento de veículos. 
+	\end{itemize}
+	Comenta-se, então, brevemente sobre os procedimentos adotados para a implementação de sistemas \textit{Iot} para fornecer serviços a cidade, evidenciando o problema de dispositivos com código proprietário, mais sujeitos a falhas na segurança dos dados não sendo de imediato anunciadas.\\
+	A seguir são enumerados cenários de ataque nos seguintes dispositivos:
+	\begin{itemize}
+		\item \textit{Echelon i.LON 100 / i.LON SmartServer and Echelon i.LON 600: \textbf{Authentication Bypass, Plaintext Passwords, Unencrypted Communications}}
+		\item \textit{Battelle Vehicle to Infrastructure Hub: \textbf{Functionality Available Without Authentication, Hard-Coded Administrative Account, API Key File Web Accessible, API Auth Bypass, Reflected XSS, SQL Injection}}
+		\item \textit{Libelium Meshlium: \textbf{Shell Injection}}
+	\end{itemize}
+	Os autores ressaltam ainda a importância dos riscos envolvidos na adoção de sistemas inteligentes quando providenciam funcionalidades críticas (como sinais de transito) e controlam dados sensíveis (a exemplo de informações dispositivos pessoais).
+	\item[Conclusão:] "(...) Quando a segurança não é bem considerada no projeto, na criação, na implantação e na manutenção de dispositivos de cidades inteligentes, a infraestrutura da cidade acarreta um maior risco de vulnerabilidades que podem ser aproveitadas. Com uma maior dependência (...), há um risco maior de que as habilidades concedidas por esses dispositivos possam ser abusadas. (...) Existe o risco de que os cidadãos temam que a infraestrutura de sua cidade seja insegura. Se as cidades pretendem continuar no caminho atual de conectar sua infraestrutura e tomar decisões com base em dispositivos interconectados, devem haver testes mais profundos da segurança nesses dispositivos. (...) as informações de teste devem ser disponibilizadas publicamente após a divulgação e correção, e recomendações devem ser feitas com relação à redução das invasões de privacidade inerentes à coleta de dados em massa por esses dispositivos. Espera-se que os fornecedores de dispositivos Smart City levem a segurança em consideração durante todo o ciclo de vida de desenvolvimento e obtenham testes de segurança independentes e detalhados de seus produtos antes da venda. As cidades devem ser aconselhadas a não comprar dispositivos que não tenham recebido esses testes"
+	\item[Reflexão:] Embora não aprofunde nas tecnologias e metodologias utilizadas, bem como o detalhar do passo a passo dos ataques executados, o artigo apresenta uma visão mais prática da cibersegurança em cidades\\
+	 inteligentes. Isso vale para um \textit{"sales/elevator pitch"} de evidenciar o risco aos dados e a infraestrutura dessas cidades.\\
+	 Fica também muito claro o tamanho de problema que pode vir a ser software proprietário e soluções "prontas", que não requerem configurações adicionais.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
