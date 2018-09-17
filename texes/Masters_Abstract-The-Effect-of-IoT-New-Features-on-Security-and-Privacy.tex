@@ -1,0 +1,72 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Memo
+% LaTeX Template
+% Version 1.0 (30/12/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Rob Oakes (http://www.oak-tree.us) with modifications by:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper,11pt]{texMemo} % Set the paper size (letterpaper, a4paper, etc) and font size (10pt, 11pt or 12pt)
+
+\usepackage{parskip} % Adds spacing between paragraphs
+\setlength{\parindent}{15pt} % Indent paragraphs
+
+%\usepackage[ddmmyyyy]{datetime} 
+
+%----------------------------------------------------------------------------------------
+%	MEMO INFORMATION
+%----------------------------------------------------------------------------------------
+
+\memohead{Outsmarting The Smart City}
+
+\memoby{Jean Fobe} % Recipient(s)
+
+\memofrom{\textit{The Effect of IoT New Features on Security and Privacy: New Threats, Existing Solutions, and Challenges Yet to Be Solved. Wei Zhou, Yuqing Zhang, and Peng Liu, Member, IEEE}}
+
+\memosubject{Segurança da informação no contexto de internet das coisas, com uma abordagem genérica para problemas recorrentes nessa área.} % Memo subject
+
+\memodate{\today} % Date, set to \today for automatically printing todays date
+
+%\logo{\includegraphics[width=0.3\textwidth]{logo.png}} % Institution logo at the top right of the memo, comment out this line for no logo
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the memo header information
+
+%----------------------------------------------------------------------------------------
+%	MEMO CONTENT
+%----------------------------------------------------------------------------------------
+
+\begin{itemize}
+	\item[Sumario:] "O futuro da Internet das Coisas (IoT) já está chegando. As aplicações da IoT têm sido amplamente utilizadas em muitos campos da produção e da vida social, como saúde, energia e automação industrial. Enquanto desfrutamos da conveniência e eficiência que a IoT traz para nós, novas ameaças da IoT também surgiram. Há cada vez mais trabalhos de pesquisa para amenizar essas ameaças, mas muitos problemas permanecem em aberto. Para entender melhor as razões essenciais de novas ameaças e os desafios da pesquisa atual, este documento propõe primeiro o conceito de “recursos de IoT”. Em seguida, os efeitos de segurança e privacidade de oito novos recursos de IoT são discutidos, incluindo as ameaças que eles causam, as soluções existentes e os desafios ainda a serem resolvidos. Para ajudar os pesquisadores a acompanhar os trabalhos atualizados nesse campo, este artigo finalmente ilustra a tendência em desenvolvimento da pesquisa de segurança de IoT e revela como os recursos de IoT afetam a pesquisa de segurança existente investigando a maioria dos trabalhos de pesquisa relacionados à segurança de IoT de 2013 a 2017."
+	\item[Itens:] O artigo se propõe discutir e analisar questões de segurança em IoT no contexto de funcionalidades dos dispositivos, fornecendo em seguida as tendências e as causas de pesquisas nos últimos 5 anos. As funcionalidades são:
+	\begin{itemize}
+		\item \textit{Interdependence}, referentes a dependências implícitas entre dispositivos, ressaltada pelo uso de\\
+		 instruções do tipo IFTTT (\textit{if this than that}). A ameaça se torna o contorno das defesas 'estáticas' dos sistemas e a manipulação de privilégio de um sobre o outro. O exemplo dado é o de um invasor que manipula a leitura de sensores de temperatura para abrir janelas de um quarto. Uma solução ilustrada é o reconhecimento de padrões de comportamento do ambiente, impedindo os sistemas de adotarem medidas muito drásticas para situações de ataque.
+		\item \textit{Diversity}, em que as muitas arquiteturas dos dispositivos podem vir a dificultar a configuração individual, comprometendo sistemas por sequestro de identidade de dispositivos e interceptação de comunicações. As soluções indicadas nesses casos são a disponibilização do código fonte sendo executado nos dispositivos e sistemas de detecção de intrusão (IDS) e de prevenção de intrusão (IPS).
+		\item \textit{Constrained}, abordando as limitações de hardware, que acabam impedindo uma execução mais segura do software. Apesar das tentativas de otimizar métodos criptográficos para as limitações desses dispositivos, o artigo cita que o uso de chaves pela estrutura física única do dispositivo (por \textit{Physical Unclonable Functions}) pode ainda evitar "\textit{side channel attacks}", pela extração de informações na execução dos métodos criptográficos.
+		\item \textit{Myriad}, como a quantidade massiva de dados gerados pela IoT. A preocupação aqui se torna DDoS, pela dificuldade de discernir trafico de rede malicioso. Uma resposta real a esse problema seria uma análise do código fonte para, de fato, prevenir a infecção em massa dos dispositivos.
+		\item \textit{Unattended}, por aparelhos que ficam tempo considerável sem comunicação ou sem inspeção física. Esses dispositivos podem ser comprometidos sem qualquer tipo de alerta e, caso sejam itens de infraestrutura ou robôs de missão crítica, podem se tornar alvo principal de \textit{hackers}. Como solução é abordado o método de \textit{trusted execution environment} e a tecnologia \textit{TrustZone} da ARM, visando reconhecer e impedir o mal uso do equipamento (medidas de execução de código seguro e confiável), porém é citado que em sistemas suficientemente grandes essas técnicas acabam levando muito tempo.
+		\item \textit{Intimacy}, definindo aqueles itens que ficam próximos de pessoas a exemplo de \textit{wearables}. O problema aqui é a privacidade dos dados do dispositivo. Havendo soluções eficientes de criptografia, elas acabam por ser custosas e diminuir a performance do dispositivo.
+		\item \textit{Mobile}, para dispositivos que deslocam por áreas físicas e comunicam com muitos outros aparelhos. As ameaças aqui focam na superfície de ataque, pela compatibilidade desses dispositivos, e a aceleração da infecção de aparelhos. Novos métodos de controle de acesso estão sendo propostos, mas o artigo denota que essa questão não recebeu uma resposta definitiva.
+		\item \textit{Ubiquotous}, em que alguns itens se tornam tão fundamentais, que a vida em sociedade começa a depender deles. O artigo denota os problemas dos aparelhos que se aproximam dessa categoria de funcionalidade para pesquisadores, consumidores, industria e empresas.
+	\end{itemize}
+	O artigo faz uma breve analise estatística indicando o decrescimento do uso de IoT apenas na indústria e \textit{Smart Grids} (Nota-se uma relação com o número de incidentes de segurança nesses setores). Também faz comentários gerais sobre como endereçar o problema de segurança para pesquisadores IoT.
+	\item[Conclusão:] "Neste artigo, analisamos e discutimos as questões de segurança e privacidade com base nos recursos da IoT. Primeiramente, apresentamos as ameaças e os desafios de pesquisa que surgiram desses recursos. Em seguida, também estudamos as soluções existentes para esses desafios e apontamos as novas tecnologias de segurança necessárias. Por fim, ilustramos a tendência de desenvolvimento da pesquisa de segurança de IoT recente, a razão para isso e como os recursos da IoT refletem na pesquisa existente. Somente analisando profundamente esses novos recursos por trás da Internet das coisas, podemos ter uma ideia melhor sobre os futuros pontos de pesquisa e o desenvolvimento da segurança da IoT."
+	\item[Reflexão:] Com um carácter muito genérico, o artigo resume o panorama de IoT para a segurança da informação nos últimos anos. A ideia de segregar por funcionalidades, talvez não da forma que o artigo propõe, mas por serviços ou requisitos seja interessante. Enfim, citam-se os principais incidentes de segurança envolvendo IoT e possíveis respostas e soluções, sem grandes detalhes.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
