@@ -7,33 +7,27 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
-import unittest, time, re, random, bibtexparser, json, unicodedata, os
+import unittest, time, re, random, bibtexparser, json, unicodedata, os, sys, argparse
 
-#search_query = scholarly.search_pubs_query('Software Platforms for Smart Cities: Concepts, Requirements, Challenges, and a Unified Reference Architecture')
-#article = next(search_query).fill()
-#for author in article.bib['author'].split('and'):
-#    query = scholarly.search_author(author)
-#    try:
-#        this = next(query)
-#        print(article + ',' + author + ',' + this.affiliation + ',')
-#    except StopIteration:
-#        print(article + ',' + author + ',Unknown affiliation,')
-
-def setup_driver():
+def setup_driver(article_name):
     driver = webdriver.Firefox()
     driver.implicitly_wait(30)
     driver.base_url = "https://scholar.google.com.br/"
     driver.verificationErrors = []
     driver.accept_next_alert = True
     driver.get("https://scholar.google.com.br/")
-    driver.find_element_by_id("gs_hdr_tsi").click()
+    ## click 'scholar in english' link
+    driver.find_element_by_id("gs_hp_eng").find_element_by_tag_name("a").click()
     time.sleep(random.uniform(3, 7))
+    driver.find_element_by_id("gs_hdr_tsi").click()
     driver.find_element_by_id("gs_hdr_tsi").clear()
-    driver.find_element_by_id("gs_hdr_tsi").send_keys("Software Platforms for Smart Cities: Concepts, Requirements, Challenges, and a Unified Reference Architecture")
+    driver.find_element_by_id("gs_hdr_tsi").send_keys(article_name)
     driver.find_element_by_id("gs_hdr_frm").submit()
     time.sleep(random.uniform(3, 7))
-    driver.find_element_by_xpath("(.//*[normalize-space(text()) and normalize-space(.)='Fazer login'])[1]/following::span[1]").click()
-    driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='Pesquisa avançada'])[2]/following::span[2]").click()
+    ###driver.find_element_by_xpath("(.//*[normalize-space(text()) and normalize-space(.)='Sign In'])[1]/following::span[1]").click()
+    driver.find_element_by_id("gs_hdr_mnu").click()
+    ###driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='Advanced Search'])[2]/following::span[2]").click()
+    driver.find_element_by_id("gs_hdr_drw_bs").click()
     time.sleep(random.uniform(3, 7))
     ## set search results to 20 per page
     driver.find_element_by_id("gs_num-b").click()
@@ -48,7 +42,7 @@ def setup_driver():
     driver.find_element_by_id("gs_hdr_tsi").click()
     time.sleep(random.uniform(3, 7))
     driver.find_element_by_id("gs_hdr_tsi").clear()
-    driver.find_element_by_id("gs_hdr_tsi").send_keys("Software Platforms for Smart Cities: Concepts, Requirements, Challenges, and a Unified Reference Architecture")
+    driver.find_element_by_id("gs_hdr_tsi").send_keys(article_name)
     driver.find_element_by_id("gs_hdr_frm").submit()
     time.sleep(random.uniform(3, 7))
     return driver
@@ -57,7 +51,7 @@ def driver_item_bylink(driver, link, tag, attr):
     return_url = driver.current_url
     driver.get(link)
     attribute = driver.find_element_by_tag_name(tag).get_attribute(attr)
-    time.sleep(random.uniform(3, 7))
+    time.sleep(random.uniform(1, 3))
     driver.get(return_url)
     return attribute
 
@@ -66,16 +60,10 @@ def is_element_present(element, how, what):
     except NoSuchElementException as e: return False
     return True
 
-def readref_tree(article_link, citation, article_list, bibtex_parser):
-    print("At: ["+article_link+"]")
+def readref_tree(article_link, citation, article_list, bibtex_parser, verbose):
+    if verbose:
+        print("At: ["+article_link+"]")
     ## im assuming if it knows the citing article, it has its name
-    #article = scholarly.search_pubs_query(article_name)
-    #driver.find_element_by_id("gs_hdr_tsi").click()
-    #time.sleep(random.uniform(3, 7))
-    #driver.find_element_by_id("gs_hdr_tsi").clear()
-    #driver.find_element_by_id("gs_hdr_tsi").send_keys(article_name)
-    #driver.find_element_by_id("gs_hdr_frm").submit()
-    #time.sleep(random.uniform(3, 7))
 
     driver.get(article_link)
     link_list = []
@@ -83,43 +71,53 @@ def readref_tree(article_link, citation, article_list, bibtex_parser):
     refs = []
     for result_child in driver.find_elements_by_tag_name("h3"):
         result = result_child.find_element_by_xpath("..")
-        #print(str(link_list) + '\n')
-        bib_link_list.append(result.find_element_by_link_text("Importe para o BibTeX").get_attribute("href"))
+        bib_link_list.append(result.find_element_by_link_text("Import into BibTeX").get_attribute("href"))
     for bib_link in bib_link_list:
         bib_string = driver_item_bylink(driver, bib_link, "pre", "innerHTML")
-        #print(str(bib_link_list) + '\n')
         refs.append(bibtexparser.loads(bib_string, parser=bibtex_parser).get_entry_list()[-1])
 
     driver.get(article_link)
     try:
         ## need to check if there are more results than page can fit > 20
+        ## ...and add cross-refs
         for idx, result_child in enumerate(driver.find_elements_by_tag_name("h3")):
             result = result_child.find_element_by_xpath("..")
             ref = refs[idx]
-            print(str(ref) + '\nidx: ' + str(idx) + '\n')
+            if verbose:
+                print(str(ref) + '\nidx: ' + str(idx) + '\n')
             ref["title"] = unicodedata.normalize('NFKD',ref['title']).encode('ascii', 'ignore').decode().replace('\'','')
             if ref["title"] not in article_list:
                 article_list.append(ref["title"])
                 ref["cites"] = citation
                 with open("bibtex_refs.txt", "a") as f:
                     f.write(json.dumps(ref) + "\n")
-                if is_element_present(result,By.PARTIAL_LINK_TEXT, "Citado por "):
-                    link = driver.find_element_by_partial_link_text("Citado por ").get_attribute("href")
+                if is_element_present(result,By.PARTIAL_LINK_TEXT, "Cited by "):
+                    link = driver.find_element_by_partial_link_text("Cited by ").get_attribute("href")
                     link_list.append({'citation':ref["title"], 'link':link})
         for linkd in link_list:
-            readref_tree(linkd['link'], linkd['citation'], article_list, bibtex_parser)
+            readref_tree(linkd['link'], linkd['citation'], article_list, bibtex_parser, verbose)
 
     except NoSuchElementException as e:
-        print("Request to\t[" + article_link + "]\tFailed ...\n")
+        sys.stderr.write("Request to\t[" + article_link + "]\tFailed ...\n")
+
+
+argparser = argparse.ArgumentParser(description='Get an article reference tree from Google Scholar (BibTex links)')
+argparser.add_argument('-a', '--aname', dest='entry_article', type=str, help='article/paper name/title (preferably normalized in NFKD)')
+argparser.add_argument('-o', '--output', dest='out', type=str, help='output to [<filename>.json | stdout]')
+argparser.add_argument('-v', '--verbose', dest='verb', help='output to [<filename>.json | stdout]', action="store_true")
+args = argparser.parse_args()
 
 article_list = []
 parser = bibtexparser.bparser.BibTexParser()
 parser.customization = bibtexparser.customization.convert_to_unicode
-driver = setup_driver()
-readref_tree(driver.current_url, '', article_list, parser)
+driver = setup_driver(args.entry_article)
+readref_tree(driver.current_url, '', article_list, parser, args.verb)
 driver.close()
 with open("bibtex_refs.txt", "r") as f:
     lines = [line.rstrip('\n') for line in f]
 os.remove("bibtex_refs.txt")
-with open("bibtex_refs.json", "w") as f:
-    f.write(json.dumps(lines, sort_keys=True, indent=4, separators=(',', ': ')))
+if args.out is not None:
+    with open(args.out + ".json", "w") as f:
+        f.write(json.dumps(lines, sort_keys=True, indent=4, separators=(',', ': ')))
+else:
+    sys.stdout.write(json.dumps(lines, sort_keys=True, indent=4, separators=(',', ': ')) + "\n")
