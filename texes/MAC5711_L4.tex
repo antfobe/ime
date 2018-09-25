@@ -1,0 +1,103 @@
+% to change the appearance of the header, questions, problems or subproblems, see the homework.cls file or
+% override the \Problem, \Subproblem, \question or \printtitle commands.
+
+% The hidequestions option hides the questions. Remove it to print the questions in the text.
+
+\title{MAC5711- Lista 4}
+
+\documentclass{homework}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\usepackage[noend]{algpseudocode}
+
+
+% Set up your name, the course name and the homework set number.
+\homeworksetup{
+    username={Jean Fobe, N$^o$USP 7630573},
+    course={Análise de Algorítmos - MAC5711},
+    setnumber=4}
+\begin{document}% this also prints the header.
+\pagestyle{fancy}
+\fancyfoot[L]{Jean Fobe, 7630573}
+
+% use starred problems or subproblems to apply manual numbering.
+\problem*{1}
+\question{
+    Escreva uma função que recebe um vetor com \textit{n} letras \textit{A}’s e \textit{B}’s e, por meio de trocas, move todos os \textit{A}’s para o início do vetor. Sua função deve consumir tempo O(\textit{n})
+}
+	\begin{enumerate}
+		\item[Resp:] Segue o algoritmo $\mathsf{SortABArray}$ (para vetores de tamanho \textit{n}, $V[1\ ..\ n]$ contendo somente símbolos \textit{A} e \textit{B}):\\
+			$\mathsf{SortABArray}(array\ A,\ n)$
+			\begin{algorithmic}[1]
+				\If {$n \leq 1$}
+					\textbf{return} A
+				\EndIf
+				\State $j \gets n$
+				\For {$i \gets 1$ \textbf{to} j}
+				    \If {$A[i] = `B'$}
+				        \For {$j$ \textbf{to} i}
+				            \If {$A[j] \neq `B'$}
+				                \State $A[i] \longleftrightarrow A[j]$
+				            \EndIf
+				        \EndFor
+				    \EndIf
+				\EndFor
+				\State \textbf{return} A
+			\end{algorithmic}
+			Fazendo uma analise do algorítmo acima temos que as linhas 1, 2 e 8 tem consumo de tempo O(1).\\
+			A linha 3, O($j+1$), $j \leq n$; \\
+			4 e 5, O($j$); \\
+			6 e 7, O($j-i-1$), onde $i \leq j \leq n\ e\ j - i \leq n$; \\
+			Somando os tempos temos: \[
+                3.\mathrm{O}(1) + \mathrm{O}(j+1) + 2.\mathrm{O}(j) + 2.\mathrm{O}(j-i-1) \leq 3.\mathrm{O}(1) + \mathrm{O}(n) + 3.\mathrm{O}(n-1) \leq 4.\mathrm{O}(n)
+			\] (Para um valor $n$ suficientemente grande)
+	\end{enumerate}
+
+\problem*{3}
+\question{
+    Para esta questão, vamos dizer que a \textit{mediana} de um vetor $A[p\ ..\ r]$ com número inteiros é o valor que ficaria na posição $A[\floor{(p+r)/2}]$ depois que o vetor $A[p\ ..\ r]$ fosse ordenado.\\
+    Sejam $X[1\ ..\ n]$ e $Y[1\ ..\ n]$ dois vetores, cada um contendo $n$ números ordenados. Escreva um algoritmo O$(\lg n)$ para encontrar uma das medianas de todos os $2n$ elementos nos vetores $X$ e~$Y$, ou seja, o que seria a mediana da concatenação de  $X$ com $Y$.
+}
+	\begin{enumerate}
+		\item[Resp:] Segue o algoritmo $\mathsf{MedianConcatXY}$ (para vetores de tamanho 2\textit{n}, $V[1\ ..\ n\ .. 2n]$, ordenados de 1 a \textit{n} e de \textit{n} a 2\textit{n} com $n \geq 1$):\\
+			$\mathsf{MedianConcatXY}(array\ XY,\ N)$
+			\begin{algorithmic}[1]
+			    \State $n \gets N/2$
+				\If {$n = 1$}
+					\textbf{return} $XY[1]$
+				\EndIf
+				\State $x \gets \floor{(n/2)}$
+				\State $y \gets \floor{(3n/2)}$
+				\If {$XY[x] = XY[y]$}
+				    \textbf{return} $XY[x]$
+				\ElsIf {$XY[x] > XY[y]$}
+				    \State $Concat \gets XY[1\ ..\ x]XY[y\ ..\ N]$
+				    \State $x \gets \mathsf{MedianConcatXY}(Concat, n)$
+				\ElsIf {$XY[x] < XY[y]$}
+    				\State $Concat \gets XY[x\ ..\ n]XY[n\ ..\ y]$
+				    \State $y \gets \mathsf{MedianConcatXY}(Concat, n)$
+				\EndIf
+			\end{algorithmic}
+            Uso de busca binaria nas linhas 5 a 11, demais linhas (1 a 4) demoram O$(1)$.
+    \end{enumerate}
+    
+\pagebreak	
+
+\problem*{6}
+\question{
+    Para esta questão, vamos dizer que a \textit{mediana} de um vetor $A[p\ ..\ r]$ com número inteiros é o valor que ficaria na posição $A[\floor{(p+r)/2}]$ depois que o vetor $A[p\ ..\ r]$ fosse ordenado.\\
+    Sejam $X[1\ ..\ n]$ e $Y[1\ ..\ n]$ dois vetores, cada um contendo $n$ números ordenados. Escreva um algoritmo O$(\lg n)$ para encontrar uma das medianas de todos os $2n$ elementos nos vetores $X$ e~$Y$, ou seja, o que seria a mediana da concatenação de  $X$ com $Y$.
+}
+
+\end{document}
