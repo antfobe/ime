@@ -38,7 +38,7 @@
 }
 	\begin{enumerate}
 		\item[Resp:] Segue o algoritmo $\mathsf{SortABArray}$ (para vetores de tamanho \textit{n}, $V[1\ ..\ n]$ contendo somente símbolos \textit{A} e \textit{B}):\\
-			$\mathsf{SortABArray}(array\ A,\ n)$
+			$\mathsf{SortABArray}(array\ A,\ integer\ n)$
 			\begin{algorithmic}[1]
 				\If {$n \leq 1$}
 					\textbf{return} A
@@ -71,7 +71,7 @@
 }
 	\begin{enumerate}
 		\item[Resp:] Segue o algoritmo $\mathsf{MedianConcatXY}$ (para vetores de tamanho 2\textit{n}, $V[1\ ..\ n\ .. 2n]$, ordenados de 1 a \textit{n} e de \textit{n} a 2\textit{n} com $n \geq 1$):\\
-			$\mathsf{MedianConcatXY}(array\ XY,\ N)$
+			$\mathsf{MedianConcatXY}(array\ XY,\ integer\ N)$
 			\begin{algorithmic}[1]
 			    \State $n \gets N/2$
 				\If {$n = 1$}
@@ -94,10 +94,39 @@
     
 \pagebreak	
 
-\problem*{6}
+\problem*{7}
 \question{
-    Para esta questão, vamos dizer que a \textit{mediana} de um vetor $A[p\ ..\ r]$ com número inteiros é o valor que ficaria na posição $A[\floor{(p+r)/2}]$ depois que o vetor $A[p\ ..\ r]$ fosse ordenado.\\
-    Sejam $X[1\ ..\ n]$ e $Y[1\ ..\ n]$ dois vetores, cada um contendo $n$ números ordenados. Escreva um algoritmo O$(\lg n)$ para encontrar uma das medianas de todos os $2n$ elementos nos vetores $X$ e~$Y$, ou seja, o que seria a mediana da concatenação de  $X$ com $Y$.
+    Descreva um algoritmo que, dado um vetor com \textit{n} inteiros positivos, e a informação de que todos são menores que $n^3$, ordena esse vetor em tempo linear em \textit{n}.
 }
+	\begin{enumerate}
+		\item[Resp:] Segue o algoritmo $\mathsf{OrderN3}$ (para vetores de tamanho \textit{n}, $V[1\ ..\ n]$, de números inteiros menores que $n^3$):\\
+			$\mathsf{OrderN3}(array\ V,\ integer\ n)$
+			\begin{algorithmic}[1]
+			    \State $V \gets \mathsf{CountSort}(array\ V,\ integer\ n)$
+			    \State $V \gets \mathsf{CountSort}(array\ V,\ integer\ n)$
+			    \State $V \gets \mathsf{CountSort}(array\ V,\ integer\ n)$
+				\State \textbf{return} V
+			\end{algorithmic}
+			$\mathsf{CountSort}(array\ V,\ integer\ n)$
+			\begin{algorithmic}[1]
+			    \State $Count[1\ ..\ n] \gets {0\ ..\ 0}$
+			    \For {index,value \textbf{in} $\mathsf{Enumerate}(V)$}
+			        \State $Count[V[index]]++$
+			    \EndFor
+			    \State $total \gets 0$
+			    \For {$index \gets 0$ \textbf{to} n}
+			        \State $old \gets Count[index]$
+			        \State $Count[index] \gets total$
+			        \State $total \gets total + old$
+			    \EndFor
+			    \State $Out \gets V$
+			    \For {index,value \textbf{in} $\mathsf{Enumerate}(V)$}
+			        \State $Out[Count[index]] = value$
+			        \State $Count[index]++$
+			    \EndFor
+				\State \textbf{return} Out
+			\end{algorithmic}
+            Uso de busca binaria nas linhas 5 a 11, demais linhas (1 a 4) demoram O$(1)$.
+    \end{enumerate}
 
 \end{document}
