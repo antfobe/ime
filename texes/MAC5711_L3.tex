@@ -145,7 +145,7 @@
 					\State $leftmark \gets l.next(leftmark)$
 				\EndWhile
 				\While {$rightmark \geq pivot$ \textbf{and} $leftmark \leq rightmark$}
-					\State $rightmark \gets l.previous(rightmark)$
+					\State $rightmark \gets l.previous(rightmark)$,ll
 				\EndWhile
 				\If {$leftmark > rightmark$}
 					\State \textbf{return} rightmark
