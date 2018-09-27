@@ -69,42 +69,48 @@ def readref_tree(article_link, citation, article_list, bibtex_parser, verbose):
     link_list = []
     bib_link_list = []
     refs = []
-    for result_child in driver.find_elements_by_tag_name("h3"):
-        result = result_child.find_element_by_xpath("..")
-        bib_link_list.append(result.find_element_by_link_text("Import into BibTeX").get_attribute("href"))
-    for bib_link in bib_link_list:
-        bib_string = driver_item_bylink(driver, bib_link, "pre", "innerHTML")
-        refs.append(bibtexparser.loads(bib_string, parser=bibtex_parser).get_entry_list()[-1])
-
-    driver.get(article_link)
-    try:
-        ## need to check if there are more results than page can fit > 20
-        ## ...and add cross-refs
-        for idx, result_child in enumerate(driver.find_elements_by_tag_name("h3")):
+    next_results_link = driver.current_url
+    while next_results_link is not None:
+        for result_child in driver.find_elements_by_tag_name("h3"):
             result = result_child.find_element_by_xpath("..")
-            ref = refs[idx]
-            if verbose:
-                print(str(ref) + '\nidx: ' + str(idx) + '\n')
-            ref["title"] = unicodedata.normalize('NFKD',ref['title']).encode('ascii', 'ignore').decode().replace('\'','')
-            if ref["title"] not in article_list:
-                article_list.append(ref["title"])
-                ref["cites"] = citation
-                with open("bibtex_refs.txt", "a") as f:
-                    f.write(json.dumps(ref) + "\n")
-                if is_element_present(result,By.PARTIAL_LINK_TEXT, "Cited by "):
-                    link = driver.find_element_by_partial_link_text("Cited by ").get_attribute("href")
-                    link_list.append({'citation':ref["title"], 'link':link})
-        for linkd in link_list:
-            readref_tree(linkd['link'], linkd['citation'], article_list, bibtex_parser, verbose)
+            bib_link_list.append(result.find_element_by_link_text("Import into BibTeX").get_attribute("href"))
+        for bib_link in bib_link_list:
+            bib_string = driver_item_bylink(driver, bib_link, "pre", "innerHTML")
+            refs.append(bibtexparser.loads(bib_string, parser=bibtex_parser).get_entry_list()[-1])
+        driver.get(article_link)
+        try:
+            ## need to check if there are more results than page can fit > 20
+            ## ...and add cross-refs
+            for idx, result_child in enumerate(driver.find_elements_by_tag_name("h3")):
+                result = result_child.find_element_by_xpath("..")
+                ref = refs[idx]
+                if verbose:
+                    print(str(ref) + '\nidx: ' + str(idx) + '\n')
+                ref["title"] = unicodedata.normalize('NFKD', ref['title']).encode('ascii', 'ignore').decode().replace('\'', '')
+                if ref["title"] not in article_list:
+                    article_list.append(ref["title"])
+                    ref["cites"] = citation
+                    with open("bibtex_refs.txt", "a") as f:
+                        f.write(json.dumps(ref) + "\n")
+                    if is_element_present(result, By.PARTIAL_LINK_TEXT, "Cited by "):
+                        link = driver.find_element_by_partial_link_text("Cited by ").get_attribute("href")
+                        link_list.append({'citation':ref["title"], 'link':link})
+            for linkd in link_list:
+                readref_tree(linkd['link'], linkd['citation'], article_list, bibtex_parser, verbose)
+            if is_element_present(driver, By.CLASS_NAME, "gs_ico_nav_next") is not False:
+                next_results_link = driver.find_element_by_class_name("gs_ico_nav_next").find_element_by_xpath("..").get_attribute("href")
+                driver.get(next_results_link)
+            else:
+                next_results_link = None
 
-    except NoSuchElementException as e:
-        sys.stderr.write("Request to\t[" + article_link + "]\tFailed ...\n")
+        except NoSuchElementException as e:
+            sys.stderr.write("Request to\t[" + article_link + "]\tFailed ...\n")
 
 
 argparser = argparse.ArgumentParser(description='Get an article reference tree from Google Scholar (BibTex links)')
-argparser.add_argument('-a', '--aname', dest='entry_article', type=str, help='article/paper name/title (preferably normalized in NFKD)')
-argparser.add_argument('-o', '--output', dest='out', type=str, help='output to [<filename>.json | stdout]')
-argparser.add_argument('-v', '--verbose', dest='verb', help='output to [<filename>.json | stdout]', action="store_true")
+argparser.add_argument('-a', '--aname', required=True, dest='entry_article', type=str, help='article/paper name/title (preferably normalized in NFKD)')
+argparser.add_argument('-o', '--output', dest='out', type=str, help='output to [<filename>.json], if no filename is given, outputs to stdout')
+argparser.add_argument('-v', '--verbose', dest='verb', help='displays execution messages to stdout', action="store_true")
 args = argparser.parse_args()
 
 article_list = []
