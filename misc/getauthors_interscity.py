@@ -45,12 +45,12 @@ def driver_get_author_info(driver, author_list):
                 author_info.append(elemnt.get_attribute("innerHTML"))
             author_dict["name"] = author_name
             author_dict["info"] = author_info
-            author_dictlist.append(author_dict)
+            author_dictlist.append(copy.deepcopy(author_dict))
             author_info = []
         else:
             author_dict["name"] = author_name
             author_dict["info"] = "Info Unavailable"
-            author_dictlist.append(author_dict)
+            author_dictlist.append(copy.deepcopy(author_dict))
         print(author_dictlist)
     return author_dictlist
 
@@ -64,20 +64,18 @@ with open("bibtex_refs.json", "r") as file:
             print("[" + name + "]\n")
             if len(name.split(',')) > 1:
                 initials = "".join([i[0].upper() for i in name.split(',')[1].split()])
-                author_list.append(
-                        unicodedata.normalize(
+                item = unicodedata.normalize(
                             'NFKD',
                             (initials + " " + name.split(',')[0]).replace('-', ' ')
-                        ).encode('ascii', 'ignore').decode()
-                )
+                ).encode('ascii', 'ignore').decode()
+                author_list.append(item)
             else:
                 initials = "".join([i[0].upper() for i in " ".join(name.split(' ')[0:-1]).split()])
-                author_list.append(
-                        unicodedata.normalize(
+                item = unicodedata.normalize(
                             'NFKD',
                             (initials + name.split(' ')[-1]).replace('-', ' ')
-                        ).encode('ascii', 'ignore').decode()
-                )
+                ).encode('ascii', 'ignore').decode()
+                author_list.append(item)
 author_list = list(set(author_list))
 driver = setup_driver()
 author_infos = driver_get_author_info(driver, author_list)
