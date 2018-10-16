@@ -1,0 +1,82 @@
+% to change the appearance of the header, questions, problems or subproblems, see the homework.cls file or
+% override the \Problem, \Subproblem, \question or \printtitle commands.
+
+% The hidequestions option hides the questions. Remove it to print the questions in the text.
+
+\title{MAC5711- Lista 5}
+
+\documentclass{homework}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\usepackage[noend]{algpseudocode}
+
+
+% Set up your name, the course name and the homework set number.
+\homeworksetup{
+    username={Jean Fobe, N$^o$USP 7630573},
+    course={Análise de Algorítmos - MAC5711},
+    setnumber=5}
+\begin{document}% this also prints the header.
+\pagestyle{fancy}
+\fancyfoot[L]{Jean Fobe, 7630573}
+
+% use starred problems or subproblems to apply manual numbering.
+\problem*{1}
+\question{
+    Um grupo de lepidopterologistas conjectura que as borboletas numa certa região são todas de duas espécies, A e B. Só que é difícil, olhando para uma, identificar a espécie.  O que eles fazem, com \textit{n} borboletas, é considerar alguns (\textit{m}) pares e marcar \textbf{mesma}, \textbf{diferente} e \textbf{duvidosa}. O problema é descobrir se os pares marcados são consistentes com a hipótese de existirem duas espécies. Dê um algoritmo O($n+m$) para isso; descreva no mais alto nível que puder por outros algoritmos conhecidos.
+}
+	\begin{enumerate}
+		\item[Resp:] Para resolver o problema em alto nível, sem o design em linhas de código do algorítmo, precisamos construir um grafo $G = (V,E)$ da seguinte forma:
+		\begin{itemize}
+		    \item[-] Criar um vertice para cada borboleta e um vertice auxiliar para cada julgamento com \textbf{mesma}. Note que $|V| \leq m + n$.
+		    \item[-] Para cada julgamento com \textbf{diferente}, adicionar uma aresta entre os vertices envolvidos (o par de borboletas envolvidas). Para cada julgamento com \textbf{mesma}, adicionar duas arestas que conectam os vertices das borboletas envolvidas com o vertice auxiliar. Note que o número de arestas é mantido abaixo de $2m$ ($|E| \leq 2m$).
+		    \item[-] A avaliação da consistência dos \textit{m} julgamentos é feita a partir de um algoritmo de bipartidariedade (K.T. \textit{p.95}) de tempo linear O($|V|+|E|$). Se o grafo não for bipartido, os pares não são consistentes.
+		\end{itemize}
+	\end{enumerate}
+
+\problem*{3}
+\question{
+    Dê um algoritmo eficiente que computa, dados vértices \textit{u},\textit{v} em um grafo dirigido, o número de caminhos mínimos de \textit{u} a \textit{v}. Note que esse número pode ser exponencial, assim listar os caminhos está fora de questão. Por outro lado, você pode supor que a sua linguagem de programação trabalha com números inteiros com número ilimitado de dígitos.
+}
+	\begin{enumerate}
+		\item[Resp:] Segue o algoritmo $\mathsf{PathsCountUV}$ (para grafos direcionados que tenham pelo menos um vertice):\\
+			$\mathsf{PathsCountUV}(graph\ G,\ node\ u, node\ v)$
+			\begin{algorithmic}[1]
+			    \State $visited[1..G.n\_nodes]$
+			    \For {$idx,node$ \textbf{in} $enumerate(G)$}
+			        \State $visited[idx] \gets false$
+			    \EndFor
+			    \State $return\ \mathsf{PathCounter}(G,\ u,\ v,\ visited,\ emptylist,\ 0)$
+			\end{algorithmic}
+			$\mathsf{PathCounter}(graph\ G,\ node\ u,\ node\ v,\ array\ visited,\ list\ path,\ integer\ count)$
+			\begin{algorithmic}[1]
+			    \State $visited[G.index\_of(u)] \gets true$
+			    \State $path.append(u)$
+			    \If {$u == v$}
+			        \State $count++$
+			    \Else
+			        \For {$node$ \textbf{in} $G.neighbours(u)$}
+			            \If {$!visited[G.index\_of(node)]$}
+			                \State $count \gets count + \mathsf{PathCounter}(G,\ node,\ v,\ visited,\ path,\ count)$
+			            \EndIf
+			        \EndFor
+			    \EndIf
+			    \State $path.pop()$
+			    \State $visited[G.index\_of(u)] \gets false$
+			    \State $return\ count$
+			\end{algorithmic}
+			Note nas linhas 6 a 8 de $\mathsf{PathCounter}$ que o tempo desse algoritmo depende do número de arestas por vértice no grafo sendo, portanto, exponencial.
+    \end{enumerate}
+    
+\end{document}
