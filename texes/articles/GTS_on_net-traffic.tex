@@ -110,7 +110,6 @@ grestore
     \begin{equation}
         X_2(t)= \sum^{p}_{j=1}A_{21,j}X_{1}(t-j) + \sum^{p}_{j=1}A_{22,j}X_{2}+E_2(t),
     \end{equation}
-    
     where \textit{p} is the maximum number of lagged observations included in the model (the model order), the matrix A contains the coefficients of the model (i.e., the contributions of each lagged observation to the predicted values of $X_1(t)$ and $X_2(t)$ , and $E_1$ and $E_2$ are residuals (prediction errors) for each time series. If the variance of $E_1$ (or $E_2$) is reduced by the inclusion of the $X_2$ (or $X_1$) terms in the first (or second) equation, then it is said that $X_2$ (or $X_1$) Granger-(G)-causes $X_1$ (or $X_2$). In other words, $X_2$ G-causes $X_1$ if the coefficients in $A_{12}$ are jointly significantly different from zero. This can be tested by performing an F-test of the null hypothesis that $A_{12}$ = 0, given assumptions of covariance stationarity on $X_1$ and $X_2$ . The magnitude of a G-causality interaction can be estimated by the logarithm of the corresponding F-statistic \cite{Ref_4}. Note that model selection criteria, such as the Bayesian Information Criterion \cite{Ref_5}, can be used to determine the appropriate model order \textit{p}.
 
 \subsection{Time series bootstrapping}

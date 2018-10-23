@@ -6,10 +6,18 @@ if (length(args)!=3) {
   stop("Usage: Rscript --vanilla 6th.R <datatrain.csv> <datatest.csv> <y-row_name>.n", call.=FALSE)
 }
 
-if(!require("install.load")) {install.packages("install.load"); library("install.load")}
+if(!require(install.load)) {install.packages(install.load); library(install.load);}
 
-lapply(c('foreach', 'doParallel', 'parallel', 'e1071', 'parallelSVM', 'caret', 'pROC'), 
-       FUN = install_load);
+lapply(c('foreach', 'doParallel', 'parallel', 'e1071', 'parallelSVM', 
+         'caret', 'pROC'), FUN = install_load)
+
+# for (pkg in c('install.load', 'foreach', 'doParallel', 'parallel', 'e1071', 
+#               'parallelSVM', 'caret', 'pROC')) {
+#   if(!require(pkg)) {
+#     install.packages(pkg); 
+#     library(pkg);
+#     }
+# }
 
 cat("Setting\tseed ...\n\n");
 svmseed <- as.numeric(format(Sys.Date(), "%Y"));
