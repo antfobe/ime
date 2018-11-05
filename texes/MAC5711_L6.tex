@@ -1,0 +1,93 @@
+% to change the appearance of the header, questions, problems or subproblems, see the homework.cls file or
+% override the \Problem, \Subproblem, \question or \printtitle commands.
+
+% The hidequestions option hides the questions. Remove it to print the questions in the text.
+
+\title{MAC5711- Lista 6}
+
+\documentclass{homework}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{forest}
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\usepackage[noend]{algpseudocode}
+
+
+% Set up your name, the course name and the homework set number.
+\homeworksetup{
+    username={Jean Fobe, N$^o$USP 7630573},
+    course={Análise de Algorítmos - MAC5711},
+    setnumber=6}
+\begin{document}% this also prints the header.
+\pagestyle{fancy}
+\fancyfoot[L]{Jean Fobe, 7630573}
+
+% use starred problems or subproblems to apply manual numbering.
+\problem*{5}
+\question{
+Considere as seguintes conjecturas:
+\begin{enumerate}
+    \item {\bf (CRLS Ex.~22.3-7)} Se existe um caminho de $u$ a $v$ em um
+    grafo dirigido $G$, e se $u.d < v.d$ numa DFS de $G$, então $v$ é
+    descendente de $u$ na floresta DFS produzida.
+    \item {\bf (CRLS Ex.~22.3-8)} Se existe um caminho de $u$ a $v$ em um
+    grafo dirigido $G$, então qualquer DFS deve resultar em $v.d \leq u.d$.
+    \item {\bf (CRLS Ex.~22.3-10)} Se um vértice tem arcos entrando e saindo
+    dele, então em qualquer DFS no grafo a componente da árvore DF que o
+    contém tem mais de um vértice.
+\end{enumerate}
+Mostre que as três são falsas, apresentando contraexemplos.
+}
+	\begin{enumerate}
+		\item[Resp 1:] Vamos ilustrar um contraexemplo num grafo $G = (\{n,u,p,v\},\ \{nu,np,un,pv\})$, em que é feita uma DFS a partir de \textit{n}:
+		\begin{center}\begin{forest}
+		for tree={
+            edge={-}		
+		}[n [p [v]] [u]]
+        \end{forest}\end{center}
+        Observamos que existe caminho em \textit{G} de \textit{u} para \textit{v} e $u.d < v.d$ na DFS, mas \textit{v} \textbf{não} é descendente de \textit{u}.
+        \item[Resp 2:] Vamos ilustrar com o mesmo contraexemplo do item anterior, em que existe um caminho de \textit{u} a \textit{v}, mas $v.d > u.d$.
+        \item[Resp 3:] Interpretando componente da árvore como ramo, podemos novamente usar o primeiro contraexemplo, em que \textit{u} tem arestas \textit{nu} entrando e \textit{un} saindo. O ramo da DFS que o contém só possui um vértice.
+	\end{enumerate}
+
+\problem*{9}
+\question{
+    Dada uma árvore $T=(V,E)$, o \emph{diâmetro} de $T$ é o número
+$\max\{d(u,v) : u, v \in V\}$, onde $d(u,v)$ é a distância entre $u$ e $v$ em
+$T$.Escreva um algoritmo que, dado $T$, determine o diâmetro de $T$.  A seu
+critério, você pode supor que $T$ é dado como um grafo, ou como
+uma estrutura de dados, com raíz, filhos etc.  Explique sucintamente sua
+suposíção. Analise o seu consumo de tempo.
+}
+    \begin{enumerate}
+        \item[Resp :]
+    \end{enumerate}
+
+\problem*{10}
+\question{
+O \emph{grau de entrada} \(u.g\) de um vértice \(u\) de um digrafo é o número de arcos que terminam em \(u\).
+\begin{enumerate}
+    \item Mostre que se um digrafo é acíclico, ele tem um vértice com grau de entrada 0.
+    \item Considere o seguinte algoritmo:\\
+    \textbf{enquanto} \textsl{\(G\) não é vazio}\\
+    \quad \textsl{um vértice de grau de entrada 0 e remova de \(G\)}\\
+    \textbf{devolva}  \textsl{os vértices numerados na ordem em que foram removidos}\\
+    Mostre que se o grafo dado é acíclico, o algoritmo devolve uma ordenação topológica.
+    \item Suponha \(G\) dado por listas de adjacências. Implemente o algoritmo acima em pseudocódigo, da forma mais eficiente que puder. Analise a complexidade.
+\end{enumerate}
+}   
+    \begin{enumerate}
+        \item[Resp :]
+    \end{enumerate}
+\end{document}
