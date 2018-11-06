@@ -65,13 +65,44 @@ Mostre que as três são falsas, apresentando contraexemplos.
 \question{
     Dada uma árvore $T=(V,E)$, o \emph{diâmetro} de $T$ é o número
 $\max\{d(u,v) : u, v \in V\}$, onde $d(u,v)$ é a distância entre $u$ e $v$ em
-$T$.Escreva um algoritmo que, dado $T$, determine o diâmetro de $T$.  A seu
+$T$. Escreva um algoritmo que, dado $T$, determine o diâmetro de $T$.  A seu
 critério, você pode supor que $T$ é dado como um grafo, ou como
 uma estrutura de dados, com raíz, filhos etc.  Explique sucintamente sua
 suposíção. Analise o seu consumo de tempo.
 }
     \begin{enumerate}
-        \item[Resp :]
+        \item[Resp :] O diâmetro de uma árvore será a distância $d(u,v)$ onde \textit{u} e \textit{v} são os dois vertices mais distantes do vértice raiz da árvore e \textit{u} e \textit{v} não são descendentes entre si. Podemos convenientemente executar o algorítmo de DFS em T, guardando os dois maiores caminhos até as extremidades, note que se houver somente uma extremidade, o diâmetro será a distancia da raiz ao último vértice dessa extremidade. Segue abaixo a descrição do algorítmo $\mathsf{TreeDiameter}$:
+        
+\pagebreak
+
+        $\mathsf{TreeDiameter}(graph\ T)$
+			\begin{algorithmic}[1]
+			    \State $distances \gets \mathsf{DFS\_dmax}(T,\ T.root,\ emptylist)$
+			    \State $d1 \gets distances.max$
+			    \State $distances.remove(distances.max)$
+			    \If {distances \textbf{is} emptylist}
+			        \State $return\ d1$
+			    \EndIf
+			    \State $d2 \gets distances.max$
+			    \State $return\ d1+d2$
+			\end{algorithmic}
+		$\mathsf{DFS\_dmax}(graph\ T,\ node\ n,\ list\ distances)$
+			\begin{algorithmic}[1]
+			    \State $n.label \gets discovered$
+			    \If {n \textbf{is} T.root}
+			        \State $distances.append(n.d)$
+			    \EndIf
+			    \For {i \textbf{in} G.adjacentNodes(n)}
+			        \If {i.label \textbf{is not} discovered}
+			            \If {i.d $>$ n.d}
+			                \State $distances.remove\_head()$
+			                \State $distances.append(i.d)$
+			            \EndIf
+			            \State $return\ \mathsf{DFS\_dmax}(T,\ i,\ distances)$
+			        \EndIf
+			    \EndFor
+			    \State $return\ distances$
+			\end{algorithmic}
     \end{enumerate}
 
 \problem*{10}
