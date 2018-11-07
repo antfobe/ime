@@ -27,7 +27,7 @@
 % Set up your name, the course name and the homework set number.
 \homeworksetup{
     username={Jean Fobe, N$^o$USP 7630573},
-    course={Análise de Algorítmos - MAC5711},
+    course={Análise de algoritmos - MAC5711},
     setnumber=6}
 \begin{document}% this also prints the header.
 \pagestyle{fancy}
@@ -71,7 +71,7 @@ uma estrutura de dados, com raíz, filhos etc.  Explique sucintamente sua
 suposíção. Analise o seu consumo de tempo.
 }
     \begin{enumerate}
-        \item[Resp :] O diâmetro de uma árvore será a distância $d(u,v)$ onde \textit{u} e \textit{v} são os dois vertices mais distantes do vértice raiz da árvore e \textit{u} e \textit{v} não são descendentes entre si. Podemos convenientemente executar o algorítmo de DFS em T, guardando os dois maiores caminhos até as extremidades, note que se houver somente uma extremidade, o diâmetro será a distancia da raiz ao último vértice dessa extremidade. Segue abaixo a descrição do algorítmo $\mathsf{TreeDiameter}$:
+        \item[Resp :] O diâmetro de uma árvore será a distância $d(u,v)$ onde \textit{u} e \textit{v} são os dois vértices mais distantes do vértice raiz da árvore e \textit{u} e \textit{v} não são descendentes entre si. Podemos convenientemente executar o algoritmo de DFS em T, guardando os dois maiores caminhos até as extremidades, note que se houver somente uma extremidade, o diâmetro será a distancia da raiz ao último vértice dessa extremidade. Segue abaixo a descrição do algoritmo $\mathsf{TreeDiameter}$:
         
 \pagebreak
 
@@ -103,6 +103,7 @@ suposíção. Analise o seu consumo de tempo.
 			    \EndFor
 			    \State $return\ distances$
 			\end{algorithmic}
+			O consumo de tempo do algoritmo será o do DFS somado com o tempo de extração dos valores máximos na lista.
     \end{enumerate}
 
 \problem*{10}
@@ -112,13 +113,34 @@ O \emph{grau de entrada} \(u.g\) de um vértice \(u\) de um digrafo é o número
     \item Mostre que se um digrafo é acíclico, ele tem um vértice com grau de entrada 0.
     \item Considere o seguinte algoritmo:\\
     \textbf{enquanto} \textsl{\(G\) não é vazio}\\
-    \quad \textsl{um vértice de grau de entrada 0 e remova de \(G\)}\\
+    -\qquad Encontre \textsl{um vértice de grau de entrada 0 e remova de \(G\)}\\
     \textbf{devolva}  \textsl{os vértices numerados na ordem em que foram removidos}\\
     Mostre que se o grafo dado é acíclico, o algoritmo devolve uma ordenação topológica.
     \item Suponha \(G\) dado por listas de adjacências. Implemente o algoritmo acima em pseudocódigo, da forma mais eficiente que puder. Analise a complexidade.
 \end{enumerate}
 }   
     \begin{enumerate}
-        \item[Resp :]
+        \item[Resp 1:] Se um digrafo é acíclico, então existem pelo menos um vértice sem arcos ou arestas que saem dele e um vértice sem arestas que terminam nele. Pela definição, o vértice sem arestas que terminam nele tem grau 0, $u.g = 0$.
+        \item[Resp 2:] Se \textit{G} é acíclico, ao tirarmos um vértice de grau de entrada 0, imediatamente temos outros, que antes compartilhavam arestas com aquele, numa nova situação com grau 0. Repetindo esse passo de remoção ao longo dos vértices do grafo, ou temos que o grau de entrada permanece sem alteração, ou diminui, e sempre conseguiremos tirar vértices de grau de entrada 0 até o grafo ficar vazio. Num grafo contendo ciclos, poderíamos chegar numa situação em que não teríamos vértices com grau de entrada 0 e o grafo não estaria vazio.
+
+\pagebreak        
+        
+        \item[Resp 3:] Para implementar o algoritmo $\mathsf{TopologicalDFS}$ vamos fazer algumas no algoritmo DFS recursivo:
+         $\mathsf{TopologicalDFS}(graph\ G,\ node n0,\ list\ top\_sort)$
+             \begin{algorithmic}[1]
+			    \State $n0.label \gets temporary$
+			    \For {i \textbf{in} G.adjacentNodes(n0)}
+			        \If {i.label \textbf{is not} discovered}
+			            \If {i.label \textbf{is} temporary}
+			                \State $Stop()$ (grafo não é acíclico)
+			            \EndIf
+			            \State $return\ \mathsf{DFS\_dmax}(T,\ i,\ top\_sort)$
+			        \EndIf
+			    \EndFor
+			    \State $n0.label \gets discovered$
+			    \State $top\_sort.append(n0)$			    
+			    \State $return\ top\_sort$
+			\end{algorithmic}
+			O algoritmo é uma modificação do DFS, com tempos adicionais de inserções em lista, ou seja manterá O($|V|+|E|$).
     \end{enumerate}
 \end{document}
