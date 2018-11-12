@@ -81,7 +81,7 @@ suposíção. Analise o seu consumo de tempo.
 			    \State $d1 \gets distances.max$
 			    \State $distances.remove(distances.max)$
 			    \If {distances \textbf{is} emptylist}
-			        \State $return\ d1$
+			        \State $return\ 0$
 			    \EndIf
 			    \State $d2 \gets distances.max$
 			    \State $return\ d1+d2$
@@ -89,14 +89,11 @@ suposíção. Analise o seu consumo de tempo.
 		$\mathsf{DFS\_dmax}(graph\ T,\ node\ n,\ list\ distances)$
 			\begin{algorithmic}[1]
 			    \State $n.label \gets discovered$
-			    \If {n \textbf{is} T.root}
-			        \State $distances.append(n.d)$
-			    \EndIf
+			    \State $distances.append(n.d)$
 			    \For {i \textbf{in} G.adjacentNodes(n)}
 			        \If {i.label \textbf{is not} discovered}
-			            \If {i.d $>$ n.d}
-			                \State $distances.remove\_head()$
-			                \State $distances.append(i.d)$
+			            \If {i.d $>$ distances.head.d}
+			                \State $distances.head \gets i$
 			            \EndIf
 			            \State $return\ \mathsf{DFS\_dmax}(T,\ i,\ distances)$
 			        \EndIf
