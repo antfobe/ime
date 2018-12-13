@@ -1,0 +1,118 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{USP, Instituto de Matemática e Estatística} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge MAC6955: Estado da arte em testes de software \\ % The assignment title
+\normalfont \normalsize 
+Professor Doutor Mauricio Aniche \\ [25pt]
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Jean Luc A. O. Fobe, \\
+        NºUSP: 7630573} % Your name
+
+\date{13/12/2018} % Today's date or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+
+\section{Perguntas}
+\subsection{Explique o problema do oráculo. (\textit{1 ponto})}
+\begin{itemize}
+    \item[Resp:] O problema do oráculo pode ser resumido em determinar o \textit{output} ou saída de um programa de forma correta para um dado \textit{input} ou entrada, que pode ser dada como sequencia de estados ou até mesmo outros programas.\\
+    Cem Kaner (\textit{A Course in Black Box Software Testing}, 2004) relata que um dos problemas chaves que aparecem com oráculos é que eles atendem a uma parte pequena de \textit{inputs} e \textit{outputs} que realmente estão relacionados com qualquer teste. O programador de testes pode modificar valores das variáveis do programa, mas a execução em si também depende do sistema onde o programa está rodando e isso afeta o resultado dos testes. Logo, a avaliação dos resultados dos testes em função dos \textit{inputs} tem base em dados incompletos e pode estar incorreta.
+\end{itemize}
+
+\subsection{Explique a diferença entre line coverage, branch coverage, condition coverage, e path coverage. Fique à vontade para fazer uso de exemplos. \textit{(2 pontos)}}
+    \begin{itemize}
+        \item[Resp:] Myers (\textit{The Art of Software Testing, Chapter 4}. Glenford J. Myers (2004).) resume \textit{branch covarage} e \textit{condition coverage}:
+        \begin{itemize}
+            \item \textit{Branch Coverage}: O conjuto de testes feitos sobre toda ramificação (\textit{branch}, DD-path) de toda estrutura de controle (\textit{if, case statements}). Por exemplo, dada uma declaração \textit{if}, ambos os valores para o ramo "Verdadeiro" e o "Falso" devem ser testados.
+            \item \textit{Condition Coverage}: Cada \textit{eval} de todas as sub expressões booleanas deve ser testado para os valores "Verdadeiro" e "Falso". (Não somente condições e estruturas de controle).
+            \end{itemize}
+    \end{itemize}
+
+\subsection{Em search-based software testing, a estratégia mais popular é desenhar um algoritmo genético capaz de gerar testes para um dado programa. O grande segredo que faz o algoritmo genético ser bem sucedido é a sua fitness function. Explique, em detalhes, a fitness function discutida em aula. \textit{(3 pontos)}}
+
+\lipsum[3] % Dummy text
+
+\subsection{Defina e explique a diferença entre mutation testing e fuzzing testing. \textit{(2 pontos)}}
+
+\lipsum[6] % Dummy text
+
+\subsection{Apesar de interessantes e eficientes, usar essas técnicas em projetos de software reais ainda é desafiador. Discuta 3 desses desafios. \textit{(2 pontos)}}
+
+\section{Avaliação pessoal}
+
+Em uma escala de 0 a 10, onde 10 significa que você está apto a implementar todas as técnicas que discutimos, bem como talvez até trabalhar em um artigo científico que visa expandir o conhecimento atual, como você se avalia?
+
+
+\subsection{Indique a sua avaliação pessoal e escreva um parágrafo explicando o porquê.}
+
+\begin{itemize}
+    \item[-] Atribuo uma nota de 7.5.\\
+    uwot
+\end{itemize}
+
+\subsection{Se você se deu uma nota maior ou igual à 8, justifique-se em detalhes.}
+
+\begin{itemize}
+    \item[-] A nota não foi maior que 8.
+\end{itemize}
+
+\end{document}
