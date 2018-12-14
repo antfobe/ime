@@ -75,17 +75,17 @@ Professor Doutor Mauricio Aniche \\ [25pt]
 \subsection{Explique o problema do oráculo. (\textit{1 ponto})}
 \begin{itemize}
     \item[Resp:] O problema do oráculo pode ser resumido em determinar o \textit{output} ou saída de um programa de forma correta para um dado \textit{input} ou entrada, que pode ser dada como sequencia de estados ou até mesmo outros programas.\\
-    Cem Kaner (\textit{A Course in Black Box Software Testing}, 2004) relata que um dos problemas chaves que aparecem com oráculos é que eles atendem a uma parte pequena de \textit{inputs} e \textit{outputs} que realmente estão relacionados com qualquer teste. O programador de testes pode modificar valores das variáveis do programa, mas a execução em si também depende do sistema onde o programa está rodando e isso afeta o resultado dos testes. Logo, a avaliação dos resultados dos testes em função dos \textit{inputs} tem base em dados incompletos que podem torna-la inválida.
+    Cem Kaner relata que um dos problemas chaves que aparecem com oráculos é que eles atendem a uma parte pequena de \textit{inputs} e \textit{outputs} que realmente estão relacionados com qualquer teste (\textit{A Course in Black Box Software Testing}, 2004). O programador de testes pode modificar valores das variáveis do programa, mas a execução em si também depende do sistema onde o programa está rodando e isso afeta o resultado dos testes. Logo, a avaliação dos resultados dos testes em função dos \textit{inputs} tem base em dados incompletos que podem torna-la inválida.
 \end{itemize}
 
 \subsection{Explique a diferença entre line coverage, branch coverage, condition coverage, e path coverage. Fique à vontade para fazer uso de exemplos. \textit{(2 pontos)}}
     \begin{itemize}
-        \item[Resp:] Myers (\textit{The Art of Software Testing, Chapter 4}. Glenford J. Myers (2004)) resume \textit{branch covarage} e \textit{condition coverage}:
+        \item[Resp:] Myers resume \textit{branch covarage} e \textit{condition coverage} (\textit{The Art of Software Testing, Chapter 4}. Glenford J. Myers (2004)):
         \begin{itemize}
             \item \textit{Branch Coverage}: Métrica de testes feitos sobre toda ramificação (\textit{branch}, DD-path) de toda estrutura de controle (\textit{if, case statements}). Por exemplo, dada uma declaração \textit{if}, ambos os valores para o ramo "Verdadeiro" e o "Falso" devem ser testados.
             \item \textit{Condition Coverage}: Cada \textit{eval} de todas as sub expressões booleanas deve ser testado para os valores "Verdadeiro" e "Falso". (Não somente condições de estruturas de controle).
         \end{itemize}
-         Das transparências passadas durante o curso (\textit{2018 test automation day}) e do material de Steve Cornett (\textit{Code Coverage Analysis} podemos ainda diferenciar \textit{line coverage} e \textit{path coverage}:
+         Das transparências passadas durante o curso (\textit{2018 test automation day}) e do material de Steve Cornett (\textit{Code Coverage Analysis}) podemos ainda diferenciar \textit{line coverage} e \textit{path coverage}:
          \begin{itemize}
              \item \textit{Line Coverage}: Informa para dado teste quais linhas de código foram percorridas.
              \item \textit{Path Coverage}: Considera se cada caminho possível entre estados do programa foi percorrido, onde um caminho entre dois estados é uma sequencia de transições que levam a execução do programa de um estado para o outro. Esse tipo de métrica é exponencial em número de condições. Se temos um trecho de código que é uma transição de um estado para outros com 10 condições \textit{if-else} testaríamos um total de $2^{10} = 1024$ `subcaminhos' somente nessa parte do programa.
@@ -105,12 +105,10 @@ Professor Doutor Mauricio Aniche \\ [25pt]
              &\}
          \end{align*}
          Um teste com valores $x = 1,\ y = 1$, terá \textit{line coverage} de $91\%$ ($9/10$ linhas percorridas), enquanto que para valores $x = 0,\ y = 1$, \textit{line coverage} será de $~82\%$ ($9/11$ linhas).\\
-          $x = 0,\ y = 1$, terá \textit{path coverage} de $25\%$, pois apenas um caminho dentre os quatro possíveis foi percorrido. O mesmo ocorre para \textit{branch coverage} uma vez que só $25\%$ das ramificações é testado. Esse \textit{input} também faz com que o trecho tenha \textit{condition coverage} de $12.5\%$, já que somente um oitavo das expressões booleanas foi testado.
-          
+          $x = 0,\ y = 1$, terá \textit{path coverage} de $25\%$, pois apenas um caminho dentre os quatro possíveis foi percorrido. O mesmo ocorre para \textit{branch coverage} uma vez que só $25\%$ das ramificações é testado. Esse \textit{input} também faz com que o trecho tenha \textit{condition coverage} de $12.5\%$, já que somente um oitavo do resultado de expressões booleanas foi testado.        
     \end{itemize}
 
 \subsection{Em search-based software testing, a estratégia mais popular é desenhar um algoritmo genético capaz de gerar testes para um dado programa. O grande segredo que faz o algoritmo genético ser bem sucedido é a sua fitness function. Explique, em detalhes, a fitness function discutida em aula. \textit{(3 pontos)}}
-
     \begin{itemize}
         \item[Resp:] Resumidamente, uma \textit{fitness function} é uma função que avalia o quão perto da solução ótima está a resposta dada para resolver um dado problema - determina o quanto a solução se `encaixa' no problema como resposta.\\
         A \textit{fitness function} discutida em aula avalia para cada \textit{query} SQL o nível da query (admitindo \textit{nesting}) e a distancia dada pela quantidade de expressões emparelhadas que resultam no \textit{output} desejado, ou \textit{target}. Essa abordagem permite que um número muito menor de execuções sejam realizadas para testar os casos desejados, uma vez que o algoritmo tenta convergir o mais rápido o possível para os alvos de teste. Em outras palavras, ao invés de testar cada condição, ou cada expressão lógica, ou ainda cada caminho da aplicação, a \textit{target function} permite que o algoritmo genético se adapte de acordo com as partes de código que já foram cobertas.\\
@@ -122,10 +120,23 @@ Professor Doutor Mauricio Aniche \\ [25pt]
     \end{itemize}
 
 \subsection{Defina e explique a diferença entre mutation testing e fuzzing testing. \textit{(2 pontos)}}
+	\begin{itemize}
+		\item[Resp:] DeMillo define \textit{mutation testing} como a criação de um conjunto de programas mutantes do programa original sendo testado. Cada mutação difere do original por uma mutação e cada mutação é uma única mudança sintática feita em uma declaração ou condição do programa (Richard A. DeMillo, Richard J. Lipton, and Fred G. Sayward. \textit{Hints on test data selection: Help for the practicing programmer}. IEEE Computer, 11(4):34-41. April 1978).\\
+		OWASP (\textit{Open Web Application Security Project}) define \textit{fuzzing} como uma técnica \textit{caixa preta} de teste de software, que consiste basicamente em encontrar defeitos de implementação usando expressões mal estruturadas ou parcialmente corretas para injeção de dados de uma forma automática.
+		A diferença mais clara entre essas duas técnicas é em que parte do programa cada uma atua, \textit{fuzzing} atua nos \textit{inputs} do programa, tentado produzir entradas que quebrem a execução do programa, e \textit{mutation testing} testa a lógica do programa, mostrando se alguma substituição de operadores ou variáveis tem efeito inesperado.
+	\end{itemize}
 
-\lipsum[6] % Dummy text
+\pagebreak
 
 \subsection{Apesar de interessantes e eficientes, usar essas técnicas em projetos de software reais ainda é desafiador. Discuta 3 desses desafios. \textit{(2 pontos)}}
+	\begin{itemize}
+		\item[Resp:] Três principais problemas discutidos em aula foram:
+		\begin{enumerate}
+			\item Automação de testes: Principalmente na parte de \textit{design} do software ainda faltam técnicas confiáveis que permitam testes com boa cobertura dos programas produzidos. No final do curso o professor discutiu algumas maneiras interessantes de resolver esse problema, tanto pelo bom aproveitamento dos \textit{logs} da aplicação quanto pela implementação do algoritmo genético para testes de SQL.
+			\item A ordem de testes ou quais testes executar primeiro: Tendo como objetivo achar \textit{bugs} no software, não há forma genérica de decidir a ordem dos testes e esse problema atrasa o \textit{deploy} da aplicação e acaba acarretando em mais custos para o processo de desenvolvimento.
+			\item Testar a aplicação por inteiro: Além de ser uma atividade custosa de tempo e recursos, não é nada trivial ter uma cobertura de testes completa sobre o software. Surgem problemas como o oráculo de teste e tempo exponencial no tamanho do programa.
+		\end{enumerate}
+	\end{itemize}
 
 \section{Avaliação pessoal}
 
@@ -133,10 +144,9 @@ Em uma escala de 0 a 10, onde 10 significa que você está apto a implementar to
 
 
 \subsection{Indique a sua avaliação pessoal e escreva um parágrafo explicando o porquê.}
-
 \begin{itemize}
     \item[-] Atribuo uma nota de 7.5.\\
-    uwot
+    Gostei muito do curso e me interesso por essa área de conhecimento, mas não vejo formas diretas de aplicar o que foi aprendido. Busquei participar por meio de perguntas e discussões e isso com certeza me ajudou a entender melhor o tema. Talvez até consiga trabalhar em artigos científicos envolvendo uso de \textit{logs} para descoberta de \textit{bugs} ou inconsistências em aplicações.
 \end{itemize}
 
 \subsection{Se você se deu uma nota maior ou igual à 8, justifique-se em detalhes.}
