@@ -1,43 +1,85 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * Copyright (C) 2008 Oracle.  All rights reserved.
+ * Copyright (c) 2018-present, IME-USP.
+ * Jean Fobe
+ * All rights reserved.
  *
- * Based on jffs2 zlib code:
- * Copyright © 2001-2007 Red Hat, Inc.
- * Created by David Woodhouse <dwmw2@infradead.org>
  */
 
-#include <linux/kernel.h>
-#include <linux/slab.h>
-#include <linux/zlib.h>
-#include <linux/zutil.h>
-#include <linux/mm.h>
-#include <linux/init.h>
-#include <linux/err.h>
-#include <linux/sched.h>
-#include <linux/pagemap.h>
 #include <linux/bio.h>
+#include <linux/err.h>
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/mm.h>
+#include <linux/pagemap.h>
 #include <linux/refcount.h>
+#include <linux/sched.h>
+#include <linux/slab.h>
+#include <linux/lz4.h>
 #include "compression.h"
 
-#include "zcomp.h"
+#ifndef _ZCOMP_H_
+#define _ZCOMP_H_
 
-struct workspace {
-	zcomp *comp;
-	char *buf;
-	struct list_head list;
+struct zcomp_strm {
+	/* compression/decompression buffer */
+	void *buffer;
+	struct crypto_comp *tfm;
 };
 
-static void cac_free_workspace(struct list_head *ws)
+/* dynamic per-device compression frontend */
+struct zcomp {
+	struct zcomp_strm * __percpu *stream;
+	const char *name;
+	struct hlist_node node;
+};
+
+struct workspace {
+	char alg[CRYPTO_MAX_ALG_NAME];
+	struct zcomp * wcomp;
+	struct list_head list;
+    int level;
+};
+
+static struct workspace_manager wsm;
+
+static void comp_init_workspace_manager(void)
 {
+	//ret = cpuhp_setup_state_multi(CPUHP_ZCOMP_PREPARE, "compress/btrfs:prepare",
+	//			      zcomp_cpu_up_prepare, zcomp_cpu_dead);
+    if(!workspace->wcomp){/*treat error*/}
+	btrfs_init_workspace_manager(&wsm, &btrfs_compress);
+}
+
+static void comp_cleanup_workspace_manager(void)
+{
+	btrfs_cleanup_workspace_manager(&wsm);
+}
+
+static struct list_head *comp_get_workspace(unsigned int level)
+{
+	struct list_head *ws = btrfs_get_workspace(&wsm, level);
 	struct workspace *workspace = list_entry(ws, struct workspace, list);
 
-	zcomp_destroy(workspace->comp);
-	kfree(workspace->buf);
+	workspace->level = level;
+
+	return ws;
+}
+
+static void comp_put_workspace(struct list_head *ws)
+{
+	btrfs_put_workspace(&wsm, ws);
+}
+
+static void comp_free_workspace(struct list_head *ws)
+{
+	struct workspace *workspace = list_entry(ws, struct workspace, list);
+	if(workspace->wcomp)
+        zcomp_destroy(workspace->wcomp);
 	kfree(workspace);
 }
 
-static struct list_head *cac_alloc_workspace(void)
+static struct list_head *comp_alloc_workspace(unsigned int level)
 {
 	struct workspace *workspace;
 	int workspacesize;
@@ -46,34 +88,26 @@ static struct list_head *cac_alloc_workspace(void)
 	if (!workspace)
 		return ERR_PTR(-ENOMEM);
 
-	/* need to assign to something external */
-	workspace->comp = zcomp_create("zstd");
-	workspace->buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-	if (!workspace->comp || !workspace->comp->strm || !workspace->buf)
+    workspace->wcomp = zcomp_create(workspace_manager->alg);
+	if (!workspace->wcomp || !workspace->alg)
 		goto fail;
 
+	workspace->level = level;
 	INIT_LIST_HEAD(&workspace->list);
 
 	return &workspace->list;
 fail:
-	zcomp_destroy(workspace->comp);
-	kfree(workspace->buf);
-	kfree(workspace);
+	comp_free_workspace(&workspace->list);
 	return ERR_PTR(-ENOMEM);
 }
 
-static int cac_compress_pages(struct list_head *ws,
+static int comp_compress_pages(struct list_head *ws,
 			       struct address_space *mapping,
 			       u64 start,
 			       struct page **pages,
-			       unsigned long *out_pages,
-			       unsigned long *total_in,
-			       unsigned long *total_out)
+			       unsigned long *out_pages)
 {
 	struct workspace *workspace = list_entry(ws, struct workspace, list);
-	int ret;
-	char *data_in;
-	char *cpage_out;
 	int nr_pages = 0;
 	struct page *in_page = NULL;
 	struct page *out_page = NULL;
@@ -81,12 +115,15 @@ static int cac_compress_pages(struct list_head *ws,
 	unsigned long len = *total_out;
 	unsigned long nr_dest_pages = *out_pages;
 	const unsigned long max_out = nr_dest_pages * PAGE_SIZE;
-	struct zcomp_strm *stream;
-	*out_pages = 0;
-	*total_out = 0;
-	*total_in = 0;
 
-	stream = zcomp_stream_get(workspace->comp);
+	int ret = 0;
+	unsigned long element = 0;
+	unsigned long alloced_pages;
+	unsigned long handle = 0;
+	unsigned int comp_len = 0;
+	void *src, *dst, *mem;
+	struct zcomp_strm *zstrm;
+	*out_pages = 0;
 
 	in_page = find_get_page(mapping, start >> PAGE_SHIFT);
 	data_in = kmap(in_page);
@@ -96,9 +133,40 @@ static int cac_compress_pages(struct list_head *ws,
 		ret = -ENOMEM;
 		goto out;
 	}
+	mem = kmap(out_page);
+	if (page_same_filled(mem, &element)) {
+		kunmap(mem);
+		/* Free memory associated with this sector now. */
+		nr_pages++;
+        goto out;
+	}
 	cpage_out = kmap(out_page);
 	pages[0] = out_page;
 	nr_pages = 1;
+
+	if (comp_len >= huge_class_size)
+		comp_len = PAGE_SIZE;
+
+compress_again:
+	zstrm = zcomp_stream_get(workspace->wcomp);
+	src = kmap(page);
+	ret = zcomp_compress(zstrm, src, &comp_len);
+	kunmap(src);
+
+	if (unlikely(ret)) {
+		zcomp_stream_put(workspace->wcomp);
+		pr_warn("Compression failed! err=%d\n", ret);
+		goto out;
+	}
+
+	if (comp_len >= huge_class_size)
+		comp_len = PAGE_SIZE;
+    /* we're making it bigger, stop*/
+    if (comp_len > src){
+        ret = -E2BIG;
+        goto out;
+    }
+    /** if src > PAGE_SIZE, should get another page**/
 
 	while (workspace->strm.total_in < len) {
 		ret = zlib_deflate(&workspace->strm, Z_SYNC_FLUSH);
@@ -380,18 +448,19 @@ next:
 	return ret;
 }
 
-static void zlib_set_level(struct list_head *ws, unsigned int type)
+static unsigned int zlib_set_level(unsigned int level)
 {
-	struct workspace *workspace = list_entry(ws, struct workspace, list);
-	unsigned level = (type & 0xF0) >> 4;
+	if (!level)
+		return BTRFS_ZLIB_DEFAULT_LEVEL;
 
-	if (level > 9)
-		level = 9;
-
-	workspace->level = level > 0 ? level : 3;
+	return min_t(unsigned int, level, 9);
 }
 
 const struct btrfs_compress_op btrfs_zlib_compress = {
+	.init_workspace_manager	= zlib_init_workspace_manager,
+	.cleanup_workspace_manager = zlib_cleanup_workspace_manager,
+	.get_workspace		= zlib_get_workspace,
+	.put_workspace		= zlib_put_workspace,
 	.alloc_workspace	= zlib_alloc_workspace,
 	.free_workspace		= zlib_free_workspace,
 	.compress_pages		= zlib_compress_pages,

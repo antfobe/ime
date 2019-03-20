@@ -43,7 +43,7 @@ test_t <- subset(test, select = -which(names(test) %in% c(args[3], names(test)[1
 # xsim <- x[sample(nrow(x), nrow(y)),];
 
 cat("Training model ...\n\n");
-system.time(svm_model <- parallelSVM::parallelSVM(x, y[,1],
+system.time(svm_model <- parallelSVM::parallelSVM(host ~ ., data = x,
                                       type = "C-classification",
                                       kernel = "radial",
                                       seed = svmseed,
@@ -75,19 +75,22 @@ write.csv(data.frame(id = 1:nrow(test), pred = as.character(pred)), file = "para
 
 x$fold <- caret::createFolds(1:nrow(x), k = 10, list = FALSE);
 ### PARAMETER LIST ###
-parms <- expand.grid(cost = c(seq(from = 1, to = 10, by = 0.1)), gamma = c(seq(from = 0.001, to = 0.01, by = 0.0005)));
+parms <- expand.grid(cost = c(seq(from = 6, to = 8, by = 0.05)), 
+                     gamma = c(seq(from = 0.006, to = 0.01, by = 0.0005)),
+                     coefz = c(seq(from = -4, to = 4, by = 0.5)));
 ### LOOP THROUGH PARAMETER VALUES ###
 result <- foreach::foreach(i = 1:nrow(parms), .combine = rbind) %do% {
     c <- parms[i, ]$cost;
     g <- parms[i, ]$gamma;
+    cfz <- parms[i, ]$coefz;
     ### K-FOLD VALIDATION ###
     out <- foreach::foreach(j = 1:max(x$fold), .combine = rbind, .inorder = FALSE) %dopar% {
         deve <- x[x$fold != j, ];
         test <- x[x$fold == j, ];
-        mdl <- e1071::svm(y[1:nrow(deve),] ~ ., data = deve, type = "C-classification", 
-                          kernel = "radial", cost = c, gamma = g, probability = TRUE);
+        mdl <- e1071::svm(host ~ ., data = deve, type = "C-classification", 
+                          kernel = "sigmoid", cost = c, gamma = g, coef0 = cfz, probability = TRUE);
         pred <- predict(mdl, test, decision.values = TRUE, probability = TRUE);
-        data.frame(y = y[1:nrow(test),], prob = attributes(pred)$probabilities[, 2]);
+        data.frame(y = test$host, prob = attributes(pred)$probabilities[, 2]);
     }
     ### CALCULATE SVM PERFORMANCE ###
     roc <- pROC::roc(as.factor(out$y), out$prob);
